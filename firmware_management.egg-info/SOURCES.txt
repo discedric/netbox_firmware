@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+firmware_management/__init__.py
+firmware_management/navigation.py
+firmware_management/urls.py
+firmware_management/version.py
+firmware_management.egg-info/PKG-INFO
+firmware_management.egg-info/SOURCES.txt
+firmware_management.egg-info/dependency_links.txt
+firmware_management.egg-info/top_level.txt
+firmware_management/views/__init__.py
+firmware_management/views/firmware.py
