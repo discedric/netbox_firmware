@@ -1,8 +1,10 @@
-from django.urls import path
+from django.urls import include, path
 
+from utilities.urls import get_model_urls
 from . import views
 
 urlpatterns = [
-    # Test List 
-    path('firmware/', views.TestView.as_view(), name='test_view'),
+    # Firmwares
+    path('firmwares/', include(get_model_urls('firmware_management', 'firmware', detail=False))),
+    path('firmwares/<int:pk>/', include(get_model_urls('firmware_management', 'firmware'))),
 ]

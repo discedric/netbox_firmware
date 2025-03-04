@@ -1,1 +1,1 @@
-from .firmware import TestView
+from .firmware import *
