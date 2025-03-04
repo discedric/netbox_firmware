@@ -3,12 +3,6 @@ from netbox.plugins import PluginMenu, PluginMenuItem, PluginMenuButton, get_plu
 firmware_buttons = [
     PluginMenuButton(
         link='plugins:firmware_management:firmware_view',
-        title='Add',
-        icon_class='mdi mdi-plus-thick',
-        permissions=["firmware_management.add_firmware"],
-    ),
-    PluginMenuButton(
-        link='plugins:firmware_management:firmware_view',
         title='Import',
         icon_class='mdi mdi-upload',
         permissions=["firmware_management.add_firmware"],
