@@ -12,21 +12,21 @@ from .. import models
 from ..template_content import WARRANTY_PROGRESSBAR
 
 __all__ = (
-    'FirmwareView',
-    'FirmwareListView'
+    'FirmwareAssignmentView',
+    'FirmwareAssignmentListView',
+    'FirmwareAssignmentBulkCreateView'
 )
 
 @register_model_view(models.Firmware)
-class FirmwareView(generic.ObjectView):
+class FirmwareAssignmentView(generic.ObjectView):
     queryset = models.Firmware.objects.all()
 
     def get_extra_context(self, request, instance):
         context = super().get_extra_context(request, instance)
-        context['warranty_progressbar'] = Template(WARRANTY_PROGRESSBAR)
         return context
 
 @register_model_view(models.Firmware, 'list', path='', detail=False)
-class FirmwareListView(generic.ObjectListView):
+class FirmwareAssignmentListView(generic.ObjectListView):
     queryset = models.Firmware.objects.prefetch_related(
         'manufacturer',
         'device_type',
@@ -34,13 +34,13 @@ class FirmwareListView(generic.ObjectListView):
     )
     table = tables.FirmwareTable
     
-"""@register_model_view(models.Firmware, 'bulk_add', path='bulk-add', detail=False)
-class FirmwareBulkCreateView(generic.BulkCreateView):
+@register_model_view(models.Firmware, 'bulk_add', path='bulk-add', detail=False)
+class FirmwareAssignmentBulkCreateView(generic.BulkCreateView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareBulkAddForm
     model_form = forms.FirmwareBulkAddModelForm
     pattern_target = None
-    template_name = 'firmware_management/firmware_bulk_add.html'
+    template_name = 'firmware_management/firmware_assignment_bulk_add.html'
 
     def _create_objects(self, form, request):
         new_objects = []
@@ -58,11 +58,11 @@ class FirmwareBulkCreateView(generic.BulkCreateView):
                 # Raise an IntegrityError to break the for loop and abort the transaction.
                 raise IntegrityError()
 
-        return new_objects"""
+        return new_objects
     
 @register_model_view(models.Firmware, 'edit')
 @register_model_view(models.Firmware, 'add', detail=False)
-class FirmwareEditView(generic.ObjectEditView):
+class FirmwareAssignmentEditView(generic.ObjectEditView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareForm
-    template_name = 'firmware_management/firmware_edit.html'
+    template_name = 'firmware_management/firmware_assignment_edit.html'

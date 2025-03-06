@@ -1,0 +1,53 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% load form_helpers %}
+{% load helpers %}
+
+{% block tabs %}
+  {% include 'firmware_management/inc/firmware_edit_header.html' with active_tab='add' %}
+{% endblock tabs %}
+
+{% block form %}
+    <div class="field-group my-5">
+        <div class="row mb-2">
+          <h5 class="offset-sm-3">General</h5>
+        </div>
+        {% render_field form.name %}
+    </div>
+
+    <div class="field-group my-5">
+        <div class="row mb-2">
+          <h5 class="offset-sm-3">Hardware</h5>
+        </div>
+        {% render_field form.status %}
+        {% render_field form.manufacturer %}
+        <div class="row mb-2 offset-sm-3">
+          <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="nav-item">
+                <button role="tab" type="button" id="device_type_tab" data-bs-toggle="tab" aria-controls="device_type" data-bs-target="#device_type" class="nav-link {% if form.initial.device_type or form.no_hardware_type %}active{% endif %}">
+                  Device
+                </button>
+              </li>
+          </ul>
+        </div>
+        <div class="tab-content p-0 border-0">
+          <div class="tab-pane {% if form.initial.device_type or form.no_hardware_type %}active{% endif %}" id="device_type" role="tabpanel" aria-labeled-by="device_type_tab">
+            {% render_field form.supported_device %}
+          </div>
+        </div>
+    </div>
+
+    {% if form.custom_fields %}
+        <div class="field-group my-5">
+            <div class="row mb-2">
+              <h5 class="offset-sm-3">Custom Fields</h5>
+            </div>
+            {% render_custom_fields form %}
+        </div>
+    {% endif %}
+
+    <div class="field-group mb-5">
+        {% render_field form.comment %}
+    </div>
+
+{% endblock %}

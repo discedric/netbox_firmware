@@ -60,11 +60,18 @@ class Firmware(NetBoxModel):
 
 
 class FirmwareAssignment(NetBoxModel):
-    inventory_item = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     ticket_number = models.CharField(max_length=100, blank=True, null=True)
     patch_date = models.DateField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
+    firmware = models.ForeignKey(
+        to=Firmware,
+        related_name='FirmwareAssignment',
+        on_delete=models.PROTECT,
+        verbose_name='Firmware',
+        null=True,
+        blank=True
+    )
     manufacturer = models.ForeignKey(
         to='dcim.Manufacturer', 
         related_name='FirmwareAssignment',
@@ -86,6 +93,14 @@ class FirmwareAssignment(NetBoxModel):
         related_name='FirmwareAssignment',
         on_delete=models.PROTECT,
         verbose_name='Device',
+        null=True, 
+        blank=True
+    )
+    inventory_item = models.ForeignKey(
+        to='dcim.InventoryItem', 
+        related_name='FirmwareAssignment',
+        on_delete=models.PROTECT,
+        verbose_name='Inventory Item',
         null=True, 
         blank=True
     )

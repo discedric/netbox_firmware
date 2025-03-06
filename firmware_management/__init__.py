@@ -9,6 +9,7 @@ class FirmwareManagerConfig(PluginConfig):
     description = 'Firmware management in NetBox'
     author = 'Cedric Vaneessen'
     author_email = 'cedric.vaneessen@zabun.be'
+    base_url = 'firmware'
     min_version = '4.1.0'
     default_settings = {
         'top_level_menu': True,

@@ -63,53 +63,13 @@ class FirmwareInfoExtension(PluginTemplateExtension):
         return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
 
 
-class FirmwareLocationCounts(PluginTemplateExtension):
-    def right_page(self):
-        object = self.context.get('object')
-        user = self.context['request'].user
-        firmware_qs = Firmware.objects.restrict(user, 'view')
-        count_installed = query_located(firmware_qs, self.location_type, [object.pk], firmware_shown='installed').count()
-        count_stored = query_located(firmware_qs, self.location_type, [object.pk], firmware_shown='stored').count()
-        context = {
-            'firmware_stats': [
-                {
-                    'label': 'Installed',
-                    'filter_field': f'installed_{self.location_type}_id',
-                    'count': count_installed,
-                },
-                {
-                    'label': 'Stored',
-                    'filter_field': f'storage_{self.location_type}_id',
-                    'count': count_stored,
-                },
-                {
-                    'label': 'Total',
-                    'filter_field': f'located_{self.location_type}_id',
-                    'count': count_installed + count_stored,
-                },
-            ],
-        }
-        return self.render('firmware_management/inc/asset_stats_counts.html', extra_context=context)
-
-
 class DeviceFirmwareInfo(FirmwareInfoExtension):
     models = ['dcim.device']
     kind = 'device'
 
-
-class ModuleFirmwareInfo(FirmwareInfoExtension):
-    models = ['dcim.module']
-    kind = 'module'
-
-
 class InventoryItemFirmwareInfo(FirmwareInfoExtension):
     models = ['dcim.inventoryitem']
     kind = 'inventoryitem'
-
-
-class RackFirmwareInfo(FirmwareInfoExtension):
-    models = ['dcim.rack']
-    kind = 'rack'
 
 
 class ManufacturerFirmwareCounts(PluginTemplateExtension):
@@ -121,7 +81,7 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         count_module = Firmware.objects.restrict(user, 'view').filter(module_type__manufacturer=object).count()
         count_inventoryitem = Firmware.objects.restrict(user, 'view').filter(inventoryitem_type__manufacturer=object).count()
         context = {
-            'asset_stats': [
+            'firmware_stats': [
                 {
                     'label': 'Device',
                     'filter_field': 'manufacturer_id',
@@ -149,41 +109,8 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         }
         return self.render('firmware_management/inc/firmware_stats_counts.html', extra_context=context)
 
-
-class SiteFirmwareCounts(FirmwareLocationCounts):
-    models = ['dcim.site']
-    location_type='site'
-
-
-class LocationFirmwareCounts(FirmwareLocationCounts):
-    models = ['dcim.location']
-    location_type='location'
-
-
-class ContactFirmwareCounts(PluginTemplateExtension):
-    models = ['tenancy.contact']
-    def right_page(self):
-        object = self.context.get('object')
-        user = self.context['request'].user
-        context = {
-            'firmware_stats': [
-                {
-                    'label': 'Assigned',
-                    'filter_field': 'contact_id',
-                    'count': Firmware.objects.restrict(user, 'view').filter(contact=object).count(),
-                },
-            ],
-        }
-        return self.render('firmware_management/inc/firmware_stats_counts.html', extra_context=context)
-
-
 template_extensions = (
     DeviceFirmwareInfo,
-    ModuleFirmwareInfo,
     InventoryItemFirmwareInfo,
-    RackFirmwareInfo,
     ManufacturerFirmwareCounts,
-    SiteFirmwareCounts,
-    LocationFirmwareCounts,
-    ContactFirmwareCounts,
 )
