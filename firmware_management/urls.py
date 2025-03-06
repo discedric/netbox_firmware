@@ -7,4 +7,7 @@ urlpatterns = [
     # Firmwares
     path('firmwares/', include(get_model_urls('firmware_management', 'firmware', detail=False))),
     path('firmwares/<int:pk>/', include(get_model_urls('firmware_management', 'firmware'))),
+    # Assignments
+    path('Assignment/', include(get_model_urls('firmware_management','firmwareassignment',detail=False))),
+    path('Assignment/<int:pk>/', include(get_model_urls('firmware_management', 'firmwareassignment'))),
 ]
