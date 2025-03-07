@@ -10,13 +10,8 @@
         {% with object|meta:"model_name" as object_type %}
         {% if object_type == "device" %}
         <a href="{% url 'plugins:firmware_management:firmware_device_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "module" %}
-        <a href="{% url 'plugins:firmware_management:firmware_module_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
         {% elif object_type == "inventoryitem" %}
         <a href="{% url 'plugins:firmware_management:firmware_inventoryitem_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "rack" %}
-        <a href="{% url 'plugins:firmware_management:firmware_rack_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% endif %}
         {% endwith %}
           <i class="mdi mdi-vector-link" aria-hidden="true"></i> Edit Assignment
         </a>

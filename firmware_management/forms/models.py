@@ -1,5 +1,6 @@
 from dcim.models import DeviceType, Manufacturer, InventoryItem, ModuleType, Location, RackType, Site
 from netbox_inventory.models import InventoryItemType
+from django import forms
 from netbox.forms import NetBoxModelForm
 from netbox_inventory.choices import HardwareKindChoices
 from utilities.forms.fields import CommentField, DynamicModelChoiceField, SlugField
@@ -14,22 +15,38 @@ __all__ = (
 )
 
 class FirmwareForm(NetBoxModelForm):
+    name = forms.CharField()
+    file_name = forms.CharField(required=False, label='File Name')
     manufacturer = DynamicModelChoiceField(
         queryset=Manufacturer.objects.all(),
         required=True,
-        label='Manufacturer'
+        label='Manufacturer',
+        initial_params={
+            'device_types': '$device_type',
+            'inventoryitem_types': '$inventory_item_type',
+        },
     )
-    supported_device = DynamicModelChoiceField(
+    device_type = DynamicModelChoiceField(
         queryset=DeviceType.objects.all(),
         required=False,
-        label='Supported Device Type'
+        label='Supported Device Type',
+        initial_params={
+            'manufacturer_id': '$manufacturer',
+        },
     )
-    
+    inventory_item_type = DynamicModelChoiceField(
+        queryset=InventoryItemType.objects.all(),
+        required=False,
+        initial_params={
+           'manufacturer_id': '$manufacturer',
+        },
+        label='Inventory Item Type',
+    )
     comment = CommentField()
     
     fieldsets=(
-        FieldSet('name','comment',name='General'),
-        FieldSet('manufacturer','supported_device','status',name='Hardware'),
+        FieldSet('name', 'file_name','status','comment',name='General'),
+        FieldSet('manufacturer','device_type','inventory_item_type',name='Hardware'),
     )
 
     class Meta:
@@ -37,14 +54,14 @@ class FirmwareForm(NetBoxModelForm):
         fields = [
             'name',
             'manufacturer',
-            'supported_device',
+            'device_type',
+            'inventory_item_type',
             'status',
-            'comment',
         ]
-
-    def clean(self):
-        cleaned_data = super().clean()
-        return cleaned_data
+        widgets = {
+            'comment': CommentField.widget,
+            'file_name': forms.TextInput(attrs={'size': 50}),
+        }
     
 class FirmwareAssignmentForm(NetBoxModelForm):
     firmware = DynamicModelChoiceField(

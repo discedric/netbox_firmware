@@ -14,13 +14,11 @@ class Firmware(NetBoxModel):
     ]
 
     name = models.CharField(
+        verbose_name='Name',
         max_length=255
     )
-    description = models.TextField(
-        blank=True, 
-        null=True
-    )
     file_name = models.CharField(
+        verbose_name='File Name',
         max_length=255
     )
     status = models.CharField(
@@ -50,13 +48,14 @@ class Firmware(NetBoxModel):
     )
     inventory_item_type = models.ForeignKey(
         InventoryItemType, 
-        on_delete=models.SET_NULL, 
+        on_delete=models.PROTECT, 
         null=True, 
-        blank=True
+        blank=True,
+        verbose_name='Inventory Item Type',
     )
 
     def __str__(self):
-        return f'{self.name} ({self.manufacturer.name})'
+        return f'{self.name} ({self.manufacturer})'
 
 
 class FirmwareAssignment(NetBoxModel):

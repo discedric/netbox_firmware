@@ -64,12 +64,12 @@ class FirmwareInfoExtension(PluginTemplateExtension):
 
 
 class DeviceFirmwareInfo(FirmwareInfoExtension):
-    models = ['dcim.device']
+    models = ['name']
     kind = 'device'
 
 class InventoryItemFirmwareInfo(FirmwareInfoExtension):
-    models = ['dcim.inventoryitem']
-    kind = 'inventoryitem'
+    models = ['dcim.inventory_item']
+    kind = 'inventory_item'
 
 
 class ManufacturerFirmwareCounts(PluginTemplateExtension):
@@ -78,8 +78,7 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         object = self.context.get('object')
         user = self.context['request'].user
         count_device = Firmware.objects.restrict(user, 'view').filter(device_type__manufacturer=object).count()
-        count_module = Firmware.objects.restrict(user, 'view').filter(module_type__manufacturer=object).count()
-        count_inventoryitem = Firmware.objects.restrict(user, 'view').filter(inventoryitem_type__manufacturer=object).count()
+        count_inventory_item = Firmware.objects.restrict(user, 'view').filter(inventory_item_type__manufacturer=object).count()
         context = {
             'firmware_stats': [
                 {
@@ -89,21 +88,15 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
                     'count': count_device,
                 },
                 {
-                    'label': 'Module',
-                    'filter_field': 'manufacturer_id',
-                    'extra_filter': '&kind=module',
-                    'count': count_module,
-                },
-                {
                     'label': 'Inventory Item',
                     'filter_field': 'manufacturer_id',
-                    'extra_filter': '&kind=inventoryitem',
-                    'count': count_inventoryitem,
+                    'extra_filter': '&kind=inventory_item',
+                    'count': count_inventory_item,
                 },
                 {
                     'label': 'Total',
                     'filter_field': 'manufacturer_id',
-                    'count': count_device + count_module + count_inventoryitem,
+                    'count': count_device + count_inventory_item,
                 },
             ],
         }
