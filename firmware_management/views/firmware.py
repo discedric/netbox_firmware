@@ -40,3 +40,10 @@ class FirmwareEditView(generic.ObjectEditView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareForm
     template_name = 'firmware_management/firmware_edit.html'
+
+@register_model_view(models.Firmware,'delete')
+class FirmwareDeleteView(generic.ObjectDeleteView):
+    queryset = models.Firmware.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

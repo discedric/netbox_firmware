@@ -54,6 +54,18 @@ class Firmware(NetBoxModel):
         verbose_name='Inventory Item Type',
     )
 
+    class Meta:
+        ordering = ['name']
+        unique_together = ('name','manufacturer', 'device_type', 'inventory_item_type')
+        verbose_name='Firmware'
+        verbose_name_plural='Firmware'
+        constraints=[
+            models.CheckConstraint(
+                check=models.Q(manufacturer__isnull=False) | models.Q(manufacturer__isnull=True, device_type__isnull=True, inventory_item_type__isnull=True),
+                name='either_manufacturer_or_device_type_or_inventory_item_type_required'
+            )
+        ]
+
     def __str__(self):
         return f'{self.name} ({self.manufacturer})'
 
