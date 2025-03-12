@@ -23,4 +23,8 @@ class FirmwareType(NetBoxObjectType):
     inventoryitem: (
         Annotated["InventoryItemType", strawberry.lazy("dcim.graphql.types")] | None
     )
+
+@strawberry_django.type(FirmwareAssignment, fields='__all__', filters=FirmwareAssignmentFilter)
+class FirmwareAssignmentType(NetBoxObjectType):
+    firmware: Annotated["FirmwareType", strawberry.lazy("firmware_management.graphql.types")]
     

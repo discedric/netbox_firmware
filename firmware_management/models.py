@@ -2,38 +2,45 @@ from django.db import models
 from django.forms import ValidationError
 from django.urls import reverse
 
+from .choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, NestedGroupModel
 from netbox_inventory.models import InventoryItemType
 
 class Firmware(NetBoxModel):
-    STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('deprecated', 'Deprecated'),
-        ('beta', 'Beta'),
-        ('archived', 'Archived'),
-    ]
-
+    #
+    # fields that identify firmware
+    #
+    
     name = models.CharField(
+        help_text='Name of the firmware',
+        max_length=255,
         verbose_name='Name',
-        max_length=255
     )
     file_name = models.CharField(
+        help_text='File name of the firmware',
+        max_length=255,
         verbose_name='File Name',
-        max_length=255
     )
     status = models.CharField(
-        max_length=50, 
-        choices=STATUS_CHOICES, 
-        default='active'
+        max_length=50,
+        choices=FirmwareStatusChoices.CHOICES,
+        default='active',
+        help_text='Firmware lifecycle status',
     )
-    comment = models.TextField(
-        blank=True, 
-        null=True
+    comments = models.TextField(
+        blank=True,
+        null=True,
+        help_text='Additional comments about the firmware',
     )
+    
+    #
+    # hardware type fields
+    #
+    
     manufacturer = models.ForeignKey(
         to='dcim.Manufacturer',
         on_delete=models.PROTECT,
-        related_name='Firmware',
+        related_name='firmwares',
         blank=True,
         null=True,
         verbose_name='Manufacturer',
@@ -41,25 +48,57 @@ class Firmware(NetBoxModel):
     device_type = models.ForeignKey(
         to='dcim.DeviceType',
         on_delete=models.PROTECT,
-        related_name='Firmware',
+        related_name='firmwares',
         blank=True,
         null=True,
         verbose_name='Device Type',
     )
     inventory_item_type = models.ForeignKey(
-        InventoryItemType, 
-        on_delete=models.PROTECT, 
-        null=True, 
+        to='netbox_inventory.InventoryItemType',
+        on_delete=models.PROTECT,
+        related_name='firmwares',
         blank=True,
+        null=True,
         verbose_name='Inventory Item Type',
     )
+    
+    clone_fields = [
+        'name', 'file_name', 'status', 'device_type',
+        'inventory_item_type', 'comments'
+    ]
 
+    @property
+    def kind(self):
+        if self.device_type_id:
+            return 'device'
+        elif self.inventory_item_type_id:
+            return 'inventoryitem'
+        else:
+            return None
+        
+    def get_kind_display(self):
+        return dict(HardwareKindChoices)[self.kind]
+    
+    @property
+    def hardware_type(self):
+        return self.device_type or self.inventory_item_type or None
+    
+    def clean(self):
+        return super().clean()
+
+    def get_absolute_url(self):
+        return reverse('plugins:firmware_management:firmware', args=[self.pk])
+    
+    @classmethod
+    def get_fields(cls):
+        return {field.name: field for field in cls._meta.get_fields()}
+    
     class Meta:
-        ordering = ['name']
-        unique_together = ('name','manufacturer', 'device_type', 'inventory_item_type')
-        verbose_name='Firmware'
-        verbose_name_plural='Firmware'
-        constraints=[
+        ordering = ('name','device_type', 'manufacturer', 'inventory_item_type',)
+        unique_together = ('name', 'manufacturer', 'device_type', 'inventory_item_type')
+        verbose_name = 'Firmware'
+        verbose_name_plural = 'Firmware'
+        constraints = [
             models.CheckConstraint(
                 check=models.Q(manufacturer__isnull=False) | models.Q(manufacturer__isnull=True, device_type__isnull=True, inventory_item_type__isnull=True),
                 name='either_manufacturer_or_device_type_or_inventory_item_type_required'

@@ -19,7 +19,5 @@ class FirmwareStatusChoices(ChoiceSet):
 class HardwareKindChoices(ChoiceSet):
     CHOICES = [
         ('device', 'Device'),
-        ('module', 'Module'),
         ('inventoryitem', 'Inventory Item'),
-        ('rack', 'Rack'),
     ]

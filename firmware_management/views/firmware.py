@@ -22,8 +22,12 @@ class FirmwareView(generic.ObjectView):
 
     def get_extra_context(self, request, instance):
         context = super().get_extra_context(request, instance)
-        context['warranty_progressbar'] = Template(WARRANTY_PROGRESSBAR)
         return context
+
+@register_model_view(models.Firmware, 'changelog')
+class FirmwareChangeLogView(generic.ObjectChangeLogView):
+    """View for displaying the changelog of a Firmware object"""
+    model = models.Firmware.objects.all()
 
 @register_model_view(models.Firmware, 'list', path='', detail=False)
 class FirmwareListView(generic.ObjectListView):

@@ -42,10 +42,10 @@ class FirmwareForm(NetBoxModelForm):
         },
         label='Inventory Item Type',
     )
-    comment = CommentField()
+    comments = CommentField()
     
     fieldsets=(
-        FieldSet('name', 'file_name','status','comment',name='General'),
+        FieldSet('name', 'file_name','status','comments',name='General'),
         FieldSet('manufacturer','device_type','inventory_item_type',name='Hardware'),
     )
 
@@ -53,15 +53,13 @@ class FirmwareForm(NetBoxModelForm):
         model = Firmware
         fields = [
             'name',
+            'file_name',
             'manufacturer',
             'device_type',
             'inventory_item_type',
             'status',
+            'comments',
         ]
-        widgets = {
-            'comment': CommentField.widget,
-            'file_name': forms.TextInput(attrs={'size': 50}),
-        }
     
 class FirmwareAssignmentForm(NetBoxModelForm):
     firmware = DynamicModelChoiceField(

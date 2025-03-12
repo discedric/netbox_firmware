@@ -1,0 +1,71 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load humanize %}
+{% load plugins %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block breadcrumbs %}
+{% if object.kind != None %}
+  {{ block.super }}
+  <li class="breadcrumb-item">
+    <a href="{% url 'plugins:firmware_management:firmware_list' %}?{{ object.kind }}_type_id={{ object.hardware_type.pk }}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a>
+  </li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Firmware</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Status</th>
+            <td>{% badge object.get_status_display bg_color=object.get_status_color %}</td>
+          </tr>
+          <tr>
+            <th scope="row">File name</th>
+            <td>{{ object.file_name|placeholder }}</td>
+          </tr>
+          {% if object.kind == 'device' %}
+            <tr>
+              <th scope="row">{{ object.get_kind_display }} Type</th>
+              <td><a href="{{object.hardware_type.get_absolute_url}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
+            </tr>
+          {% elif object.kind == 'inventoryitem' %}
+          <tr>
+            <th scope="row">Inventory Item Group</th>
+            <td>
+              {% if object.inventoryitem_type.inventoryitem_group %}
+                {% for group in object.inventoryitem_type.inventoryitem_group.get_ancestors %}
+                  {{ group|linkify }} /
+                {% endfor %}
+                {{ object.inventoryitem_type.inventoryitem_group|linkify }}
+              {% else %}
+                {{ ''|placeholder }}
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+        </table>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+      {% plugin_left_page object %}
+    </div>
+    <div class="col col-md-6">
+      {% include 'inc/panels/comments.html' %}
+      {% include 'inc/panels/image_attachments.html' %}
+      {% plugin_right_page object %}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col col-md-12">
+      {% plugin_full_width_page object %}
+    </div>
+  </div>
+{% endblock content %}

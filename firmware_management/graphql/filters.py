@@ -10,11 +10,11 @@ __all__ = (
 )
 
 @strawberry_django.filter(models.Firmware, lookups=True)
-@autotype_decorator(models.Firmware)
+@autotype_decorator(filtersets.FirmwareFilterSet)
 class FirmwareFilter(BaseFilterMixin, filtersets.FirmwareFilterSet):
     pass
 
 @strawberry_django.filter(models.FirmwareAssignment, lookups=True)
-@autotype_decorator(models.FirmwareAssignment)
+@autotype_decorator(filtersets.FirmwareAssignmentFilterSet)
 class FirmwareAssignmentFilter(BaseFilterMixin, filtersets.FirmwareAssignmentFilterSet):
     pass
