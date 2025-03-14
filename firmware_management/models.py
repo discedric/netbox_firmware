@@ -26,6 +26,8 @@ class Firmware(NetBoxModel):
     )
     file_name = models.CharField(
         help_text='File name of the firmware',
+        blank=True,
+        null=True,
         max_length=255,
         verbose_name='File Name',
     )
@@ -55,7 +57,7 @@ class Firmware(NetBoxModel):
     manufacturer = models.ForeignKey(
         to=Manufacturer,
         on_delete=models.PROTECT,
-        related_name='firmwares',
+        related_name='firmware',
         blank=True,
         null=True,
         verbose_name='Manufacturer',
@@ -63,7 +65,7 @@ class Firmware(NetBoxModel):
     device_type = models.ForeignKey(
         to=DeviceType,
         on_delete=models.PROTECT,
-        related_name='firmwares',
+        related_name='firmware',
         blank=True,
         null=True,
         verbose_name='Device Type',
@@ -71,7 +73,7 @@ class Firmware(NetBoxModel):
     inventory_item_type = models.ForeignKey(
         to=InventoryItemType,
         on_delete=models.PROTECT,
-        related_name='firmwares',
+        related_name='firmware',
         blank=True,
         null=True,
         verbose_name='Inventory Item Type',
@@ -79,7 +81,7 @@ class Firmware(NetBoxModel):
     module_type = models.ForeignKey(
         to=ModuleType,
         on_delete=models.PROTECT,
-        related_name='firmwares',
+        related_name='firmware',
         blank=True,
         null=True,
         verbose_name='Module Type',
@@ -120,13 +122,13 @@ class Firmware(NetBoxModel):
     
     class Meta:
         ordering = ('name','device_type', 'module_type', 'manufacturer', 'inventory_item_type',)
-        unique_together = ('name', 'manufacturer', 'device_type', 'inventory_item_type')
+        unique_together = ('name', 'manufacturer', 'device_type', 'module_type', 'inventory_item_type')
         verbose_name = 'Firmware'
         verbose_name_plural = 'Firmware'
         constraints = [
             models.CheckConstraint(
-                check=models.Q(manufacturer__isnull=False) | models.Q(manufacturer__isnull=True, device_type__isnull=True, inventory_item_type__isnull=True),
-                name='either_manufacturer_or_device_type_or_inventory_item_type_required'
+                check=models.Q(manufacturer__isnull=False) | models.Q(manufacturer__isnull=True, device_type__isnull=True, module_type__isnull=True, inventory_item_type__isnull=True),
+                name='either_manufacturer_or_device_type_or_inventory_item_type_or_module_type_required'
             )
         ]
 
@@ -135,11 +137,6 @@ class Firmware(NetBoxModel):
 
 
 class FirmwareAssignment(NetBoxModel):
-    """_summary_
-
-    toe te voegen:
-    - keuze tussen device, module of inventory item
-    """
     description = models.TextField(blank=True, null=True)
     ticket_number = models.CharField(max_length=100, blank=True, null=True)
     patch_date = models.DateField(blank=True, null=True)

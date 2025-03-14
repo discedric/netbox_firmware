@@ -7,6 +7,12 @@ firmware_buttons = [
         icon_class='mdi mdi-plus-thick',
         permissions=["firmware_management.add_firmware"],
     ),
+    PluginMenuButton(
+        link='plugins:firmware_management:firmware_bulk_import',
+        title='Import',
+        icon_class='mdi mdi-upload',
+        permissions=["firmware_management.import_firmware"],
+    ),
 ]
 firmware_assignments_buttons = [
     PluginMenuButton(
@@ -14,6 +20,12 @@ firmware_assignments_buttons = [
         title='Add',
         icon_class='mdi mdi-plus-thick',
         permissions=["firmware_management.add_firmware_assignment"],
+    ),
+    PluginMenuButton(
+        link='plugins:firmware_management:firmwareassignment_bulk_import',
+        title='Import',
+        icon_class='mdi mdi-upload',
+        permissions=["firmware_management.aimport_firmware_assignment"],
     ),
 ]
 firmware_items = (

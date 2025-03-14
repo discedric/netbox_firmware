@@ -13,6 +13,7 @@ from .. import models
 __all__ = (
     'FirmwareAssignmentView',
     'FirmwareAssignmentListView',
+    'FirmwareAssignmentChangeLogView',
     'FirmwareAssignmentBulkCreateView'
 )
 
@@ -33,42 +34,19 @@ class FirmwareAssignmentListView(generic.ObjectListView):
     )
     table = tables.FirmwareAssignmentTable
     
-@register_model_view(models.FirmwareAssignment, 'bulk_add', path='bulk-add', detail=False)
-class FirmwareAssignmentBulkCreateView(generic.BulkCreateView):
-    queryset = models.FirmwareAssignment.objects.all()
-    form = forms.FirmwareAssignmentBulkAddForm
-    model_form = forms.FirmwareAssignmentBulkAddModelForm
-    pattern_target = None
-    template_name = 'firmware_management/firmware_assignment_bulk_add.html'
-
-    def _create_objects(self, form, request):
-        new_objects = []
-        for _ in range(form.cleaned_data['count']):
-            # Reinstantiate the model form each time to avoid overwriting the same instance. Use a mutable
-            # copy of the POST QueryDict so that we can update the target field value.
-            model_form = self.model_form(request.POST.copy())
-            del(model_form.data['count'])
-
-            # Validate each new object independently.
-            if model_form.is_valid():
-                obj = model_form.save()
-                new_objects.append(obj)
-            else:
-                # Raise an IntegrityError to break the for loop and abort the transaction.
-                raise IntegrityError()
-
-        return new_objects
-    
 @register_model_view(models.FirmwareAssignment, 'edit')
 @register_model_view(models.FirmwareAssignment, 'add', detail=False)
 class FirmwareAssignmentEditView(generic.ObjectEditView):
     queryset = models.FirmwareAssignment.objects.all()
     form = forms.FirmwareAssignmentForm
 
-@register_model_view(models.FirmwareAssignment, 'changelog')
 class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
     """View for displaying the changelog of a FirmwareAssignment object"""
-    model = models.FirmwareAssignment.objects.all()
+    queryset = models.FirmwareAssignment.objects.all()
+    model = models.FirmwareAssignment
+
+    def get(self, request, pk):
+        return super().get(request, pk=pk, model=self.model)
 
 @register_model_view(models.FirmwareAssignment,'delete')
 class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
@@ -76,3 +54,12 @@ class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+@register_model_view(models.FirmwareAssignment, 'bulk_import', detail=False)
+class FirmwareBulkImportView(generic.BulkImportView):
+    queryset = models.FirmwareAssignment.objects.all()
+    model_form = forms.FirmwareImportForm
+
+    def save_object(self, object_form, request):
+        obj = object_form.save()
+        return obj

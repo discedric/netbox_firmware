@@ -13,7 +13,8 @@ from ..template_content import WARRANTY_PROGRESSBAR
 
 __all__ = (
     'FirmwareView',
-    'FirmwareListView'
+    'FirmwareListView',
+    'FirmwareChangeLogView'
 )
 
 @register_model_view(models.Firmware)
@@ -24,10 +25,13 @@ class FirmwareView(generic.ObjectView):
         context = super().get_extra_context(request, instance)
         return context
 
-@register_model_view(models.Firmware, 'changelog')
 class FirmwareChangeLogView(generic.ObjectChangeLogView):
     """View for displaying the changelog of a Firmware object"""
-    model = models.Firmware.objects.all()
+    queryset = models.Firmware.objects.all()
+    model = models.Firmware
+    
+    def get(self, request, pk):
+        return super().get(request, pk=pk, model=self.model)
 
 @register_model_view(models.Firmware, 'list', path='', detail=False)
 class FirmwareListView(generic.ObjectListView):
@@ -44,7 +48,6 @@ class FirmwareListView(generic.ObjectListView):
 class FirmwareEditView(generic.ObjectEditView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareForm
-    template_name = 'firmware_management/firmware_edit.html'
     
 
 @register_model_view(models.Firmware,'delete')
@@ -53,3 +56,12 @@ class FirmwareDeleteView(generic.ObjectDeleteView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+@register_model_view(models.Firmware, 'bulk_import', detail=False)
+class FirmwareBulkImportView(generic.BulkImportView):
+    queryset = models.Firmware.objects.all()
+    model_form = forms.FirmwareImportForm
+
+    def save_object(self, object_form, request):
+        obj = object_form.save()
+        return obj
