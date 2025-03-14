@@ -13,16 +13,16 @@
           <h5 class="offset-sm-3">General</h5>
         </div>
         {% render_field form.name %}
+        {% render_field form.status %}
         {% render_field form.file_name %}
+        {% render_field form.description %}
     </div>
 
     <div class="field-group my-5">
         <div class="row mb-2">
           <h5 class="offset-sm-3">Hardware</h5>
         </div>
-        {% render_field form.status %}
         {% render_field form.manufacturer %}
-        {% render_field form.inventory_item_type %}
         <div class="row mb-2 offset-sm-3">
           <ul class="nav nav-pills" role="tablist">
             <li role="presentation" class="nav-item">
@@ -30,11 +30,27 @@
                   Device
                 </button>
               </li>
+            <li role="presentation" class="nav-item">
+                <button role="tab" type="button" id="module_type_tab" data-bs-toggle="tab" aria-controls="module_type" data-bs-target="#module_type" class="nav-link {% if form.initial.module_type %}active{% endif %}">
+                  Module
+                </button>
+              </li>
+            <li role="presentation" class="nav-item">
+                <button role="tab" type="button" id="inventory_item_type_tab" data-bs-toggle="tab" aria-controls="inventory_item_type" data-bs-target="#inventory_item_type" class="nav-link {% if form.initial.inventory_item_type %}active{% endif %}">
+                  Inventory Item
+                </button>
+              </li>
           </ul>
         </div>
         <div class="tab-content p-0 border-0">
           <div class="tab-pane {% if form.initial.device_type or form.no_hardware_type %}active{% endif %}" id="device_type" role="tabpanel" aria-labeled-by="device_type_tab">
             {% render_field form.device_type %}
+          </div>
+          <div class="tab-pane {% if form.initial.module_type %}active{% endif %}" id="module_type" role="tabpanel" aria-labeled-by="module_type_tab">
+            {% render_field form.module_type %}
+          </div>
+          <div class="tab-pane {% if form.initial.inventory_item_type %}active{% endif %}" id="inventory_item_type" role="tabpanel" aria-labeled-by="inventory_item_type_tab">
+            {% render_field form.inventory_item_type %}
           </div>
         </div>
     </div>

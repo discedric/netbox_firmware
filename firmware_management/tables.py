@@ -27,23 +27,28 @@ class FirmwareTable(NetBoxTable):
         accessor='device_type',
         linkify=True,
         )
+    module_type = tables.Column(
+        accessor='module_type',
+        linkify=True,
+        )
     inventory_item_type = tables.Column(accessor='inventory_item_type')
 
     class Meta:
         model = Firmware
-        fields = ('name', 'file_name', 'comments', 'status', 'manufacturer', 'device_type', 'inventory_item_type')
+        fields = ('name', 'file_name', 'comments', 'status', 'manufacturer', 'module_type', 'device_type', 'inventory_item_type')
         attrs = {"class": "table table-striped table-bordered"}
 
 class FirmwareAssignmentTable(NetBoxTable):
     description = tables.Column()
     ticket_number = tables.Column()
     patch_date = tables.Column()
-    firmware = tables.Column(accessor='firmware.name',verbose_name='Firmware')
-    manufacturer = tables.Column(accessor='manufacturer.name', verbose_name="Manufacturer")
-    device_type = tables.Column(accessor='device_type.name')
-    device = tables.Column(accessor='device.name')
-    inventory_item = tables.Column(accessor='inventory_item.name', verbose_name='Inventory Item')
-    inventory_item_type = tables.Column(accessor='inventory_item_type.name')
+    firmware = tables.Column(accessor='firmware.name',verbose_name='Firmware',linkify=True,)
+    manufacturer = tables.Column(accessor='manufacturer.name', verbose_name="Manufacturer",linkify=True,)
+    device_type = tables.Column(accessor='device_type.name',verbose_name="Device Type",linkify=True,)
+    module_type = tables.Column(accessor='module_type',linkify=True,)
+    device = tables.Column(accessor='device.name',verbose_name="Device",linkify=True,)
+    inventory_item = tables.Column(accessor='inventory_item.name', verbose_name='Inventory Item',linkify=True,)
+    inventory_item_type = tables.Column(accessor='inventory_item_type.name',linkify=True,)
 
     class Meta:
         model = FirmwareAssignment

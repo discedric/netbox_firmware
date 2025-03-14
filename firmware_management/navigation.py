@@ -19,7 +19,7 @@ firmware_assignments_buttons = [
 firmware_items = (
     PluginMenuItem(
         link='plugins:firmware_management:firmware_list',
-        link_text='Firmware',
+        link_text='Firmware type',
         permissions=["firmware_management.view_firmware"],
         buttons= firmware_buttons,
     ),

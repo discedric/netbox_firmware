@@ -3,14 +3,22 @@ from django.forms import ValidationError
 from django.urls import reverse
 
 from .choices import HardwareKindChoices, FirmwareStatusChoices
-from netbox.models import NetBoxModel, NestedGroupModel
+from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
 from netbox_inventory.models import InventoryItemType
+from dcim.models import Manufacturer, DeviceType, ModuleType, InventoryItem, Device, Module
+from dcim.choices import DeviceStatusChoices
 
 class Firmware(NetBoxModel):
     #
     # fields that identify firmware
     #
-    
+    """_summary_
+        toe te voegen:
+        - (als kan) hyperlinks
+        - (als kan) file upload
+        
+        - bulkimport
+    """
     name = models.CharField(
         help_text='Name of the firmware',
         max_length=255,
@@ -23,9 +31,16 @@ class Firmware(NetBoxModel):
     )
     status = models.CharField(
         max_length=50,
-        choices=FirmwareStatusChoices.CHOICES,
-        default='active',
+        choices= DeviceStatusChoices,
+        default= DeviceStatusChoices.STATUS_ACTIVE,
         help_text='Firmware lifecycle status',
+    )
+    description = models.CharField(
+        help_text='Description of the firmware',
+        max_length=255,
+        verbose_name='Description',
+        null=True,
+        blank=True
     )
     comments = models.TextField(
         blank=True,
@@ -38,7 +53,7 @@ class Firmware(NetBoxModel):
     #
     
     manufacturer = models.ForeignKey(
-        to='dcim.Manufacturer',
+        to=Manufacturer,
         on_delete=models.PROTECT,
         related_name='firmwares',
         blank=True,
@@ -46,7 +61,7 @@ class Firmware(NetBoxModel):
         verbose_name='Manufacturer',
     )
     device_type = models.ForeignKey(
-        to='dcim.DeviceType',
+        to=DeviceType,
         on_delete=models.PROTECT,
         related_name='firmwares',
         blank=True,
@@ -54,17 +69,25 @@ class Firmware(NetBoxModel):
         verbose_name='Device Type',
     )
     inventory_item_type = models.ForeignKey(
-        to='netbox_inventory.InventoryItemType',
+        to=InventoryItemType,
         on_delete=models.PROTECT,
         related_name='firmwares',
         blank=True,
         null=True,
         verbose_name='Inventory Item Type',
     )
+    module_type = models.ForeignKey(
+        to=ModuleType,
+        on_delete=models.PROTECT,
+        related_name='firmwares',
+        blank=True,
+        null=True,
+        verbose_name='Module Type',
+    )
     
     clone_fields = [
-        'name', 'file_name', 'status', 'device_type',
-        'inventory_item_type', 'comments'
+        'name','description', 'file_name', 'status', 'device_type',
+        'inventory_item_type', 'comments', 'module_type'
     ]
 
     @property
@@ -73,6 +96,8 @@ class Firmware(NetBoxModel):
             return 'device'
         elif self.inventory_item_type_id:
             return 'inventoryitem'
+        elif self.module_type_id:
+            return 'module'
         else:
             return None
         
@@ -81,7 +106,7 @@ class Firmware(NetBoxModel):
     
     @property
     def hardware_type(self):
-        return self.device_type or self.inventory_item_type or None
+        return self.device_type or self.inventory_item_type or self.module_type or None
     
     def clean(self):
         return super().clean()
@@ -94,7 +119,7 @@ class Firmware(NetBoxModel):
         return {field.name: field for field in cls._meta.get_fields()}
     
     class Meta:
-        ordering = ('name','device_type', 'manufacturer', 'inventory_item_type',)
+        ordering = ('name','device_type', 'module_type', 'manufacturer', 'inventory_item_type',)
         unique_together = ('name', 'manufacturer', 'device_type', 'inventory_item_type')
         verbose_name = 'Firmware'
         verbose_name_plural = 'Firmware'
@@ -110,6 +135,11 @@ class Firmware(NetBoxModel):
 
 
 class FirmwareAssignment(NetBoxModel):
+    """_summary_
+
+    toe te voegen:
+    - keuze tussen device, module of inventory item
+    """
     description = models.TextField(blank=True, null=True)
     ticket_number = models.CharField(max_length=100, blank=True, null=True)
     patch_date = models.DateField(blank=True, null=True)
@@ -123,23 +153,23 @@ class FirmwareAssignment(NetBoxModel):
         blank=True
     )
     manufacturer = models.ForeignKey(
-        to='dcim.Manufacturer', 
+        to=Manufacturer, 
         related_name='FirmwareAssignment',
         on_delete=models.PROTECT,
         verbose_name='Manufacturer',
         null=True, 
-        blank=True
+        blank=True,
     )
-    device_type = models.ForeignKey(
-        to='dcim.DeviceType',
+    module = models.ForeignKey(
+        to=Module,
         related_name='FirmwareAssignment',
         on_delete=models.PROTECT,
-        verbose_name='Device Type',
-        null=True, 
+        verbose_name='Module',
+        null=True,
         blank=True
     )
     device = models.ForeignKey(
-        to='dcim.Device', 
+        to=Device, 
         related_name='FirmwareAssignment',
         on_delete=models.PROTECT,
         verbose_name='Device',
@@ -147,10 +177,28 @@ class FirmwareAssignment(NetBoxModel):
         blank=True
     )
     inventory_item = models.ForeignKey(
-        to='dcim.InventoryItem', 
+        to=InventoryItem, 
         related_name='FirmwareAssignment',
         on_delete=models.PROTECT,
         verbose_name='Inventory Item',
+        null=True, 
+        blank=True
+    )
+    
+    module_type = models.ForeignKey(
+        to=ModuleType,
+        on_delete=models.PROTECT,
+        related_name='FirmwareAssignment',
+        blank=True,
+        null=True,
+        verbose_name='Module Type',
+    )
+    device_type = models.ForeignKey(
+        to=DeviceType,
+        related_name='FirmwareAssignment',
+        on_delete=models.PROTECT,
+        verbose_name='Device Type',
+        
         null=True, 
         blank=True
     )

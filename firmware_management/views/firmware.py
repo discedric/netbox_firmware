@@ -34,6 +34,7 @@ class FirmwareListView(generic.ObjectListView):
     queryset = models.Firmware.objects.prefetch_related(
         'manufacturer',
         'device_type',
+        'module_type',
         'inventory_item_type'
     )
     table = tables.FirmwareTable
@@ -44,6 +45,7 @@ class FirmwareEditView(generic.ObjectEditView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareForm
     template_name = 'firmware_management/firmware_edit.html'
+    
 
 @register_model_view(models.Firmware,'delete')
 class FirmwareDeleteView(generic.ObjectDeleteView):

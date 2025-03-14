@@ -64,4 +64,15 @@ class FirmwareAssignmentBulkCreateView(generic.BulkCreateView):
 class FirmwareAssignmentEditView(generic.ObjectEditView):
     queryset = models.FirmwareAssignment.objects.all()
     form = forms.FirmwareAssignmentForm
-    template_name = 'firmware_management/firmware_assignment_edit.html'
+
+@register_model_view(models.FirmwareAssignment, 'changelog')
+class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
+    """View for displaying the changelog of a FirmwareAssignment object"""
+    model = models.FirmwareAssignment.objects.all()
+
+@register_model_view(models.FirmwareAssignment,'delete')
+class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
+    queryset = models.FirmwareAssignment.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

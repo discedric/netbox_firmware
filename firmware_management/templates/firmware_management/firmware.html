@@ -32,34 +32,50 @@
             <th scope="row">File name</th>
             <td>{{ object.file_name|placeholder }}</td>
           </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h5 class="card-header">Hardware</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Hardware</th>
+            <td><a href="{{object.manufacturer.get_absolute_url}}">{{ object.manufacturer|placeholder }}</a></td>
+          </tr>
+
           {% if object.kind == 'device' %}
             <tr>
               <th scope="row">{{ object.get_kind_display }} Type</th>
               <td><a href="{{object.hardware_type.get_absolute_url}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
             </tr>
           {% elif object.kind == 'inventoryitem' %}
-          <tr>
-            <th scope="row">Inventory Item Group</th>
-            <td>
-              {% if object.inventoryitem_type.inventoryitem_group %}
-                {% for group in object.inventoryitem_type.inventoryitem_group.get_ancestors %}
-                  {{ group|linkify }} /
-                {% endfor %}
-                {{ object.inventoryitem_type.inventoryitem_group|linkify }}
-              {% else %}
-                {{ ''|placeholder }}
-              {% endif %}
-            </td>
-          </tr>
+            <tr>
+              <th scope="row">Inventory Item Group</th>
+              <td>
+                {% if object.inventoryitem_type.inventoryitem_group %}
+                  {% for group in object.inventoryitem_type.inventoryitem_group.get_ancestors %}
+                    {{ group|linkify }} /
+                  {% endfor %}
+                  {{ object.inventoryitem_type.inventoryitem_group|linkify }}
+                {% else %}
+                  {{ ''|placeholder }}
+                {% endif %}
+              </td>
+            </tr>
+          {% elif object.kind == None %}
+            <tr>
+              <th scope="row">any Type</th>
+              <td>{{ ''|placeholder }}</td>
+            </tr>
           {% endif %}
         </table>
       </div>
+
       {% include 'inc/panels/custom_fields.html' %}
       {% plugin_left_page object %}
     </div>
     <div class="col col-md-6">
       {% include 'inc/panels/comments.html' %}
-      {% include 'inc/panels/image_attachments.html' %}
       {% plugin_right_page object %}
     </div>
   </div>
