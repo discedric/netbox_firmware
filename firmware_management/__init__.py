@@ -1,4 +1,6 @@
+import os
 from netbox.plugins import PluginConfig
+from django.conf import settings
 from django.urls import include, path
 from .version import __version__
 
@@ -22,6 +24,9 @@ class FirmwareManagerConfig(PluginConfig):
         self.urlpatterns = [
             path('plugins/firmware_management', include('firmware_management.urls'))
         ]
+        firmware_dir = os.path.join(settings.MEDIA_ROOT, 'firmware-files')
+        if not os.path.exists(firmware_dir):
+            os.makedirs(firmware_dir)
         super().ready()
 
 config = FirmwareManagerConfig

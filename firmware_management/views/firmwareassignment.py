@@ -58,7 +58,7 @@ class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
 @register_model_view(models.FirmwareAssignment, 'bulk_import', detail=False)
 class FirmwareBulkImportView(generic.BulkImportView):
     queryset = models.FirmwareAssignment.objects.all()
-    model_form = forms.FirmwareImportForm
+    model_form = forms.FirmwareAssignmentImportForm
 
     def save_object(self, object_form, request):
         obj = object_form.save()

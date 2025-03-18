@@ -3,9 +3,9 @@ from netbox_inventory.models import InventoryItemType
 from django import forms
 from netbox.forms import NetBoxModelForm
 from netbox_inventory.choices import HardwareKindChoices
-from utilities.forms.fields import CommentField, DynamicModelChoiceField, SlugField
+from utilities.forms.fields import CommentField, DynamicModelChoiceField
 from utilities.forms.rendering import FieldSet, TabbedGroups
-from utilities.forms.widgets import DatePicker
+from utilities.forms.widgets import DatePicker, ClearableFileInput
 from ..utils import get_tags_and_edit_protected_firmware_fields
 from ..models import Firmware, FirmwareAssignment
 
@@ -61,7 +61,7 @@ class FirmwareForm(NetBoxModelForm):
     comments = CommentField()
     
     fieldsets=(
-        FieldSet('name', 'file_name','status', 'description',name='General'),
+        FieldSet('name', 'file_name', 'file', 'status', 'description',name='General'),
         FieldSet(
             'manufacturer',
             TabbedGroups(
@@ -78,6 +78,7 @@ class FirmwareForm(NetBoxModelForm):
         fields = [
             'name',
             'file_name',
+            'file',
             'description',
             'manufacturer',
             'device_type',
@@ -86,6 +87,12 @@ class FirmwareForm(NetBoxModelForm):
             'status',
             'comments',
         ]
+        widgets = {
+            'file': ClearableFileInput(attrs={
+                'accept': '.bin,.img,.tar,.tar.gz,.zip,.exe'
+                }),
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._disable_fields_by_tags()

@@ -31,6 +31,13 @@ class Firmware(NetBoxModel):
         max_length=255,
         verbose_name='File Name',
     )
+    file = models.FileField(
+        upload_to='firmware-files',
+        help_text='File of the firmware',
+        blank=True,
+        null=True,
+        verbose_name='File',
+    )
     status = models.CharField(
         max_length=50,
         choices= DeviceStatusChoices,
@@ -192,12 +199,11 @@ class FirmwareAssignment(NetBoxModel):
     )
     device_type = models.ForeignKey(
         to=DeviceType,
-        related_name='FirmwareAssignment',
         on_delete=models.PROTECT,
+        related_name='FirmwareAssignment',
+        blank=True,
+        null=True,
         verbose_name='Device Type',
-        
-        null=True, 
-        blank=True
     )
     inventory_item_type = models.ForeignKey(
         InventoryItemType, 
@@ -205,6 +211,17 @@ class FirmwareAssignment(NetBoxModel):
         null=True, 
         blank=True
     )
+
+    class Meta:
+        ordering = ('firmware', 'device', 'module', 'inventory_item')
+        verbose_name = 'Firmware Assignment'
+        verbose_name_plural = 'Firmware Assignments'
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(device__isnull=False) | models.Q(module__isnull=False) | models.Q(inventory_item__isnull=False),
+                name='either_device_or_module_or_inventory_item_required'
+            )
+        ]
 
     def __str__(self):
         return f"{self.device} - {self.device_type} - {self.inventory_item_type}"
