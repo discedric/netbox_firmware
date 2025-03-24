@@ -6,6 +6,7 @@ from django.template import Template
 from netbox.views import generic
 from utilities.views import register_model_view
 
+from .. import filtersets
 from .. import tables
 from .. import forms
 from .. import models
@@ -32,6 +33,8 @@ class FirmwareAssignmentListView(generic.ObjectListView):
         'device_type',
         'inventory_item_type'
     )
+    filterset = filtersets.FirmwareAssignmentFilterSet
+    filterset_form = forms.FirmwareAssignmentFilterForm
     table = tables.FirmwareAssignmentTable
     
 @register_model_view(models.FirmwareAssignment, 'edit')

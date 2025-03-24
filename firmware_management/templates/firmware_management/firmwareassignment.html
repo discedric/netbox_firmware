@@ -55,12 +55,24 @@
             <td><a href="{{ object.device.get_absolute_url }}">{{ object.device|placeholder }}</a></td>
           </tr>
           <tr>
+            <th scope="row">Device Type</th>
+            <td><a href="{{ object.device_type.get_absolute_url }}">{{ object.device_type|placeholder }}</a></td>
+          </tr>
+          <tr>
             <th scope="row">Module</th>
             <td><a href="{{ object.module.get_absolute_url }}">{{ object.module|placeholder }}</a></td>
           </tr>
           <tr>
+            <th scope="row">Module Type</th>
+            <td><a href="{{ object.module_type.get_absolute_url }}">{{ object.module_type|placeholder }}</a></td>
+          </tr>
+          <tr>
             <th scope="row">Inventory Item</th>
             <td><a href="{{ object.inventory_item.get_absolute_url }}">{{ object.inventory_item|placeholder }}</a></td>
+          </tr>
+          <tr>
+            <th scope="row">Inventory Item Type</th>
+            <td><a href="{{ object.inventory_item_type.get_absolute_url }}">{{ object.inventory_item_type|placeholder }}</a></td>
           </tr>
         </table>
       </div>

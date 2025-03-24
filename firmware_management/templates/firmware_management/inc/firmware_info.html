@@ -4,32 +4,31 @@
 <div class="card">
   <h5 class="card-header">
     Firmware
-    {# only show reassign button if user has change permissions on firmware #}
-    {% if perms.firmware_management.change_firmware %}
-      <div class="card-actions">
-        {% with object|meta:"model_name" as object_type %}
-        {% if object_type == "device" %}
-        <a href="{% url 'plugins:firmware_management:firmware_device_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "inventoryitem" %}
-        <a href="{% url 'plugins:firmware_management:firmware_inventoryitem_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% endwith %}
-          <i class="mdi mdi-vector-link" aria-hidden="true"></i> Edit Assignment
-        </a>
-      </div>
-    {% endif %}
   </h5>
+  <!--check if firmware item is filled and then show name version and status that is given-->
   {% if firmware %}
-  <table class="table table-hover attr-table">
-    <tr>
-      <th scope="row"><span title="Firmware name">Name</span></th>
-      <td><a href="{% url "plugins:firmware_management:firmware" firmware.pk %}">{{ firmware.hardware_type.manufacturer }} {{ firmware }}{% if firmware.name %} ({{ firmware.name }}){% endif %}</a></td>
-    </tr>
-    <tr>
-      <th scope="row"><span title="Firmware status">Status</span></a></th>
-      <td>{% badge firmware.get_status_display bg_color=firmware.get_status_color %}</a></td>
-    </tr>
-  </table>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-6">
+              <p class="card-text">Name: {{ firmware.firmware.name }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <p class="card-text">File Name: {{ firmware.firmware.file_name }}</p>
+            </div>
+            <div class="col-6">
+              <p class="card-text">Status: {{ firmware.firmware.status }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   {% else %}
-  <div class="card-body"><span class="text-muted">None assigned</span></div>
+    <div class="card-body">
+      <p class="card-text">No firmware assigned</p>
+    </div>
   {% endif %}
 </div>

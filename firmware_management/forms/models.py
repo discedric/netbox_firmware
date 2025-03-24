@@ -7,6 +7,7 @@ from utilities.forms.fields import CommentField, DynamicModelChoiceField
 from utilities.forms.rendering import FieldSet, TabbedGroups
 from utilities.forms.widgets import DatePicker, ClearableFileInput
 from ..utils import get_tags_and_edit_protected_firmware_fields
+from ..filtersets import FirmwareFilterSet, FirmwareAssignmentFilterSet
 from ..models import Firmware, FirmwareAssignment
 
 __all__ = (
@@ -138,9 +139,41 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'device_types': '$device_type',
             'module_types': '$module_type',
             'inventory_item_types': '$inventory_item_type',
+            'firmwares': '$firmware',
         },
     )
     description = CommentField()
+    
+    # Hardware Type -------------------------
+    device_type = DynamicModelChoiceField(
+        queryset=DeviceType.objects.all(),
+        required=False,
+        selector=True,
+        label='Supported Device Type',
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
+    )
+    module_type = DynamicModelChoiceField(
+        queryset=ModuleType.objects.all(),
+        required=False,
+        selector=True,
+        label='Supported Netbox Inventory Item Type',
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
+    )
+    item_type = DynamicModelChoiceField(
+        queryset=InventoryItemType.objects.all(),
+        required=False,
+        selector=True,
+        label='Supported Netbox Inventory Item Type',
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
+    )
+    
+    # Hardware Items ------------------------
     
     device = DynamicModelChoiceField(
         queryset = Device.objects.all(),
@@ -151,9 +184,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'manufacturer_id': '$manufacturer',
             'device_type_id': '$device_type',
         },
-        context={
-            'parent': 'device',
-        }
     )
     module = DynamicModelChoiceField(
         queryset = Module.objects.all(),
@@ -164,9 +194,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'manufacturer_id': '$manufacturer',
             'module_type_id': '$module_type',
         },
-        context={
-            'parent': 'module',
-        }
     )
     inventory_item = DynamicModelChoiceField(
         queryset = InventoryItem.objects.all(),
@@ -177,53 +204,12 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'manufacturer_id': '$manufacturer',
             'inventory_item_type_id': '$inventory_item_type',
         },
-        context={
-            'parent': 'inventory_item',
-        }
-    )
-    
-    # Hardware Type -------------------------
-    supported_device = DynamicModelChoiceField(
-        queryset=DeviceType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Device Type',
-        context={
-            'parent': 'device_type',
-        },
-        query_params={
-           'manufacturer_id': '$manufacturer',
-        },
-    )
-    module_type = DynamicModelChoiceField(
-        queryset=ModuleType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Netbox Inventory Item Type',
-        context={
-            'parent': 'module_type',
-        },
-        query_params={
-           'manufacturer_id': '$manufacturer',
-        },
-    )
-    item_type = DynamicModelChoiceField(
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Netbox Inventory Item Type',
-        context={
-            'parent': 'inventory_item_type',
-        },
-        query_params={
-           'manufacturer_id': '$manufacturer',
-        },
     )
     
     # Update --------------------------------
     firmware = DynamicModelChoiceField(
         queryset=Firmware.objects.all(),
-        #selector=True,  -> moeten we een filterform voor maken, doen we later wel
+        selector=True,
         required=True,
         label='Firmware',
         query_params={
@@ -240,7 +226,7 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         FieldSet(
             'manufacturer',
             TabbedGroups(
-                FieldSet('supported_device',name='Device Type'),
+                FieldSet('device_type',name='Device Type'),
                 FieldSet('module_type',name='Module Type'),
                 FieldSet('item_type',name='Inventory Item Type'),
             ),
@@ -249,10 +235,11 @@ class FirmwareAssignmentForm(NetBoxModelForm):
                 FieldSet('module',name='Module'),
                 FieldSet('inventory_item',name='Inventory Item'),
             ),
+            'firmware',
             name='Hardware'
         ),
         FieldSet(
-            'firmware','patch_date','comment',
+            'patch_date','comment',
             name='Update'
         ),
         FieldSet(
@@ -270,10 +257,12 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'comment',
             'firmware',
             'manufacturer',
-            'supported_device',
+            'device_type',
             'device',
             'inventory_item',
-            'item_type'
+            'item_type',
+            'module_type',
+            'module',
         ]
         widgets = {
             'patch_date': DatePicker(),

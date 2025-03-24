@@ -1,7 +1,7 @@
 from django.template import Template
 from netbox.plugins import PluginTemplateExtension
 
-from .models import Firmware
+from .models import Firmware, FirmwareAssignment
 from .utils import query_located
 
 
@@ -63,9 +63,26 @@ class FirmwareInfoExtension(PluginTemplateExtension):
         return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
 
 
-class DeviceFirmwareInfo(FirmwareInfoExtension):
-    models = ['name']
-    kind = 'device'
+class DeviceFirmwareInfo(PluginTemplateExtension):
+    """_summary_
+      We willen in het scherm van de device zien welke firmware erop zit.
+    """
+    models = ['dcim.device']
+    def right_page(self):
+      object = self.context.get('object')
+      user = self.context['request'].user
+      firmware = FirmwareAssignment.objects.restrict(user,'view').filter(device=object).first()
+      context = {
+        'firmware': [
+                {
+                    'name': firmware.firmware.name,
+                    'file_name': firmware.firmware.file_name,
+                    'status': firmware.firmware.status,
+                },
+            ],
+        }
+      return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
+      
 
 class InventoryItemFirmwareInfo(FirmwareInfoExtension):
     models = ['dcim.inventory_item']

@@ -35,7 +35,10 @@ class FirmwareTable(NetBoxTable):
 
     class Meta(NetBoxTable.Meta):
         model = Firmware
-        fields = ('name', 'file_name', 'comments', 'status', 'manufacturer', 'module_type', 'device_type', 'inventory_item_type')
+        fields = ('name', 'file_name', 'comments', 'status', 
+                  'manufacturer', 
+                  'module_type', 'device_type', 'inventory_item_type'
+                  )
         attrs = {"class": "table table-striped table-bordered"}
 
 class FirmwareAssignmentTable(NetBoxTable):
@@ -46,11 +49,17 @@ class FirmwareAssignmentTable(NetBoxTable):
     manufacturer = tables.Column(accessor='manufacturer', verbose_name="Manufacturer",linkify=True,)
     device_type = tables.Column(accessor='device_type',verbose_name="Device Type",linkify=True,)
     module_type = tables.Column(accessor='module_type',linkify=True,)
+    module = tables.Column(accessor='module',verbose_name="Module",linkify=True,)
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
     inventory_item = tables.Column(accessor='inventory_item', verbose_name='Inventory Item',linkify=True,)
     inventory_item_type = tables.Column(accessor='inventory_item_type',linkify=True,)
 
     class Meta:
         model = FirmwareAssignment
-        fields = ('description','ticket_number','patch_date','firmware','manufacturer','device_type','device','inventory_item','inventory_item_type')
+        fields = ('description','ticket_number','patch_date',
+                  'firmware','manufacturer',
+                  'device_type','device',
+                  'inventory_item','inventory_item_type',
+                  'module','module_type'
+                  )
         attrs = {"class": "table table-striped table-bordered"}

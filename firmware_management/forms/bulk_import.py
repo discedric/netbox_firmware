@@ -58,6 +58,7 @@ class FirmwareImportForm(NetBoxModelImportForm):
     )
     file_name = forms.CharField(
         label=_('File name'),
+        required=False,
         help_text=_('File name of the firmware')
     )
     description = forms.CharField(

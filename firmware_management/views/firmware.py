@@ -9,6 +9,7 @@ from utilities.views import register_model_view
 from .. import tables
 from .. import forms
 from .. import models
+from .. import filtersets
 from ..template_content import WARRANTY_PROGRESSBAR
 
 __all__ = (
@@ -41,6 +42,8 @@ class FirmwareListView(generic.ObjectListView):
         'module_type',
         'inventory_item_type'
     )
+    filterset = filtersets.FirmwareFilterSet
+    filterset_form = forms.FirmwareFilterForm
     table = tables.FirmwareTable
     
 @register_model_view(models.Firmware, 'edit')

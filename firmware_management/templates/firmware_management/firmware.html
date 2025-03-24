@@ -52,6 +52,11 @@
               <th scope="row">{{ object.get_kind_display }} Type</th>
               <td><a href="{{object.hardware_type.get_absolute_url}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
             </tr>
+          {% elif object.kind == 'module' %}
+            <tr>
+              <th scope="row">{{ object.kind }} Type</th>
+              <td><a href="{{object.hardware_type.get_absolute_url}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
+            </tr>
           {% elif object.kind == 'inventoryitem' %}
             <tr>
               <th scope="row">Inventory Item Group</th>
