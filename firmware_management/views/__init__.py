@@ -1,2 +1,2 @@
-from .firmware import FirmwareListView, FirmwareView, FirmwareChangeLogView
-from .firmwareassignment import FirmwareAssignmentView, FirmwareAssignmentListView, FirmwareAssignmentChangeLogView
+from .firmware import *
+from .firmwareassignment import *

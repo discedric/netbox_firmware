@@ -15,9 +15,6 @@ class Firmware(NetBoxModel):
     """_summary_
         toe te voegen:
         - (als kan) hyperlinks
-        - (als kan) file upload
-        
-        - bulkimport
     """
     name = models.CharField(
         help_text='Name of the firmware',
@@ -96,7 +93,7 @@ class Firmware(NetBoxModel):
     
     clone_fields = [
         'name','description', 'file_name', 'status', 'device_type',
-        'inventory_item_type', 'comments', 'module_type'
+        'manufacturer','inventory_item_type', 'comments', 'module_type'
     ]
 
     @property
@@ -120,6 +117,32 @@ class Firmware(NetBoxModel):
     def clean(self):
         return super().clean()
 
+    def validate_hardware_type(self):
+        if(
+            sum(
+                map(
+                    bool,
+                    [
+                        self.device_type,
+                        self.inventory_item_type,
+                        self.module_type
+                    ],
+                )
+            )
+            > 1
+        ):
+            raise ValidationError(
+                'Only one of device type, inventory item type or module type can be set'
+            )
+        if (
+            not self.device_type
+            and not self.inventory_item_type
+            and not self.module_type
+        ):
+            raise ValidationError(
+                'One of device type, inventory item type or module type must be set'
+        )
+
     def get_absolute_url(self):
         return reverse('plugins:firmware_management:firmware', args=[self.pk])
     
@@ -134,8 +157,8 @@ class Firmware(NetBoxModel):
         verbose_name_plural = 'Firmware'
         constraints = [
             models.CheckConstraint(
-                check=models.Q(manufacturer__isnull=False) | models.Q(manufacturer__isnull=True, device_type__isnull=True, module_type__isnull=True, inventory_item_type__isnull=True),
-                name='either_manufacturer_or_device_type_or_inventory_item_type_or_module_type_required'
+                check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False) | models.Q(inventory_item_type__isnull=False),
+                name='either_device_type_or_inventory_item_type_or_module_type_required'
             )
         ]
 
@@ -212,7 +235,14 @@ class FirmwareAssignment(NetBoxModel):
         blank=True
     )
 
+    clone_fields = [
+        'manufacturer', 'device_type', 'module_type', 'inventory_item_type',  'firmware'
+    ]
+
     class Meta:
+        """
+        check constraints to ensure that either a device, module or inventory item type is set
+        """
         ordering = ('firmware', 'device', 'module', 'inventory_item')
         verbose_name = 'Firmware Assignment'
         verbose_name_plural = 'Firmware Assignments'
@@ -220,6 +250,11 @@ class FirmwareAssignment(NetBoxModel):
             models.CheckConstraint(
                 check=models.Q(device__isnull=False) | models.Q(module__isnull=False) | models.Q(inventory_item__isnull=False),
                 name='either_device_or_module_or_inventory_item_required'
+            ),
+            
+            models.CheckConstraint(
+                check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False) | models.Q(inventory_item_type__isnull=False),
+                name='either_device_type_or_module_type_or_inventory_item_type_required'
             )
         ]
 

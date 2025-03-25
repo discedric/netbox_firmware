@@ -14,10 +14,12 @@ from .types import (
 class FirmwareQuery:
     @strawberry.field
     def firmware(self, info, id: int) -> FirmwareType:
-        return Firmware.objects.get(id=id)
+        return Firmware.objects.get(pk=id)
+    firmware_list: list[FirmwareType] = strawberry_django.field()
 
 @strawberry.type
 class FirmwareAssignmentQuery:
     @strawberry.field
     def firmware_assignment(self, info, id: int) -> FirmwareAssignmentType:
-        return FirmwareAssignment.objects.get(id=id)
+        return FirmwareAssignment.objects.get(pk=id)
+    firmware_assignment_list: list[FirmwareAssignmentType] = strawberry_django.field()

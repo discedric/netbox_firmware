@@ -15,7 +15,8 @@ from ..template_content import WARRANTY_PROGRESSBAR
 __all__ = (
     'FirmwareView',
     'FirmwareListView',
-    'FirmwareChangeLogView'
+    'FirmwareChangeLogView',
+    'FirmwareJournalView',
 )
 
 @register_model_view(models.Firmware)
@@ -28,6 +29,14 @@ class FirmwareView(generic.ObjectView):
 
 class FirmwareChangeLogView(generic.ObjectChangeLogView):
     """View for displaying the changelog of a Firmware object"""
+    queryset = models.Firmware.objects.all()
+    model = models.Firmware
+    
+    def get(self, request, pk):
+        return super().get(request, pk=pk, model=self.model)
+
+class FirmwareJournalView(generic.ObjectJournalView):
+    """View for displaying the journal of a Firmware object"""
     queryset = models.Firmware.objects.all()
     model = models.Firmware
     

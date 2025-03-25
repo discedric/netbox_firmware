@@ -11,48 +11,8 @@ from netbox_inventory.models import InventoryItemType
 from netbox.filtersets import NetBoxModelFilterSet
 from .models import Firmware, FirmwareAssignment
 
+
 class FirmwareFilterSet(NetBoxModelFilterSet):
-    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
-        field_name='manufacturer',
-        queryset=Manufacturer.objects.all(),
-        label=_('Manufacturer (ID)'),
-    )
-    manufacturer = django_filters.ModelMultipleChoiceFilter(
-        field_name='manufacturer__slug',
-        queryset=Manufacturer.objects.all(),
-        to_field_name='slug',
-        label=_('Manufacturer (slug)'),
-    )
-    device_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='device_type__slug',
-        queryset=DeviceType.objects.all(),
-        to_field_name='slug',
-        label=_('Device type (slug)'),
-    )
-    device_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=DeviceType.objects.all(),
-        label=_('Device type (ID)'),
-    )
-    module_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='module_type__model',
-        queryset=ModuleType.objects.all(),
-        to_field_name='name',
-        label=_('Module type (model)'),
-    )
-    module_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=ModuleType.objects.all(),
-        label=_('Module type (ID)'),
-    )
-    inventory_item_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='inventory_item_type__slug',
-        queryset=InventoryItemType.objects.all(),
-        to_field_name='slug',
-        label=_('Inventory item type (slug)'),
-    )
-    inventory_item_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=InventoryItemType.objects.all(),
-        label=_('Inventory item type (ID)'),
-    )
     name = MultiValueCharFilter(
         lookup_expr='iexact',
     )
@@ -63,6 +23,48 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
     status = django_filters.MultipleChoiceFilter(
         choices=DeviceStatusChoices,
         label=_('Status'),
+    )
+    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_type__manufacturer',
+        queryset=Manufacturer.objects.all(),
+        label=_('Manufacturer (ID)'),
+    )
+    manufacturer = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_type__manufacturer__slug',
+        queryset=Manufacturer.objects.all(),
+        to_field_name='slug',
+        label=_('Manufacturer name (slug)'),
+    )
+    device_type = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_type__slug',
+        queryset=DeviceType.objects.all(),
+        to_field_name='slug',
+        label=_('Device type name (slug)'),
+    )
+    device_type_id = django_filters.ModelMultipleChoiceFilter(
+        field_name='device_type',
+        queryset=DeviceType.objects.all(),
+        label=_('Device type (ID)'),
+    )
+    inventory_item_type = django_filters.ModelMultipleChoiceFilter(
+        field_name='inventory_item_type__slug',
+        queryset=InventoryItemType.objects.all(),
+        to_field_name='slug',
+        label=_('Inventory item type name (slug)'),
+    )
+    inventory_item_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=InventoryItemType.objects.all(),
+        label=_('Inventory item type (ID)'),
+    )
+    module_type = django_filters.ModelMultipleChoiceFilter(
+        field_name='module_type__model',
+        queryset=ModuleType.objects.all(),
+        to_field_name='name',
+        label=_('Module type (model)'),
+    )
+    module_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=ModuleType.objects.all(),
+        label=_('Module type (ID)'),
     )
     
     
@@ -80,7 +82,7 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         return queryset.filter(
             Q(name__icontains=value) |
             Q(description__icontains=value.strip()) |
-            Q(comments__icontains=value)
+            Q(comments__icontains=value) 
         ).distinct()
 
 class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):

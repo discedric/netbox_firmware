@@ -1,7 +1,9 @@
+from typing import Annotated, List
+
 import strawberry
 import strawberry_django
-from typing import Annotated
-from extras.graphql.mixins import ContactsMixin, ImageAttachmentsMixin
+
+from netbox.graphql.scalars import BigInt
 from netbox.graphql.types import (
     NetBoxObjectType,
     OrganizationalObjectType,
@@ -17,14 +19,19 @@ from .filters import (
 
 @strawberry_django.type(Firmware, fields='__all__', filters=FirmwareFilter)
 class FirmwareType(NetBoxObjectType):
-    device_type: (
-        Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
-    )
-    inventoryitem: (
-        Annotated["InventoryItemType", strawberry.lazy("dcim.graphql.types")] | None
-    )
+    manufacturer: Annotated["ManufacturerType", strawberry.lazy('dcim.graphql.types')]
+    device_type: Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
+    module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
+    inventory_item_type: Annotated["InventoryItemTypeType", strawberry.lazy("netbox_inventory.graphql.types")] | None
 
 @strawberry_django.type(FirmwareAssignment, fields='__all__', filters=FirmwareAssignmentFilter)
 class FirmwareAssignmentType(NetBoxObjectType):
     firmware: Annotated["FirmwareType", strawberry.lazy("firmware_management.graphql.types")]
+    manufacturer: Annotated["ManufacturerType", strawberry.lazy('dcim.graphql.types')]
+    device_type: Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
+    module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
+    inventory_item_type: Annotated["InventoryItemTypeType", strawberry.lazy("netbox_inventory.graphql.types")] | None
+    module: Annotated["ModuleType", strawberry.lazy('dcim.graphql.types')] | None
+    device: Annotated["DeviceType", strawberry.lazy('dcim.graphql.types')] | None
+    inventory_item: Annotated["InventoryItemType", strawberry.lazy('dcim.graphql.types')] | None
     

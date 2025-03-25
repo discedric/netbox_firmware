@@ -129,6 +129,13 @@ class FirmwareForm(NetBoxModelForm):
     
     
 class FirmwareAssignmentForm(NetBoxModelForm):
+    """
+    Require type before item
+
+    clone add to assigment
+
+
+    """
     # Hardware ------------------------------
     manufacturer = DynamicModelChoiceField(
         queryset=Manufacturer.objects.all(),
@@ -139,7 +146,7 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'device_types': '$device_type',
             'module_types': '$module_type',
             'inventory_item_types': '$inventory_item_type',
-            'firmwares': '$firmware',
+            'firmware': '$firmware',
         },
     )
     description = CommentField()
@@ -235,11 +242,10 @@ class FirmwareAssignmentForm(NetBoxModelForm):
                 FieldSet('module',name='Module'),
                 FieldSet('inventory_item',name='Inventory Item'),
             ),
-            'firmware',
             name='Hardware'
         ),
         FieldSet(
-            'patch_date','comment',
+            'firmware','patch_date','comment',
             name='Update'
         ),
         FieldSet(

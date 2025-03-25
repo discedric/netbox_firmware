@@ -15,7 +15,7 @@ __all__ = (
     'FirmwareAssignmentView',
     'FirmwareAssignmentListView',
     'FirmwareAssignmentChangeLogView',
-    'FirmwareAssignmentBulkCreateView'
+    'FirmwareAssignmentJournalView'
 )
 
 @register_model_view(models.FirmwareAssignment)
@@ -45,6 +45,14 @@ class FirmwareAssignmentEditView(generic.ObjectEditView):
 
 class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
     """View for displaying the changelog of a FirmwareAssignment object"""
+    queryset = models.FirmwareAssignment.objects.all()
+    model = models.FirmwareAssignment
+
+    def get(self, request, pk):
+        return super().get(request, pk=pk, model=self.model)
+
+class FirmwareAssignmentJournalView(generic.ObjectJournalView):
+    """View for displaying the journal of a FirmwareAssignment object"""
     queryset = models.FirmwareAssignment.objects.all()
     model = models.FirmwareAssignment
 
