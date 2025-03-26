@@ -77,3 +77,21 @@ class FirmwareBulkImportView(generic.BulkImportView):
     def save_object(self, object_form, request):
         obj = object_form.save()
         return obj
+    
+@register_model_view(models.Firmware, 'bulk_edit', detail=False)
+class FirmwareBulkEditView(generic.BulkEditView):
+    queryset = models.Firmware.objects.all()
+    filterset = filtersets.FirmwareFilterSet
+    table = tables.FirmwareTable
+    form = forms.FirmwareBulkEditForm
+    
+    def post (self, request, **kwargs):
+        return super().post(request, **kwargs)
+
+@register_model_view(models.Firmware, 'bulk_delete', detail=False)
+class FirmwareBulkDeleteView(generic.BulkDeleteView):
+    queryset = models.Firmware.objects.all()
+    table = tables.FirmwareTable
+
+    def post(self, request):
+        return super().post(request)

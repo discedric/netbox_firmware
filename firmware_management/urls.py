@@ -11,8 +11,8 @@ urlpatterns = [
     path('firmwares/<int:pk>/journal/', views.FirmwareJournalView.as_view(), name='firmware_journal'),
     
     # Assignments
-    path('Assignment/', include(get_model_urls('firmware_management','firmwareassignment',detail=False))),
-    path('Assignment/<int:pk>/', include(get_model_urls('firmware_management', 'firmwareassignment'))),
-    path('Assignment/<int:pk>/changelog/', views.FirmwareAssignmentChangeLogView.as_view(), name='firmwareassignment_changelog'),
-    path('Assignment/<int:pk>/journal/', views.FirmwareAssignmentJournalView.as_view(), name='firmwareassignment_journal'),
+    path('assignment/', include(get_model_urls('firmware_management','firmwareassignment',detail=False))),
+    path('assignment/<int:pk>/', include(get_model_urls('firmware_management', 'firmwareassignment'))),
+    path('assignment/<int:pk>/changelog/', views.FirmwareAssignmentChangeLogView.as_view(), name='firmwareassignment_changelog'),
+    path('assignment/<int:pk>/journal/', views.FirmwareAssignmentJournalView.as_view(), name='firmwareassignment_journal'),
 ]

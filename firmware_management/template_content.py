@@ -55,7 +55,7 @@ WARRANTY_PROGRESSBAR = '''
 '''
 
 class FirmwareInfoExtension(PluginTemplateExtension):
-    def left_page(self):
+    def right_page(self):
         object = self.context.get('object')
         firmware = Firmware.objects.filter(**{self.kind:object}).first()
         context = {'firmware': firmware}
@@ -63,26 +63,12 @@ class FirmwareInfoExtension(PluginTemplateExtension):
         return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
 
 
-class DeviceFirmwareInfo(PluginTemplateExtension):
+class DeviceFirmwareInfo(FirmwareInfoExtension):
     """_summary_
       We willen in het scherm van de device zien welke firmware erop zit.
     """
     models = ['dcim.device']
-    def right_page(self):
-      object = self.context.get('object')
-      user = self.context['request'].user
-      firmware = FirmwareAssignment.objects.restrict(user,'view').filter(device=object).first()
-      context = {
-        'firmware': [
-                {
-                    'name': firmware.firmware.name,
-                    'file_name': firmware.firmware.file_name,
-                    'status': firmware.firmware.status,
-                },
-            ],
-        }
-      return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
-      
+    kind = 'device'
 
 class InventoryItemFirmwareInfo(FirmwareInfoExtension):
     models = ['dcim.inventory_item']

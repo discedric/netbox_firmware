@@ -32,12 +32,14 @@ class FirmwareTable(NetBoxTable):
         linkify=True,
         )
     inventory_item_type = tables.Column(accessor='inventory_item_type')
+    actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
         model = Firmware
         fields = ('name', 'file_name', 'comments', 'status', 
                   'manufacturer', 
-                  'module_type', 'device_type', 'inventory_item_type'
+                  'module_type', 'device_type', 'inventory_item_type',
+                  'actions'
                   )
         attrs = {"class": "table table-striped table-bordered"}
 

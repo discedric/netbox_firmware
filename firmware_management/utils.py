@@ -26,7 +26,7 @@ def get_prechange_field(obj, field_name):
 
 
 def get_plugin_setting(setting_name):
-    return get_plugin_config('netbox_inventory', setting_name)
+    return get_plugin_config('firmware_management', setting_name)
 
 
 def get_status_for(status):

@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load plugins %}
 
-{% block title %}{{ object }}{% endblock %}
+{% block title %}Assignment {{ object.id }}{% endblock %}
 
 {% block breadcrumbs %}
 {% if object.device or object.module or object.inventory_item %}
