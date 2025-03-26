@@ -140,6 +140,7 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
     device = CSVModelChoiceField(
         label=_('Device'),
         queryset=Device.objects.all(),
+        required=False,
         to_field_name='name',
         help_text=_('Device name')
     )

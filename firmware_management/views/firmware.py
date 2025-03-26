@@ -69,6 +69,9 @@ class FirmwareDeleteView(generic.ObjectDeleteView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
+
+# ----------------- Bulk Import, Edit, Delete -----------------
+
 @register_model_view(models.Firmware, 'bulk_import', detail=False)
 class FirmwareBulkImportView(generic.BulkImportView):
     queryset = models.Firmware.objects.all()

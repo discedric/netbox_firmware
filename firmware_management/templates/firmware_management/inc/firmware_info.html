@@ -3,24 +3,24 @@
 
 <div class="card">
   <h5 class="card-header">
-    Firmware
+    Firmware 
   </h5>
   <!--check if firmware item is filled and then show name version and status that is given-->
-  {% if firmware %}
+  {% if assignment %}
     <div class="card-body">
       <div class="row">
         <div class="col-12">
           <div class="row">
             <div class="col-6">
-              <p class="card-text">Name: {{ firmware.name }}</p>
+              <p>Name: <a class="card-text" href='{% url 'plugins:firmware_management:firmware' assignment.firmware.id %}' >{{ assignment.firmware.name }}</a></p>
             </div>
           </div>
           <div class="row">
             <div class="col-6">
-              <p class="card-text">File Name: {{ firmware.file_name }}</p>
+              <p class="card-text">File Name: {{ assignment.firmware.file_name }}</p>
             </div>
             <div class="col-6">
-              <p class="card-text">Status: {{ firmware.status }}</p>
+              <p class="card-text">Status: {{ assignment.firmware.status }}</p>
             </div>
           </div>
         </div>
@@ -28,7 +28,7 @@
     </div>
   {% else %}
     <div class="card-body">
-      <p class="card-text">No firmware assigned</p>
+      <p class="card-text">No firmware assigned voor {{ object }}</p>
     </div>
   {% endif %}
 </div>

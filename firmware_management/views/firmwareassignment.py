@@ -26,6 +26,22 @@ class FirmwareAssignmentView(generic.ObjectView):
         context = super().get_extra_context(request, instance)
         return context
 
+class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
+    """View for displaying the changelog of a FirmwareAssignment object"""
+    queryset = models.FirmwareAssignment.objects.all()
+    model = models.FirmwareAssignment
+
+    def get(self, request, pk):
+        return super().get(request, pk=pk, model=self.model)
+
+class FirmwareAssignmentJournalView(generic.ObjectJournalView):
+    """View for displaying the journal of a FirmwareAssignment object"""
+    queryset = models.FirmwareAssignment.objects.all()
+    model = models.FirmwareAssignment
+
+    def get(self, request, pk):
+        return super().get(request, pk=pk, model=self.model)
+
 @register_model_view(models.FirmwareAssignment, 'list', path='', detail=False)
 class FirmwareAssignmentListView(generic.ObjectListView):
     queryset = models.FirmwareAssignment.objects.prefetch_related(
@@ -43,28 +59,14 @@ class FirmwareAssignmentEditView(generic.ObjectEditView):
     queryset = models.FirmwareAssignment.objects.all()
     form = forms.FirmwareAssignmentForm
 
-class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a FirmwareAssignment object"""
-    queryset = models.FirmwareAssignment.objects.all()
-    model = models.FirmwareAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class FirmwareAssignmentJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a FirmwareAssignment object"""
-    queryset = models.FirmwareAssignment.objects.all()
-    model = models.FirmwareAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
 @register_model_view(models.FirmwareAssignment,'delete')
 class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
     queryset = models.FirmwareAssignment.objects.all()
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+# ----------------- Bulk Import, Edit, Delete -----------------
 
 @register_model_view(models.FirmwareAssignment, 'bulk_import', detail=False)
 class FirmwareBulkImportView(generic.BulkImportView):
@@ -74,3 +76,21 @@ class FirmwareBulkImportView(generic.BulkImportView):
     def save_object(self, object_form, request):
         obj = object_form.save()
         return obj
+
+@register_model_view(models.FirmwareAssignment, 'bulk_edit', detail=False)
+class FirmwareAssignmentBulkEditView(generic.BulkEditView):
+    queryset = models.FirmwareAssignment.objects.all()
+    filterset = filtersets.FirmwareAssignmentFilterSet
+    table = tables.FirmwareAssignmentTable
+    form = forms.FirmwareAssignmentBulkEditForm
+    
+    def post (self, request, **kwargs):
+        return super().post(request, **kwargs)
+
+@register_model_view(models.FirmwareAssignment, 'bulk_delete', detail=False)
+class FirmwareAssignmentBulkDeleteView(generic.BulkDeleteView):
+    queryset = models.FirmwareAssignment.objects.all()
+    table = tables.FirmwareAssignmentTable
+
+    def post(self, request):
+        return super().post(request)

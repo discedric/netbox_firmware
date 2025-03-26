@@ -228,7 +228,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
     )
     comment = CommentField()
     
-    
     fieldsets = (
         FieldSet(
             'manufacturer',
@@ -273,7 +272,7 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         widgets = {
             'patch_date': DatePicker(),
         }
-
+    
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
