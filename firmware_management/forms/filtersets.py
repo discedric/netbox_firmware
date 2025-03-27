@@ -21,7 +21,7 @@ class FirmwareFilterForm(NetBoxModelFilterSetForm):
         FieldSet('manufacturer_id', 'device_type_id', 'module_type_id', 'inventory_item_type_id', name=_('Hardware')),
     )
     
-    selector_fields = ('q', 'status', 'manufacturer_id', 'device_type_id', 'module_type_id', 'inventory_item_type_id')
+    selector_fields = ('q', 'status', 'manufacturer_id')
     
     manufacturer_id = DynamicModelMultipleChoiceField(
         queryset=Manufacturer.objects.all(),

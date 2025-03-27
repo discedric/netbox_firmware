@@ -75,8 +75,8 @@ class ModuleFirmwareInfo(FirmwareAssignedInfoExtension):
     kind = 'module'
 
 class InventoryItemFirmwareInfo(FirmwareAssignedInfoExtension):
-    models = ['dcim.inventory_item']
-    kind = 'inventory_item'
+    models = ['dcim.inventoryitem']
+    kind = 'inventoryitem'
 
 class ManufacturerFirmwareCounts(PluginTemplateExtension):
     models = ['dcim.manufacturer']
@@ -84,25 +84,32 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         object = self.context.get('object')
         user = self.context['request'].user
         count_device = Firmware.objects.restrict(user, 'view').filter(device_type__manufacturer=object).count()
+        count_module = Firmware.objects.restrict(user, 'view').filter(module_type__manufacturer=object).count()
         count_inventory_item = Firmware.objects.restrict(user, 'view').filter(inventory_item_type__manufacturer=object).count()
         context = {
             'firmware_stats': [
                 {
                     'label': 'Device',
                     'filter_field': 'manufacturer_id',
-                    'extra_filter': '&kind=device',
+                    'extra_filter': '&sort=device_type',
                     'count': count_device,
+                },
+                {
+                    'label': 'Module',
+                    'filter_field': 'manufacturer_id',
+                    'extra_filter': '&sort=module_type',
+                    'count': count_module,
                 },
                 {
                     'label': 'Inventory Item',
                     'filter_field': 'manufacturer_id',
-                    'extra_filter': '&kind=inventory_item',
+                    'extra_filter': '&sort=inventory_item_type',
                     'count': count_inventory_item,
                 },
                 {
                     'label': 'Total',
                     'filter_field': 'manufacturer_id',
-                    'count': count_device + count_inventory_item,
+                    'count': count_device + count_module + count_inventory_item,
                 },
             ],
         }
@@ -110,6 +117,7 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
 
 template_extensions = (
     DeviceFirmwareInfo,
+    ModuleFirmwareInfo,
     InventoryItemFirmwareInfo,
     ManufacturerFirmwareCounts,
 )

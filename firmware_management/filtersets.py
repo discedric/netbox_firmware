@@ -25,12 +25,12 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         label=_('Status'),
     )
     manufacturer_id = django_filters.ModelMultipleChoiceFilter(
-        field_name='device_type__manufacturer',
+        field_name='manufacturer',
         queryset=Manufacturer.objects.all(),
         label=_('Manufacturer (ID)'),
     )
     manufacturer = django_filters.ModelMultipleChoiceFilter(
-        field_name='device_type__manufacturer__slug',
+        field_name='manufacturer__slug',
         queryset=Manufacturer.objects.all(),
         to_field_name='slug',
         label=_('Manufacturer name (slug)'),

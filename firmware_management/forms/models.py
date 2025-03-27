@@ -142,12 +142,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         selector=True,
         required=True,
         label='Manufacturer',
-        initial_params={
-            'device_types': '$device_type',
-            'module_types': '$module_type',
-            'inventory_item_types': '$inventory_item_type',
-            'firmware': '$firmware',
-        },
     )
     description = CommentField()
     
