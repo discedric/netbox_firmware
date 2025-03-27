@@ -20,6 +20,10 @@ from wireless.choices import WirelessRoleChoices
 from jsonschema._keywords import required
 
 class FirmwareImportForm(NetBoxModelImportForm):
+    """_summary_
+    Zorgen dat we de hardware type en model meegeven in plaats van de 3 dingen appart
+    
+    """
     manufacturer = CSVModelChoiceField(
         label=_('Manufacturer'),
         queryset=Manufacturer.objects.all(),

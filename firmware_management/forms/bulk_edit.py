@@ -17,21 +17,25 @@ from ..models import (
 from ..utils import get_plugin_setting
 
 class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
-    name = forms.CharField()
+    name = forms.CharField(required=False, label='Name')
+    status = forms.ChoiceField(
+        choices=FirmwareStatusChoices,
+        required=False,
+        label='Status',
+    )
+    file = forms.FileField(
+        required=False,
+        label='File',
+    )
     description = forms.CharField(
         required=False,
     )
     file_name = forms.CharField(required=False, label='File Name')
     manufacturer = DynamicModelChoiceField(
         queryset=Manufacturer.objects.all(),
-        required=True,
-        label='Manufacturer',
+        required=False,
         selector=True,
-        quick_add=True,
-        initial_params={
-            'device_types': '$device_type',
-            'inventory_item_types': '$inventory_item_type',
-        },
+        label='Manufacturer'
     )
     device_type = DynamicModelChoiceField(
         queryset=DeviceType.objects.all(),
@@ -75,6 +79,7 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
             name='Hardware'
         ),
     )
+    nullable_fields = ['device_type', 'module_type', 'inventory_item_type']
     
 
 class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
