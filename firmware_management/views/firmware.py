@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect
 from django.template import Template
 from netbox.views import generic
-from utilities.views import register_model_view
+from utilities.views import register_model_view, ViewTab
 
 from .. import tables
 from .. import forms
@@ -54,7 +54,7 @@ class FirmwareListView(generic.ObjectListView):
     filterset = filtersets.FirmwareFilterSet
     filterset_form = forms.FirmwareFilterForm
     table = tables.FirmwareTable
-    
+
 @register_model_view(models.Firmware, 'edit')
 @register_model_view(models.Firmware, 'add', detail=False)
 class FirmwareEditView(generic.ObjectEditView):

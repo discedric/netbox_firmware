@@ -86,7 +86,7 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
     manufacturer = DynamicModelChoiceField(
         queryset=Manufacturer.objects.all(),
         selector=True,
-        required=True,
+        required=False,
         label='Manufacturer',
         initial_params={
             'device_types': '$device_type',
@@ -95,7 +95,9 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             'firmware': '$firmware',
         },
     )
-    description = CommentField()
+    description = forms.CharField(
+        required=False,
+    )
     
     # Hardware Type -------------------------
     device_type = DynamicModelChoiceField(
@@ -163,7 +165,7 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
     firmware = DynamicModelChoiceField(
         queryset=Firmware.objects.all(),
         selector=True,
-        required=True,
+        required=False,
         label='Firmware',
         query_params={
             'manufacturer_id': '$manufacturer',
@@ -173,11 +175,21 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
         },
     )
     comment = CommentField()
+    patch_date = forms.DateField(
+        required=False,
+        label='Patch Date',
+        help_text='Date of the firmware patch'
+    )
+    ticket_number = forms.CharField(
+        required=False,
+        label='Ticket Number',
+        help_text='Ticket number for the firmware patch'
+    )
     
     model= FirmwareAssignment
     fieldsets = (
         FieldSet(
-            'manufacturer',
+            'manufacturer','description',
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
                 FieldSet('module_type',name='Module Type'),
@@ -191,12 +203,8 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             name='Hardware'
         ),
         FieldSet(
-            'firmware','patch_date','comment',
+            'ticket_number','firmware','patch_date','comment',
             name='Update'
-        ),
-        FieldSet(
-            'ticket_number',
-            name='General'
         ),
     )
     nullable_fields = ['device_type', 'module_type', 'item_type', 'device', 'module', 'inventory_item', 'ticket_number', 'patch_date', 'comment']

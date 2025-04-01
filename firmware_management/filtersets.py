@@ -10,6 +10,7 @@ from dcim.choices import DeviceStatusChoices
 from netbox_inventory.models import InventoryItemType
 from netbox.filtersets import NetBoxModelFilterSet
 from .models import Firmware, FirmwareAssignment
+from . import choices
 
 
 class FirmwareFilterSet(NetBoxModelFilterSet):
@@ -67,11 +68,16 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         label=_('Module type (ID)'),
     )
     
+    kind = django_filters.MultipleChoiceFilter(
+        choices=choices.HardwareKindChoices,
+        method='filter_kind',
+        label=_('Hardware kind'),
+    )
     
     class Meta:
         model = Firmware
         fields = {
-            'id', 'name', 'file_name', 'status', 
+            'id', 'name', 'file_name', 'status',
             'manufacturer', 
             'device_type', 'module_type', 'inventory_item_type',
         }
@@ -84,6 +90,31 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
             Q(description__icontains=value.strip()) |
             Q(comments__icontains=value) 
         ).distinct()
+    
+    def filter_kind(self, queryset, name, value):
+        """
+        Dynamically filter the queryset based on which type field is not null.
+        """
+        # Check which type field is provided in the filter
+        device_type = self.data.get('device_type')
+        module_type = self.data.get('module_type')
+        inventory_item_type = self.data.get('inventory_item_type')
+
+        # Apply filtering based on the provided type
+        if device_type:
+            return queryset.filter(device_type__isnull=False)
+        elif module_type:
+            return queryset.filter(module_type__isnull=False)
+        elif inventory_item_type:
+            return queryset.filter(inventory_item_type__isnull=False)
+
+        # If no specific type is provided, return all firmware objects where any type is not null
+        return queryset.filter(
+            Q(device_type__isnull=False) |
+            Q(module_type__isnull=False) |
+            Q(inventory_item_type__isnull=False)
+    )
+
 
 class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
     manufacturer_id = django_filters.ModelMultipleChoiceFilter(

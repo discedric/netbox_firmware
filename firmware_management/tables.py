@@ -68,3 +68,4 @@ class FirmwareAssignmentTable(NetBoxTable):
                   'module','module_type'
                   )
         attrs = {"class": "table table-striped table-bordered"}
+

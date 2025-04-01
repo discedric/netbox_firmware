@@ -9,6 +9,8 @@ urlpatterns = [
     path('firmwares/<int:pk>/', include(get_model_urls('firmware_management', 'firmware'))),
     path('firmwares/<int:pk>/changelog/', views.FirmwareChangeLogView.as_view(), name='firmware_changelog'),
     path('firmwares/<int:pk>/journal/', views.FirmwareJournalView.as_view(), name='firmware_journal'),
+
+    path('device/<int:device_id>/reassign/', views.FirmwareDeviceReassignView.as_view(), name='firmware_device_reassign'),
     
     # Assignments
     path('assignment/', include(get_model_urls('firmware_management','firmwareassignment',detail=False))),

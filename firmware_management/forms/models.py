@@ -143,7 +143,9 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         required=True,
         label='Manufacturer',
     )
-    description = CommentField()
+    description = forms.CharField(
+        required=False,
+    )
     
     # Hardware Type -------------------------
     device_type = DynamicModelChoiceField(
@@ -225,7 +227,7 @@ class FirmwareAssignmentForm(NetBoxModelForm):
     
     fieldsets = (
         FieldSet(
-            'manufacturer',
+            'manufacturer','description',
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
                 FieldSet('module_type',name='Module Type'),
@@ -239,12 +241,8 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             name='Hardware'
         ),
         FieldSet(
-            'firmware','patch_date','comment',
+            'ticket_number','firmware','patch_date','comment',
             name='Update'
-        ),
-        FieldSet(
-            'ticket_number',
-            name='General'
         ),
     )
     

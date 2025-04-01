@@ -1,0 +1,10 @@
+{% extends 'generic/_base.html' %}
+
+{% block content %}
+<h1>Reassign Firmware</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Reassign</button>
+</form>
+{% endblock %}
