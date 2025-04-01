@@ -214,6 +214,7 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         required=True,
         label='Firmware',
         query_params={
+            'status': 'active',
             'manufacturer_id': '$manufacturer',
             'device_type_id': '$device_type',
             'module_type_id': '$module_type',

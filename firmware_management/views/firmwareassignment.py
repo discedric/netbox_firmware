@@ -58,6 +58,7 @@ class FirmwareAssignmentListView(generic.ObjectListView):
 class FirmwareAssignmentEditView(generic.ObjectEditView):
     queryset = models.FirmwareAssignment.objects.all()
     form = forms.FirmwareAssignmentForm
+    default_return_url = 'plugins:firmware_management:firmwareassignment_list'
 
 @register_model_view(models.FirmwareAssignment,'delete')
 class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
@@ -83,6 +84,7 @@ class FirmwareAssignmentBulkEditView(generic.BulkEditView):
     filterset = filtersets.FirmwareAssignmentFilterSet
     table = tables.FirmwareAssignmentTable
     form = forms.FirmwareAssignmentBulkEditForm
+    default_return_url = 'plugins:firmware_management:firmwareassignment_list'
     
     def post (self, request, **kwargs):
         return super().post(request, **kwargs)

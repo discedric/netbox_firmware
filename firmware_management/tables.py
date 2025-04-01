@@ -12,6 +12,9 @@ __all__ = (
 )
 
 class FirmwareTable(NetBoxTable):
+    """"
+     zorg voor een counter zodat je ziet hoeveel keer deze assigned is
+    """
     name = tables.Column(
         linkify=True,
     )

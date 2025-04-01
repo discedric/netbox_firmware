@@ -60,7 +60,7 @@ class FirmwareListView(generic.ObjectListView):
 class FirmwareEditView(generic.ObjectEditView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareForm
-    
+    default_return_url = 'plugins:firmware_management:firmware_list'
 
 @register_model_view(models.Firmware,'delete')
 class FirmwareDeleteView(generic.ObjectDeleteView):
@@ -87,6 +87,7 @@ class FirmwareBulkEditView(generic.BulkEditView):
     filterset = filtersets.FirmwareFilterSet
     table = tables.FirmwareTable
     form = forms.FirmwareBulkEditForm
+    default_return_url = 'plugins:firmware_management:firmware_list'
     
     def post (self, request, **kwargs):
         return super().post(request, **kwargs)
