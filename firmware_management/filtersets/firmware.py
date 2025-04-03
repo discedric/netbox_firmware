@@ -5,12 +5,12 @@ from utilities.filters import (
     NumericArrayFilter, TreeNodeMultipleChoiceFilter,
 )
 from django.utils.translation import gettext as _
-from dcim.models import DeviceType, Manufacturer, ModuleType
+from dcim.models import DeviceType, Manufacturer, ModuleType, Device, InventoryItem, Module
 from dcim.choices import DeviceStatusChoices
 from netbox_inventory.models import InventoryItemType
 from netbox.filtersets import NetBoxModelFilterSet
-from .models import Firmware, FirmwareAssignment
-from . import choices
+from ..models import Firmware, FirmwareAssignment
+from .. import choices
 
 
 class FirmwareFilterSet(NetBoxModelFilterSet):
@@ -181,14 +181,29 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Firmware.objects.all(),
         label=_('Firmware (ID)'),
     )
-    device = MultiValueCharFilter(
-        lookup_expr='icontains',
+    device = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        field_name='device__name',
+        to_field_name='name',
+        label=_('Device (name)'),
     )
-    module = MultiValueCharFilter(
-        lookup_expr='icontains',
+    device_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        label=_('Device (ID)'),
     )
-    inventory_item = MultiValueCharFilter(
-        lookup_expr='icontains',
+    module_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Module.objects.all(),
+        label=_('Module (ID)'),
+    )
+    inventory_item = django_filters.ModelMultipleChoiceFilter(
+        queryset=InventoryItem.objects.all(),
+        field_name='inventory_item__name',
+        to_field_name='name',
+        label=_('Inventory Item (name)'),
+    )
+    inventory_item_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=InventoryItem.objects.all(),
+        label=_('Inventory Item (ID)'),
     )
     
     

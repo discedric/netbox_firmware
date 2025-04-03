@@ -9,14 +9,14 @@ from utilities.forms.fields import (
 )
 from utilities.forms.rendering import FieldSet, TabbedGroups
 
-from ..choices import FirmwareStatusChoices
-from ..models import (
-    Firmware,
-    FirmwareAssignment
+from firmware_management.choices import FirmwareStatusChoices
+from firmware_management.models import (
+    Bios,
+    BiosAssignment
 )
-from ..utils import get_plugin_setting
+from firmware_management.utils import get_plugin_setting
 
-class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
+class BiosBulkEditForm(NetBoxModelBulkEditForm):
     name = forms.CharField(required=False, label='Name')
     status = forms.ChoiceField(
         choices=FirmwareStatusChoices,
@@ -66,7 +66,7 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
     )
     comments = CommentField()
     
-    model = Firmware
+    model = Bios
     fieldsets=(
         FieldSet('name', 'file_name', 'file', 'status', 'description',name='General'),
         FieldSet(
@@ -82,50 +82,9 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
     nullable_fields = ['device_type', 'module_type', 'inventory_item_type']
     
 
-class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
-    manufacturer = DynamicModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        selector=True,
-        required=False,
-        label='Manufacturer',
-        initial_params={
-            'device_types': '$device_type',
-            'module_types': '$module_type',
-            'inventory_item_types': '$inventory_item_type',
-            'firmware': '$firmware',
-        },
-    )
+class BiosAssignmentBulkEditForm(NetBoxModelBulkEditForm):
     description = forms.CharField(
         required=False,
-    )
-    
-    # Hardware Type -------------------------
-    device_type = DynamicModelChoiceField(
-        queryset=DeviceType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Device Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
-    )
-    module_type = DynamicModelChoiceField(
-        queryset=ModuleType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Netbox Inventory Item Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
-    )
-    item_type = DynamicModelChoiceField(
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Netbox Inventory Item Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
     )
     
     # Hardware Items ------------------------
@@ -135,66 +94,43 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
         required=False,
         selector=True,
         label='Device',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
-        },
     )
     module = DynamicModelChoiceField(
         queryset = Module.objects.all(),
         required=False,
         selector=True,
         label='Module',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'module_type_id': '$module_type',
-        },
     )
     inventory_item = DynamicModelChoiceField(
         queryset = InventoryItem.objects.all(),
         required=False,
         selector=True,
         label='Inventory Item',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'inventory_item_type_id': '$inventory_item_type',
-        },
     )
     
     # Update --------------------------------
-    firmware = DynamicModelChoiceField(
-        queryset=Firmware.objects.all(),
+    bios = DynamicModelChoiceField(
+        queryset=Bios.objects.all(),
         selector=True,
         required=False,
-        label='Firmware',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
-            'module_type_id': '$module_type',
-            'inventory_item_type_id': '$inventory_item_type',
-        },
+        label='Bios',
     )
     comment = CommentField()
     patch_date = forms.DateField(
         required=False,
         label='Patch Date',
-        help_text='Date of the firmware patch'
+        help_text='Date of the bios patch'
     )
     ticket_number = forms.CharField(
         required=False,
         label='Ticket Number',
-        help_text='Ticket number for the firmware patch'
+        help_text='Ticket number for the bios patch'
     )
     
-    model= FirmwareAssignment
+    model= BiosAssignment
     fieldsets = (
         FieldSet(
-            'manufacturer','description',
-            TabbedGroups(
-                FieldSet('device_type',name='Device Type'),
-                FieldSet('module_type',name='Module Type'),
-                FieldSet('item_type',name='Inventory Item Type'),
-            ),
+            'description',
             TabbedGroups(
                 FieldSet('device',name='Device'),
                 FieldSet('module',name='Module'),
@@ -203,8 +139,8 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             name='Hardware'
         ),
         FieldSet(
-            'ticket_number','firmware','patch_date','comment',
+            'ticket_number','bios','patch_date','comment',
             name='Update'
         ),
     )
-    nullable_fields = ['device_type', 'module_type', 'item_type', 'device', 'module', 'inventory_item', 'ticket_number', 'patch_date', 'comment']
+    nullable_fields = ['device', 'module', 'inventory_item', 'ticket_number', 'patch_date', 'comment']

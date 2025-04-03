@@ -2,7 +2,7 @@ from netbox.api.viewsets import NetBoxModelViewSet
 from .. import models
 from .. import filtersets
 from .serializers import (
-    FirmwareSerializer, FirmwareAssignmentSerializer
+    FirmwareSerializer, FirmwareAssignmentSerializer, BiosSerializer, BiosAssignmentSerializer
 )
 """
     Let op wanneer je een view aanmaakt.
@@ -18,3 +18,13 @@ class FirmwareAssigmentViewSet(NetBoxModelViewSet):
     queryset = models.FirmwareAssignment.objects.all()
     serializer_class = FirmwareAssignmentSerializer
     filterset_class = filtersets.FirmwareAssignmentFilterSet
+    
+class BiosViewSet(NetBoxModelViewSet):
+    queryset = models.Bios.objects.all()
+    serializer_class = BiosSerializer
+    filterset_class = filtersets.BiosFilterSet
+    
+class BiosAssigmentViewSet(NetBoxModelViewSet):
+    queryset = models.BiosAssignment.objects.all()
+    serializer_class = BiosAssignmentSerializer
+    filterset_class = filtersets.BiosAssignmentFilterSet

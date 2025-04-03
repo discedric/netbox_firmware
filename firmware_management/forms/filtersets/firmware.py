@@ -11,7 +11,7 @@ from utilities.forms.fields import ColorField, DynamicModelMultipleChoiceField, 
 from utilities.forms.rendering import FieldSet
 from utilities.forms.widgets import NumberWithOptions
 from wireless.choices import *
-from ..models import Firmware, FirmwareAssignment
+from firmware_management.models import Firmware, FirmwareAssignment
 
 class FirmwareFilterForm(NetBoxModelFilterSetForm):
     model = Firmware

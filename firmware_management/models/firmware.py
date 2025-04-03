@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ValidationError
 from django.urls import reverse
 
-from .choices import HardwareKindChoices, FirmwareStatusChoices
+from ..choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
 from netbox_inventory.models import InventoryItemType
 from dcim.models import Manufacturer, DeviceType, ModuleType, InventoryItem, Device, Module

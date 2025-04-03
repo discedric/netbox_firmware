@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from ..models import Firmware, FirmwareAssignment
+from firmware_management.models import Firmware, FirmwareAssignment
 
 from netbox.forms import NetBoxModelForm
 from utilities.forms.fields import CommentField, DynamicModelChoiceField
@@ -94,9 +94,9 @@ class FirmwareReassignMixin(forms.Form):
         cleaned_data = super().clean()
         if self.errors:
             return cleaned_data
-
+        print(cleaned_data)
         # Ensure the firmware is provided
-        firmware = cleaned_data.get('firmware')
+        firmware = cleaned_data['firmware']
         if not firmware:
             raise ValidationError("Firmware is required for reassignment.")
 
@@ -125,7 +125,7 @@ class FirmwareDeviceReassignForm(FirmwareReassignMixin, NetBoxModelForm):
         required=True,
         help_text='Select the firmware to be reassigned.',
         query_params={
-            'kind': 'device',
+            'device_type': '$self__device_type',
         },
     )
 
