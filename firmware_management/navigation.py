@@ -91,9 +91,9 @@ if get_plugin_config('firmware_management', 'top_level_menu'):
         label=f'Firmwares',
         groups=(
             ('Firmware', firmware_items),
-            #('BIOS', bios_items),
+            ('BIOS', bios_items),
         ),
         icon_class = 'mdi mdi-clipboard-text-multiple-outline'
     )
 else:
-    menu_items = firmware_items #+ bios_items
+    menu_items = firmware_items + bios_items

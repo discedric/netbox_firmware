@@ -23,20 +23,34 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
     
     selector_fields = ('q', 'status')
     
+    manufacturer_id = DynamicModelMultipleChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=False,
+        label=_('Manufacturer')
+    )
     device_type_id = DynamicModelMultipleChoiceField(
         queryset=DeviceType.objects.all(),
         required=False,
-        label=_('Device Type')
+        label=_('Device Type'),
+        query_params={
+            'manufacturer_id': '$manufacturer_id'
+        },
     )
     module_type_id = DynamicModelMultipleChoiceField(
         queryset=ModuleType.objects.all(),
         required=False,
-        label=_('Module Type')
+        label=_('Module Type'),
+        query_params={
+            'manufacturer_id': '$manufacturer_id'
+        },
     )
     inventory_item_type_id = DynamicModelMultipleChoiceField(
         queryset=InventoryItemType.objects.all(),
         required=False,
-        label=_('Inventory Item Type')
+        label=_('Inventory Item Type'),
+        query_params={
+            'manufacturer_id': '$manufacturer_id'
+        },
     )
     status = forms.MultipleChoiceField(
         label=_('Status'),
@@ -57,25 +71,48 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     
     selector_fields = ('q', 'patch_date', 'device_id', 'module_id', 'inventory_item_id', 'bios_id')
     
+    manufacturer_id = DynamicModelMultipleChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=False,
+        label=_('Manufacturer')
+    )
+
     device_id = DynamicModelMultipleChoiceField(
         queryset=Device.objects.all(),
         required=False,
-        label=_('Device')
+        label=_('Device'),
+        query_params={
+            'device_type__manufacturer_id': '$manufacturer_id'
+        },
     )
     module_id = DynamicModelMultipleChoiceField(
         queryset=Module.objects.all(),
         required=False,
-        label=_('Module')
+        label=_('Module'),
+        query_params={
+            'module_type__manufacturer_id': '$manufacturer_id'
+        },
     )
     inventory_item_id = DynamicModelMultipleChoiceField(
         queryset=InventoryItem.objects.all(),
         required=False,
-        label=_('Inventory Item')
+        label=_('Inventory Item'),
+        query_params={
+            'manufacturer_id': '$manufacturer_id'
+        },
     )
     bios_id = DynamicModelMultipleChoiceField(
         queryset=Bios.objects.all(),
         required=False,
-        label=_('Bios')
+        label=_('Bios'),
+        query_params={
+            'device__device_type__manufacturer_id': '$manufacturer_id',
+            'module__module_type__manufacturer_id': '$manufacturer_id',
+            'inventory_item__manufacturer_id': '$manufacturer_id',
+            'device_id': '$device_id',
+            'module_id': '$module_id',
+            'inventory_item_id': '$inventory_item_id'
+        },
     )
     patch_date = forms.DateField(
         label=_('Patch Date'),

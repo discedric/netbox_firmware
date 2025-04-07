@@ -1,0 +1,81 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load humanize %}
+{% load plugins %}
+
+{% block title %}Assignment {{ object.id }}{% endblock %}
+
+{% block breadcrumbs %}
+{% if object.device or object.module or object.inventory_item %}
+  {{ block.super }}
+  <li class="breadcrumb-item">
+    <a href="{% url 'plugins:firmware_management:biosassignment_list' %}?{{ object.kind }}_type_id={{ object.hardware_type.pk }}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a>
+  </li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Bios Assignment</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Ticket Number</th>
+            <td>{{ object.ticket_number|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Patch Date</th>
+            <td>{{ object.patch_date|date:"d-m-Y" }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Comment</th>
+            <td>{{ object.comment|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h5 class="card-header">Hardware</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Bios</th>
+            <td><a href="{{ object.bios.get_absolute_url }}">{{ object.bios|placeholder }}</a></td>
+          </tr>
+          {% if object.device %}
+            <tr>
+              <th scope="row">Device</th>
+              <td><a href="{{ object.device.get_absolute_url }}">{{ object.device|placeholder }}</a></td>
+            </tr>
+          {% elif object.module %}
+            <tr>
+              <th scope="row">Module</th>
+              <td><a href="{{ object.module.get_absolute_url }}">{{ object.module|placeholder }}</a></td>
+            </tr>
+          {% elif object.inventory_item %}
+            <tr>
+              <th scope="row">Inventory Item</th>
+              <td><a href="{{ object.inventory_item.get_absolute_url }}">{{ object.inventory_item|placeholder }}</a></td>
+            </tr>
+          {% endif %}
+        </table>
+      </div>
+
+      {% include 'inc/panels/custom_fields.html' %}
+      {% plugin_left_page object %}
+    </div>
+    <div class="col col-md-6">
+      {% include 'inc/panels/comments.html' %}
+      {% plugin_right_page object %}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col col-md-12">
+      {% plugin_full_width_page object %}
+    </div>
+  </div>
+{% endblock content %}

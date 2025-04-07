@@ -154,7 +154,7 @@ class Bios(NetBoxModel):
         ]
 
     def __str__(self):
-        return f'{self.name} ({self.manufacturer})'
+        return f'{self.name}'
 
 
 class BiosAssignment(NetBoxModel):
