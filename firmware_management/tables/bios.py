@@ -1,4 +1,5 @@
 from django_tables2 import tables
+from django.urls import reverse
 
 from netbox.tables import NetBoxTable, columns
 from ..models import Bios, BiosAssignment
@@ -12,8 +13,8 @@ __all__ = (
 )
 
 class BiosTable(NetBoxTable):
-    """"
-     zorg voor een counter zodat je ziet hoeveel keer deze assigned is
+    """
+    Zorg voor een counter zodat je ziet hoeveel keer deze assigned is
     """
     name = tables.Column(
         linkify=True,
@@ -24,21 +25,28 @@ class BiosTable(NetBoxTable):
     device_type = tables.Column(
         accessor='device_type',
         linkify=True,
-        )
+    )
     module_type = tables.Column(
         accessor='module_type',
         linkify=True,
-        )
+    )
     inventory_item_type = tables.Column(accessor='inventory_item_type', linkify=True)
+    assignment_count = tables.Column(
+        verbose_name='Assignment Count',
+        accessor='biosassignment_count',
+        linkify=lambda record: reverse('plugins:firmware_management:biosassignment_list') + f'?bios_id={record.pk}',
+    )
     actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
         model = Bios
         fields = ('name', 'file_name', 'comments', 'status', 
                   'module_type', 'device_type', 'inventory_item_type',
-                  'actions'
+                  'assignment_count', 'actions'
                   )
         attrs = {"class": "table table-striped table-bordered"}
+    
+    
 
 class BiosAssignmentTable(NetBoxTable):
     description = tables.Column()
@@ -52,7 +60,7 @@ class BiosAssignmentTable(NetBoxTable):
     class Meta:
         model = BiosAssignment
         fields = ('description','ticket_number','patch_date',
-                  'firmware','device',
+                  'bios','device',
                   'inventory_item', 'module',
                   )
         attrs = {"class": "table table-striped table-bordered"}
