@@ -106,8 +106,6 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
         required=False,
         label=_('Bios'),
         query_params={
-            'device__device_type__manufacturer_id': '$manufacturer_id',
-            'module__module_type__manufacturer_id': '$manufacturer_id',
             'inventory_item__manufacturer_id': '$manufacturer_id',
             'device_id': '$device_id',
             'module_id': '$module_id',

@@ -11,6 +11,7 @@ urlpatterns = [
     path('firmwares/<int:pk>/journal/', views.FirmwareJournalView.as_view(), name='firmware_journal'),
 
     path('device/<int:device_id>/reassign/', views.FirmwareDeviceReassignView.as_view(), name='firmware_device_reassign'),
+    path('module/<int:module_id>/reassign/', views.FirmwareModuleReassignView.as_view(), name='firmware_module_reassign'),
     
     # Assignments
     path('assignment/', include(get_model_urls('firmware_management','firmwareassignment',detail=False))),

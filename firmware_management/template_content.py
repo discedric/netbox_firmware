@@ -89,19 +89,19 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         context = {
             'firmware_stats': [
                 {
-                    'label': 'Device',
+                    'label': 'Devices',
                     'filter_field': 'manufacturer_id',
                     'extra_filter': '&sort=device_type',
                     'count': count_device,
                 },
                 {
-                    'label': 'Module',
+                    'label': 'Modules',
                     'filter_field': 'manufacturer_id',
                     'extra_filter': '&sort=module_type',
                     'count': count_module,
                 },
                 {
-                    'label': 'Inventory Item',
+                    'label': 'Inventory Items',
                     'filter_field': 'manufacturer_id',
                     'extra_filter': '&sort=inventory_item_type',
                     'count': count_inventory_item,

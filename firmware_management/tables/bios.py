@@ -47,11 +47,12 @@ class BiosAssignmentTable(NetBoxTable):
     module = tables.Column(accessor='module',verbose_name="Module",linkify=True,)
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
     inventory_item = tables.Column(accessor='inventory_item', verbose_name='Inventory Item',linkify=True,)
-
-    class Meta:
+    actions = columns.ActionsColumn()
+    
+    class Meta(NetBoxTable.Meta):
         model = BiosAssignment
         fields = ('description','ticket_number','patch_date',
                   'firmware','device',
-                  'inventory_item', 'module',
+                  'inventory_item', 'module'
                   )
 

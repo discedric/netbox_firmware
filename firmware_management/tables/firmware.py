@@ -19,6 +19,7 @@ class FirmwareTable(NetBoxTable):
         linkify=True,
     )
     file_name = tables.Column()
+    description = tables.Column()
     comments = tables.Column()
     status = tables.Column()
     manufacturer = tables.Column(
@@ -59,7 +60,7 @@ class FirmwareAssignmentTable(NetBoxTable):
     inventory_item = tables.Column(accessor='inventory_item', verbose_name='Inventory Item',linkify=True,)
     inventory_item_type = tables.Column(accessor='inventory_item_type',linkify=True,)
 
-    class Meta:
+    class Meta(NetBoxTable.Meta):
         model = FirmwareAssignment
         fields = ('description','ticket_number','patch_date',
                   'firmware','manufacturer',

@@ -23,10 +23,6 @@ class BiosBulkEditForm(NetBoxModelBulkEditForm):
         required=False,
         label='Status',
     )
-    file = forms.FileField(
-        required=False,
-        label='File',
-    )
     description = forms.CharField(
         required=False,
     )
@@ -68,7 +64,7 @@ class BiosBulkEditForm(NetBoxModelBulkEditForm):
     
     model = Bios
     fieldsets=(
-        FieldSet('name', 'file_name', 'file', 'status', 'description',name='General'),
+        FieldSet('name', 'file_name', 'status', 'description',name='General'),
         FieldSet(
             'manufacturer',
             TabbedGroups(

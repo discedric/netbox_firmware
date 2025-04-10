@@ -144,8 +144,8 @@ class Bios(NetBoxModel):
     class Meta:
         ordering = ('name','device_type', 'module_type', 'inventory_item_type',)
         unique_together = ('name', 'device_type', 'module_type', 'inventory_item_type')
-        verbose_name = 'Bios'
-        verbose_name_plural = 'Bios'
+        verbose_name = 'BIOS'
+        verbose_name_plural = 'BIOS'
         constraints = [
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False) | models.Q(inventory_item_type__isnull=False),
@@ -204,8 +204,8 @@ class BiosAssignment(NetBoxModel):
         check constraints to ensure that either a device, module or inventory item type is set
         """
         ordering = ('bios', 'device', 'module', 'inventory_item')
-        verbose_name = 'Bios Assignment'
-        verbose_name_plural = 'Bios Assignments'
+        verbose_name = 'BIOS Assignment'
+        verbose_name_plural = 'BIOS Assignments'
         constraints = [
             models.CheckConstraint(
                 check=models.Q(device__isnull=False) | models.Q(module__isnull=False) | models.Q(inventory_item__isnull=False),
@@ -214,4 +214,4 @@ class BiosAssignment(NetBoxModel):
         ]
 
     def __str__(self):
-        return f"{self.device} - {self.device_type} - {self.inventory_item_type}"
+        return f"{self.device}"

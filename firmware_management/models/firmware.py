@@ -154,7 +154,7 @@ class Firmware(NetBoxModel):
         ordering = ('name','device_type', 'module_type', 'manufacturer', 'inventory_item_type',)
         unique_together = ('name', 'manufacturer', 'device_type', 'module_type', 'inventory_item_type')
         verbose_name = 'Firmware'
-        verbose_name_plural = 'Firmware'
+        verbose_name_plural = 'Firmwares'
         constraints = [
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False) | models.Q(inventory_item_type__isnull=False),
