@@ -1,2 +1,1 @@
-
-firmware_management/__pycache__/*
+*.pyc

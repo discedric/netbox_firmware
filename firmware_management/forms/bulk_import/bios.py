@@ -31,11 +31,7 @@ class BiosImportForm(NetBoxModelImportForm):
         to_field_name='model',
         help_text=_('Device type model')
     )
-    status = CSVChoiceField(
-        label=_('Status'),
-        choices=DeviceStatusChoices,
-        help_text=_('Operational status')
-    )
+    
     inventory_item_type = CSVModelChoiceField(
         label=_('Inventory item type'),
         queryset=InventoryItemType.objects.all(),
@@ -49,6 +45,19 @@ class BiosImportForm(NetBoxModelImportForm):
         required=False,
         to_field_name='name',
         help_text=_('Module type')
+    )
+    
+    hardware_kind = CSVTypedChoiceField(
+        label=_('Hardware kind'),
+        choices=HardwareKindChoices,
+        required=True,
+        help_text=_('Type of hardware')
+    )
+    
+    status = CSVChoiceField(
+        label=_('Status'),
+        choices=DeviceStatusChoices,
+        help_text=_('Operational status')
     )
     name = forms.CharField(
         label=_('Name'),
