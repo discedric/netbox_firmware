@@ -22,7 +22,6 @@ class FirmwareType(NetBoxObjectType):
     manufacturer: Annotated["ManufacturerType", strawberry.lazy('dcim.graphql.types')]
     device_type: Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
-    inventory_item_type: Annotated["InventoryItemTypeType", strawberry.lazy("netbox_inventory.graphql.types")] | None
 
 @strawberry_django.type(FirmwareAssignment, fields='__all__', filters=FirmwareAssignmentFilter)
 class FirmwareAssignmentType(NetBoxObjectType):
@@ -30,7 +29,6 @@ class FirmwareAssignmentType(NetBoxObjectType):
     manufacturer: Annotated["ManufacturerType", strawberry.lazy('dcim.graphql.types')]
     device_type: Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
-    inventory_item_type: Annotated["InventoryItemTypeType", strawberry.lazy("netbox_inventory.graphql.types")] | None
     module: Annotated["ModuleType", strawberry.lazy('dcim.graphql.types')] | None
     device: Annotated["DeviceType", strawberry.lazy('dcim.graphql.types')] | None
     inventory_item: Annotated["InventoryItemType", strawberry.lazy('dcim.graphql.types')] | None

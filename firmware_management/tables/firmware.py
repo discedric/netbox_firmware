@@ -35,14 +35,13 @@ class FirmwareTable(NetBoxTable):
         accessor='module_type',
         linkify=True,
         )
-    inventory_item_type = tables.Column(accessor='inventory_item_type')
     actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
         model = Firmware
         fields = ('name', 'file_name', 'comments', 'status', 
                   'manufacturer', 
-                  'module_type', 'device_type', 'inventory_item_type',
+                  'module_type', 'device_type',
                   'actions'
                   )
         
@@ -58,14 +57,13 @@ class FirmwareAssignmentTable(NetBoxTable):
     module = tables.Column(accessor='module',verbose_name="Module",linkify=True,)
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
     inventory_item = tables.Column(accessor='inventory_item', verbose_name='Inventory Item',linkify=True,)
-    inventory_item_type = tables.Column(accessor='inventory_item_type',linkify=True,)
 
     class Meta(NetBoxTable.Meta):
         model = FirmwareAssignment
         fields = ('description','ticket_number','patch_date',
                   'firmware','manufacturer',
                   'device_type','device',
-                  'inventory_item','inventory_item_type',
+                  'inventory_item',
                   'module','module_type'
                   )
         

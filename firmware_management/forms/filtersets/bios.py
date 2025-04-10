@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from dcim.choices import DeviceStatusChoices
 from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
-from netbox_inventory.models import InventoryItemType
 from netbox.choices import *
 from netbox.forms import NetBoxModelFilterSetForm
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES, FilterForm, add_blank_choice
@@ -18,7 +17,7 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag', name=_('General')),
         FieldSet('status',name=_('Status')),
-        FieldSet('device_type_id', 'module_type_id', 'inventory_item_type_id', name=_('Hardware')),
+        FieldSet('device_type_id', 'module_type_id', name=_('Hardware')),
     )
     
     selector_fields = ('q', 'status')
@@ -40,14 +39,6 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
         queryset=ModuleType.objects.all(),
         required=False,
         label=_('Module Type'),
-        query_params={
-            'manufacturer_id': '$manufacturer_id'
-        },
-    )
-    inventory_item_type_id = DynamicModelMultipleChoiceField(
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        label=_('Inventory Item Type'),
         query_params={
             'manufacturer_id': '$manufacturer_id'
         },

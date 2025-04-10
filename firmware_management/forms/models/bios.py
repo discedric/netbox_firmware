@@ -1,8 +1,6 @@
 from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
-from netbox_inventory.models import InventoryItemType
 from django import forms
 from netbox.forms import NetBoxModelForm
-from netbox_inventory.choices import HardwareKindChoices
 from utilities.forms.fields import CommentField, DynamicModelChoiceField
 from utilities.forms.rendering import FieldSet, TabbedGroups
 from utilities.forms.widgets import DatePicker, ClearableFileInput
@@ -33,12 +31,6 @@ class BiosForm(NetBoxModelForm):
         selector=True,
         label='Module Type',
     )
-    inventory_item_type = DynamicModelChoiceField(
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        selector=True,
-        label='Inventory Item Type',
-    )
     comments = CommentField()
     
     fieldsets=(
@@ -46,8 +38,7 @@ class BiosForm(NetBoxModelForm):
         FieldSet(
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
-                FieldSet('module_type',name='Module Type'),
-                FieldSet('inventory_item_type',name='Inventory Item Type'),
+                FieldSet('module_type',name='Module Type')
             ),
             name='Hardware'
         ),
@@ -62,7 +53,6 @@ class BiosForm(NetBoxModelForm):
             'description',
             'device_type',
             'module_type',
-            'inventory_item_type',
             'status',
             'comments',
         ]
@@ -81,7 +71,6 @@ class BiosForm(NetBoxModelForm):
             if (
                 self.instance.device_type
                 or self.instance.module_type
-                or self.instance.inventory_item_type
             ):
                 self.no_hardware_type = False
     

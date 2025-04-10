@@ -7,7 +7,6 @@ from utilities.filters import (
 from django.utils.translation import gettext as _
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, InventoryItem, Module
 from dcim.choices import DeviceStatusChoices
-from netbox_inventory.models import InventoryItemType
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Firmware, FirmwareAssignment
 from .. import choices
@@ -47,16 +46,6 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         queryset=DeviceType.objects.all(),
         label=_('Device type (ID)'),
     )
-    inventory_item_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='inventory_item_type__slug',
-        queryset=InventoryItemType.objects.all(),
-        to_field_name='slug',
-        label=_('Inventory item type name (slug)'),
-    )
-    inventory_item_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=InventoryItemType.objects.all(),
-        label=_('Inventory item type (ID)'),
-    )
     module_type = django_filters.ModelMultipleChoiceFilter(
         field_name='module_type__model',
         queryset=ModuleType.objects.all(),
@@ -79,7 +68,7 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         fields = {
             'id', 'name', 'file_name', 'status',
             'manufacturer', 
-            'device_type', 'module_type', 'inventory_item_type',
+            'device_type', 'module_type',
         }
     
     def search(self, queryset, name, value):
@@ -148,16 +137,6 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=ModuleType.objects.all(),
         label=_('Module type (ID)'),
     )
-    inventory_item_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='inventory_item_type__slug',
-        queryset=InventoryItemType.objects.all(),
-        to_field_name='slug',
-        label=_('Inventory item type (slug)'),
-    )
-    inventory_item_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=InventoryItemType.objects.all(),
-        label=_('Inventory item type (ID)'),
-    )
     description = MultiValueCharFilter(
         lookup_expr='icontains',
     )
@@ -214,7 +193,7 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
             'firmware', 'manufacturer', 
             'device_type', 'device', 
             'module_type', 'module',
-            'inventory_item', 'inventory_item_type',
+            'inventory_item',
         }
     
     def search(self, queryset, name, value):

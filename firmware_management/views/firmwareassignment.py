@@ -46,8 +46,7 @@ class FirmwareAssignmentJournalView(generic.ObjectJournalView):
 class FirmwareAssignmentListView(generic.ObjectListView):
     queryset = models.FirmwareAssignment.objects.prefetch_related(
         'manufacturer',
-        'device_type',
-        'inventory_item_type'
+        'device_type'
     )
     filterset = filtersets.FirmwareAssignmentFilterSet
     filterset_form = forms.FirmwareAssignmentFilterForm

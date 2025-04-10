@@ -48,8 +48,7 @@ class FirmwareListView(generic.ObjectListView):
     queryset = models.Firmware.objects.prefetch_related(
         'manufacturer',
         'device_type',
-        'module_type',
-        'inventory_item_type'
+        'module_type'
     )
     filterset = filtersets.FirmwareFilterSet
     filterset_form = forms.FirmwareFilterForm

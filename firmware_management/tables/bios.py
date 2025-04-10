@@ -29,13 +29,12 @@ class BiosTable(NetBoxTable):
         accessor='module_type',
         linkify=True,
         )
-    inventory_item_type = tables.Column(accessor='inventory_item_type', linkify=True)
     actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
         model = Bios
         fields = ('name', 'file_name', 'comments', 'status', 
-                  'module_type', 'device_type', 'inventory_item_type',
+                  'module_type', 'device_type',
                   'actions'
                   )
 

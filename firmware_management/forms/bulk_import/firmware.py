@@ -42,13 +42,6 @@ class FirmwareImportForm(NetBoxModelImportForm):
         choices=DeviceStatusChoices,
         help_text=_('Operational status')
     )
-    inventory_item_type = CSVModelChoiceField(
-        label=_('Inventory item type'),
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        to_field_name='name',
-        help_text=_('Inventory item type')
-    )
     module_type = CSVModelChoiceField(
         label=_('Module type'),
         queryset=ModuleType.objects.all(),
@@ -78,7 +71,7 @@ class FirmwareImportForm(NetBoxModelImportForm):
 
     class Meta:
         model = Firmware
-        fields = ['name', 'file_name', 'status', 'description', 'comments', 'manufacturer', 'device_type', 'inventory_item_type', 'module_type']
+        fields = ['name', 'file_name', 'status', 'description', 'comments', 'manufacturer', 'device_type', 'module_type']
         labels = {
             'name': 'Name',
             'file_name': 'File name',
@@ -87,7 +80,6 @@ class FirmwareImportForm(NetBoxModelImportForm):
             'comments': 'Comments',
             'manufacturer': 'Manufacturer',
             'device_type': 'Device type',
-            'inventory_item_type': 'Inventory item type',
             'module_type': 'Module type',
         }
         help_texts = {
@@ -98,7 +90,6 @@ class FirmwareImportForm(NetBoxModelImportForm):
             'comments': 'Additional comments about the firmware',
             'manufacturer': 'The manufacturer which produces this device type',
             'device_type': 'The type of device',
-            'inventory_item_type': 'The type of inventory item',
             'module_type': 'The type of module',
         }
 
@@ -133,13 +124,6 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
         required=False,
         to_field_name='name',
         help_text=_('Module type')
-    )
-    inventory_item_type = CSVModelChoiceField(
-        label=_('Inventory item type'),
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        to_field_name='name',
-        help_text=_('Inventory item type')
     )
     device = CSVModelChoiceField(
         label=_('Device'),
@@ -185,13 +169,12 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
 
     class Meta:
         model = FirmwareAssignment
-        fields = ['manufacturer', 'device_type', 'firmware', 'module_type', 'inventory_item_type', 'device', 'module', 'inventory_item', 'comments', 'patch_date', 'ticket_number', 'description']
+        fields = ['manufacturer', 'device_type', 'firmware', 'module_type', 'device', 'module', 'inventory_item', 'comments', 'patch_date', 'ticket_number', 'description']
         labels = {
             'firmware': 'Firmware',
             'manufacturer': 'Manufacturer',
             'device_type': 'Device type',
             'module_type': 'Module type',
-            'inventory_item_type': 'Inventory item type',
             'device': 'Device',
             'module': 'Module',
             'inventory_item': 'Inventory item',
@@ -205,7 +188,6 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
             'manufacturer': 'Device type manufacturer',
             'device_type': 'Device type model',
             'module_type': 'Module type',
-            'inventory_item_type': 'Inventory item type',
             'device': 'Device name',
             'module': 'Module name',
             'inventory_item': 'Inventory item name',

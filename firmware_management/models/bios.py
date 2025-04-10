@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from ..choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
-from netbox_inventory.models import InventoryItemType
 from dcim.models import Manufacturer, DeviceType, ModuleType, InventoryItem, Device, Module
 from dcim.choices import DeviceStatusChoices
 
@@ -65,14 +64,6 @@ class Bios(NetBoxModel):
         null=True,
         verbose_name='Device Type',
     )
-    inventory_item_type = models.ForeignKey(
-        to=InventoryItemType,
-        on_delete=models.PROTECT,
-        related_name='bios',
-        blank=True,
-        null=True,
-        verbose_name='Inventory Item Type',
-    )
     module_type = models.ForeignKey(
         to=ModuleType,
         on_delete=models.PROTECT,
@@ -84,15 +75,13 @@ class Bios(NetBoxModel):
     
     clone_fields = [
         'name','description', 'file_name', 'status', 'device_type',
-        'inventory_item_type', 'comments', 'module_type'
+        'comments', 'module_type'
     ]
 
     @property
     def kind(self):
         if self.device_type_id:
             return 'device'
-        elif self.inventory_item_type_id:
-            return 'inventoryitem'
         elif self.module_type_id:
             return 'module'
         else:
@@ -103,7 +92,7 @@ class Bios(NetBoxModel):
     
     @property
     def hardware_type(self):
-        return self.device_type or self.inventory_item_type or self.module_type or None
+        return self.device_type or self.module_type or None
     
     def clean(self):
         return super().clean()
@@ -115,7 +104,6 @@ class Bios(NetBoxModel):
                     bool,
                     [
                         self.device_type,
-                        self.inventory_item_type,
                         self.module_type
                     ],
                 )
@@ -123,15 +111,14 @@ class Bios(NetBoxModel):
             > 1
         ):
             raise ValidationError(
-                'Only one of device type, inventory item type or module type can be set'
+                'Only one of device type or module type can be set'
             )
         if (
             not self.device_type
-            and not self.inventory_item_type
             and not self.module_type
         ):
             raise ValidationError(
-                'One of device type, inventory item type or module type must be set'
+                'One of device type or module type must be set'
         )
 
     def get_absolute_url(self):
@@ -142,14 +129,14 @@ class Bios(NetBoxModel):
         return {field.name: field for field in cls._meta.get_fields()}
     
     class Meta:
-        ordering = ('name','device_type', 'module_type', 'inventory_item_type',)
-        unique_together = ('name', 'device_type', 'module_type', 'inventory_item_type')
+        ordering = ('name','device_type', 'module_type')
+        unique_together = ('name', 'device_type', 'module_type')
         verbose_name = 'BIOS'
         verbose_name_plural = 'BIOS'
         constraints = [
             models.CheckConstraint(
-                check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False) | models.Q(inventory_item_type__isnull=False),
-                name='bios_device_type_or_inventory_item_type_or_module_type_required'
+                check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
+                name='bios_device_type_or_module_type_required'
             )
         ]
 

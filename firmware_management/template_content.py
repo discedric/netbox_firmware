@@ -85,7 +85,6 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         user = self.context['request'].user
         count_device = Firmware.objects.restrict(user, 'view').filter(device_type__manufacturer=object).count()
         count_module = Firmware.objects.restrict(user, 'view').filter(module_type__manufacturer=object).count()
-        count_inventory_item = Firmware.objects.restrict(user, 'view').filter(inventory_item_type__manufacturer=object).count()
         context = {
             'firmware_stats': [
                 {
@@ -101,15 +100,9 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
                     'count': count_module,
                 },
                 {
-                    'label': 'Inventory Items',
-                    'filter_field': 'manufacturer_id',
-                    'extra_filter': '&sort=inventory_item_type',
-                    'count': count_inventory_item,
-                },
-                {
                     'label': 'Total',
                     'filter_field': 'manufacturer_id',
-                    'count': count_device + count_module + count_inventory_item,
+                    'count': count_device + count_module,
                 },
             ],
         }

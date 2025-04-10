@@ -31,14 +31,6 @@ class BiosImportForm(NetBoxModelImportForm):
         to_field_name='model',
         help_text=_('Device type model')
     )
-    
-    inventory_item_type = CSVModelChoiceField(
-        label=_('Inventory item type'),
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        to_field_name='name',
-        help_text=_('Inventory item type')
-    )
     module_type = CSVModelChoiceField(
         label=_('Module type'),
         queryset=ModuleType.objects.all(),
@@ -81,7 +73,7 @@ class BiosImportForm(NetBoxModelImportForm):
 
     class Meta:
         model = Bios
-        fields = ['name', 'file_name', 'status', 'description', 'comments', 'device_type', 'inventory_item_type', 'module_type']
+        fields = ['name', 'file_name', 'status', 'description', 'comments', 'device_type', 'module_type']
         labels = {
             'name': 'Name',
             'file_name': 'File name',
@@ -89,7 +81,6 @@ class BiosImportForm(NetBoxModelImportForm):
             'description': 'Description',
             'comments': 'Comments',
             'device_type': 'Device type',
-            'inventory_item_type': 'Inventory item type',
             'module_type': 'Module type',
         }
         help_texts = {
@@ -99,7 +90,6 @@ class BiosImportForm(NetBoxModelImportForm):
             'description': 'Description of the firmware',
             'comments': 'Additional comments about the firmware',
             'device_type': 'The type of device',
-            'inventory_item_type': 'The type of inventory item',
             'module_type': 'The type of module',
         }
 

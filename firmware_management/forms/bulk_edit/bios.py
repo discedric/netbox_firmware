@@ -1,7 +1,6 @@
 from django import forms
 
 from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
-from netbox_inventory.models import InventoryItemType
 from netbox.forms import NetBoxModelBulkEditForm
 from utilities.forms.fields import (
     CommentField,
@@ -51,15 +50,6 @@ class BiosBulkEditForm(NetBoxModelBulkEditForm):
             'manufacturer_id': '$manufacturer',
         },
     )
-    inventory_item_type = DynamicModelChoiceField(
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        selector=True,
-        query_params={
-           'manufacturer_id': '$manufacturer',
-        },
-        label='Inventory Item Type',
-    )
     comments = CommentField()
     
     model = Bios
@@ -70,12 +60,11 @@ class BiosBulkEditForm(NetBoxModelBulkEditForm):
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
                 FieldSet('module_type',name='Module Type'),
-                FieldSet('inventory_item_type',name='Inventory Item Type'),
             ),
             name='Hardware'
         ),
     )
-    nullable_fields = ['device_type', 'module_type', 'inventory_item_type']
+    nullable_fields = ['device_type', 'module_type']
     
 
 class BiosAssignmentBulkEditForm(NetBoxModelBulkEditForm):

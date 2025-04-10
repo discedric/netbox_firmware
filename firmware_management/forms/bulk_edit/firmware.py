@@ -1,7 +1,6 @@
 from django import forms
 
 from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
-from netbox_inventory.models import InventoryItemType
 from netbox.forms import NetBoxModelBulkEditForm
 from utilities.forms.fields import (
     CommentField,
@@ -51,15 +50,6 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
             'manufacturer_id': '$manufacturer',
         },
     )
-    inventory_item_type = DynamicModelChoiceField(
-        queryset=InventoryItemType.objects.all(),
-        required=False,
-        selector=True,
-        query_params={
-           'manufacturer_id': '$manufacturer',
-        },
-        label='Inventory Item Type',
-    )
     comments = CommentField()
     
     model = Firmware
@@ -70,7 +60,6 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
                 FieldSet('module_type',name='Module Type'),
-                FieldSet('inventory_item_type',name='Inventory Item Type'),
             ),
             name='Hardware'
         ),
@@ -107,15 +96,6 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
     )
     module_type = DynamicModelChoiceField(
         queryset=ModuleType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Netbox Inventory Item Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
-    )
-    item_type = DynamicModelChoiceField(
-        queryset=InventoryItemType.objects.all(),
         required=False,
         selector=True,
         label='Supported Netbox Inventory Item Type',
@@ -189,7 +169,6 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
                 FieldSet('module_type',name='Module Type'),
-                FieldSet('item_type',name='Inventory Item Type'),
             ),
             TabbedGroups(
                 FieldSet('device',name='Device'),
@@ -203,4 +182,4 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             name='Update'
         ),
     )
-    nullable_fields = ['device_type', 'module_type', 'item_type', 'device', 'module', 'inventory_item', 'ticket_number', 'patch_date', 'comment']
+    nullable_fields = ['device_type', 'module_type', 'device', 'module', 'inventory_item', 'ticket_number', 'patch_date', 'comment']

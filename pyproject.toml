@@ -1,7 +1,6 @@
 [build-system]
 requires = [
   "setuptools>=61.0",
-  "netbox_inventory",
   ]
 build-backend = "setuptools.build_meta"
 

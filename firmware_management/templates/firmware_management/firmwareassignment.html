@@ -66,14 +66,16 @@
             <th scope="row">Module Type</th>
             <td><a href="{{ object.module_type.get_absolute_url }}">{{ object.module_type|placeholder }}</a></td>
           </tr>
-          <tr>
-            <th scope="row">Inventory Item</th>
-            <td><a href="{{ object.inventory_item.get_absolute_url }}">{{ object.inventory_item|placeholder }}</a></td>
-          </tr>
-          <tr>
-            <th scope="row">Inventory Item Type</th>
-            <td><a href="{{ object.inventory_item_type.get_absolute_url }}">{{ object.inventory_item_type|placeholder }}</a></td>
-          </tr>
+          {% if object.inventory_item %}
+            <tr>
+              <th scope="row">Inventory Item</th>
+              <td><a href="{{ object.inventory_item.get_absolute_url }}">{{ object.inventory_item|placeholder }}</a></td>
+            </tr>
+            <tr>
+              <th scope="row">Inventory Item Type</th>
+              <td><a href="{{ object.inventory_item_type.get_absolute_url }}">{{ object.inventory_item_type|placeholder }}</a></td>
+            </tr>
+          {% endif %}
         </table>
       </div>
 

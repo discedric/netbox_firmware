@@ -47,8 +47,7 @@ class BiosJournalView(generic.ObjectJournalView):
 class BiosListView(generic.ObjectListView):
     queryset = models.Bios.objects.prefetch_related(
         'device_type',
-        'module_type',
-        'inventory_item_type'
+        'module_type'
     )
     filterset = filtersets.BiosFilterSet
     filterset_form = forms.BiosFilterForm
