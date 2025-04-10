@@ -1,4 +1,4 @@
-from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
+from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from django import forms
 from netbox.forms import NetBoxModelForm
 from utilities.forms.fields import CommentField, DynamicModelChoiceField
@@ -126,16 +126,6 @@ class BiosAssignmentForm(NetBoxModelForm):
             'module_type_id': '$module_type',
         },
     )
-    inventory_item = DynamicModelChoiceField(
-        queryset = InventoryItem.objects.all(),
-        required=False,
-        selector=True,
-        label='Inventory Item',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'inventory_item_type_id': '$inventory_item_type',
-        },
-    )
     
     # Update --------------------------------
     bios = DynamicModelChoiceField(
@@ -154,7 +144,6 @@ class BiosAssignmentForm(NetBoxModelForm):
             TabbedGroups(
                 FieldSet('device',name='Device'),
                 FieldSet('module',name='Module'),
-                FieldSet('inventory_item',name='Inventory Item'),
             ),
             name='Hardware'
         ),
@@ -173,7 +162,6 @@ class BiosAssignmentForm(NetBoxModelForm):
             'comment',
             'bios',
             'device',
-            'inventory_item',
             'module',
         ]
         widgets = {

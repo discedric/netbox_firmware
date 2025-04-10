@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.views.generic.edit import FormView
-from ..forms.reassign import FirmwareDeviceReassignForm, FirmwareModuleReassignForm, FirmwareInventoryItemReassignForm
-from dcim.models import Device, Module, InventoryItem
+from ..forms.reassign import FirmwareDeviceReassignForm, FirmwareModuleReassignForm
+from dcim.models import Device, Module
 
 __all__ = (
     'FirmwareDeviceReassignView',

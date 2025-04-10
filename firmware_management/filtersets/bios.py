@@ -92,9 +92,6 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
     module = MultiValueCharFilter(
         lookup_expr='icontains',
     )
-    inventory_item = MultiValueCharFilter(
-        lookup_expr='icontains',
-    )
     
     
     class Meta:
@@ -103,7 +100,6 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
             'id', 'description', 'ticket_number', 'patch_date', 'comment',
             'bios', 'device', 
             'module',
-            'inventory_item',
         }
     
     def search(self, queryset, name, value):

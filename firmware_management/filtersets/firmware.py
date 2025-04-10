@@ -5,7 +5,7 @@ from utilities.filters import (
     NumericArrayFilter, TreeNodeMultipleChoiceFilter,
 )
 from django.utils.translation import gettext as _
-from dcim.models import DeviceType, Manufacturer, ModuleType, Device, InventoryItem, Module
+from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from dcim.choices import DeviceStatusChoices
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Firmware, FirmwareAssignment
@@ -87,21 +87,17 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         # Check which type field is provided in the filter
         device_type = self.data.get('device_type')
         module_type = self.data.get('module_type')
-        inventory_item_type = self.data.get('inventory_item_type')
 
         # Apply filtering based on the provided type
         if device_type:
             return queryset.filter(device_type__isnull=False)
         elif module_type:
             return queryset.filter(module_type__isnull=False)
-        elif inventory_item_type:
-            return queryset.filter(inventory_item_type__isnull=False)
 
         # If no specific type is provided, return all firmware objects where any type is not null
         return queryset.filter(
             Q(device_type__isnull=False) |
-            Q(module_type__isnull=False) |
-            Q(inventory_item_type__isnull=False)
+            Q(module_type__isnull=False)
     )
 
 
@@ -174,16 +170,6 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Module.objects.all(),
         label=_('Module (ID)'),
     )
-    inventory_item = django_filters.ModelMultipleChoiceFilter(
-        queryset=InventoryItem.objects.all(),
-        field_name='inventory_item__name',
-        to_field_name='name',
-        label=_('Inventory Item (name)'),
-    )
-    inventory_item_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=InventoryItem.objects.all(),
-        label=_('Inventory Item (ID)'),
-    )
     
     
     class Meta:
@@ -193,7 +179,6 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
             'firmware', 'manufacturer', 
             'device_type', 'device', 
             'module_type', 'module',
-            'inventory_item',
         }
     
     def search(self, queryset, name, value):

@@ -148,19 +148,3 @@ class FirmwareModuleReassignForm(FirmwareReassignMixin, NetBoxModelForm):
     class Meta:
         model = FirmwareAssignment
         fields = FirmwareReassignMixin.Meta.fields
-
-class FirmwareInventoryItemReassignForm(FirmwareReassignMixin, NetBoxModelForm):
-    hardware_type = 'inventory_item'
-
-    firmware = DynamicModelChoiceField(
-        queryset=Firmware.objects.all(),
-        label='Firmware',
-        required=True,
-        help_text='Select the firmware to be reassigned.',
-        query_params={
-            'kind': 'inventory_item',
-        },
-    )
-    class Meta:
-        model = FirmwareAssignment
-        fields = FirmwareReassignMixin.Meta.fields

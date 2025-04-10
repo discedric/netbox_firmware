@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from dcim.choices import DeviceStatusChoices
-from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
+from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.choices import *
 from netbox.forms import NetBoxModelFilterSetForm
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES, FilterForm, add_blank_choice
@@ -56,11 +56,11 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('device_id', 'module_id', 'inventory_item_id',name=_('Hardware')), 
+        FieldSet('device_id', 'module_id',name=_('Hardware')), 
         FieldSet('bios_id',name=_('Bios')),
     )
     
-    selector_fields = ('q', 'patch_date', 'device_id', 'module_id', 'inventory_item_id', 'bios_id')
+    selector_fields = ('q', 'patch_date', 'device_id', 'module_id', 'bios_id')
     
     manufacturer_id = DynamicModelMultipleChoiceField(
         queryset=Manufacturer.objects.all(),
@@ -84,23 +84,14 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
             'module_type__manufacturer_id': '$manufacturer_id'
         },
     )
-    inventory_item_id = DynamicModelMultipleChoiceField(
-        queryset=InventoryItem.objects.all(),
-        required=False,
-        label=_('Inventory Item'),
-        query_params={
-            'manufacturer_id': '$manufacturer_id'
-        },
-    )
     bios_id = DynamicModelMultipleChoiceField(
         queryset=Bios.objects.all(),
         required=False,
         label=_('Bios'),
         query_params={
-            'inventory_item__manufacturer_id': '$manufacturer_id',
+            'device__manufacturer_id': '$manufacturer_id',
             'device_id': '$device_id',
             'module_id': '$module_id',
-            'inventory_item_id': '$inventory_item_id'
         },
     )
     patch_date = forms.DateField(

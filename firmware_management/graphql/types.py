@@ -31,5 +31,4 @@ class FirmwareAssignmentType(NetBoxObjectType):
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
     module: Annotated["ModuleType", strawberry.lazy('dcim.graphql.types')] | None
     device: Annotated["DeviceType", strawberry.lazy('dcim.graphql.types')] | None
-    inventory_item: Annotated["InventoryItemType", strawberry.lazy('dcim.graphql.types')] | None
     

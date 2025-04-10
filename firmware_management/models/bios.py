@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from ..choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
-from dcim.models import Manufacturer, DeviceType, ModuleType, InventoryItem, Device, Module
+from dcim.models import Manufacturer, DeviceType, ModuleType, Device, Module
 from dcim.choices import DeviceStatusChoices
 
 class Bios(NetBoxModel):
@@ -173,14 +173,6 @@ class BiosAssignment(NetBoxModel):
         null=True, 
         blank=True
     )
-    inventory_item = models.ForeignKey(
-        to=InventoryItem, 
-        related_name='BiosAssignment',
-        on_delete=models.PROTECT,
-        verbose_name='Inventory Item',
-        null=True, 
-        blank=True
-    )
 
     clone_fields = [
         'bios', 'patch_date',
@@ -190,13 +182,13 @@ class BiosAssignment(NetBoxModel):
         """
         check constraints to ensure that either a device, module or inventory item type is set
         """
-        ordering = ('bios', 'device', 'module', 'inventory_item')
+        ordering = ('bios', 'device', 'module')
         verbose_name = 'BIOS Assignment'
         verbose_name_plural = 'BIOS Assignments'
         constraints = [
             models.CheckConstraint(
-                check=models.Q(device__isnull=False) | models.Q(module__isnull=False) | models.Q(inventory_item__isnull=False),
-                name='bios_device_or_module_or_inventory_item_required'
+                check=models.Q(device__isnull=False) | models.Q(module__isnull=False) ,
+                name='bios_device_or_module_required'
             ),
         ]
 

@@ -56,15 +56,18 @@ class FirmwareAssignmentTable(NetBoxTable):
     module_type = tables.Column(accessor='module_type',linkify=True,)
     module = tables.Column(accessor='module',verbose_name="Module",linkify=True,)
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
-    inventory_item = tables.Column(accessor='inventory_item', verbose_name='Inventory Item',linkify=True,)
 
     class Meta(NetBoxTable.Meta):
         model = FirmwareAssignment
         fields = ('description','ticket_number','patch_date',
                   'firmware','manufacturer',
                   'device_type','device',
-                  'inventory_item',
                   'module','module_type'
                   )
+        default_columns=(
+            'firmware', 'description', 'patch_date', 
+            'device', 'module',
+            'manufacturer', 'ticket_number',
+        )
         
 

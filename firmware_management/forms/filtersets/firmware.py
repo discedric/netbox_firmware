@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from dcim.choices import DeviceStatusChoices
-from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
+from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.choices import *
 from netbox.forms import NetBoxModelFilterSetForm
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES, FilterForm, add_blank_choice
@@ -56,11 +56,11 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', 'inventory_item_id',name=_('Hardware')), 
+        FieldSet('manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', name=_('Hardware')), 
         FieldSet('firmware_id',name=_('Firmware')),
     )
     
-    selector_fields = ('q', 'patch_date', 'manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', 'inventory_item_id', 'firmware_id')
+    selector_fields = ('q', 'patch_date', 'manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', 'firmware_id')
     
     manufacturer_id = DynamicModelMultipleChoiceField(
         queryset=Manufacturer.objects.all(),
@@ -98,11 +98,6 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
             'module_type_id': '$module_type_id'
         },
         label=_('Module')
-    )
-    inventory_item_id = DynamicModelMultipleChoiceField(
-        queryset=InventoryItem.objects.all(),
-        required=False,
-        label=_('Inventory Item')
     )
     firmware_id = DynamicModelMultipleChoiceField(
         queryset=Firmware.objects.all(),

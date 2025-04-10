@@ -1,6 +1,6 @@
 from django import forms
 
-from dcim.models import DeviceType, Manufacturer, ModuleType, InventoryItem, Device, Module
+from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.forms import NetBoxModelBulkEditForm
 from utilities.forms.fields import (
     CommentField,
@@ -86,12 +86,6 @@ class BiosAssignmentBulkEditForm(NetBoxModelBulkEditForm):
         selector=True,
         label='Module',
     )
-    inventory_item = DynamicModelChoiceField(
-        queryset = InventoryItem.objects.all(),
-        required=False,
-        selector=True,
-        label='Inventory Item',
-    )
     
     # Update --------------------------------
     bios = DynamicModelChoiceField(
@@ -119,7 +113,6 @@ class BiosAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             TabbedGroups(
                 FieldSet('device',name='Device'),
                 FieldSet('module',name='Module'),
-                FieldSet('inventory_item',name='Inventory Item'),
             ),
             name='Hardware'
         ),
@@ -128,4 +121,4 @@ class BiosAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             name='Update'
         ),
     )
-    nullable_fields = ['device', 'module', 'inventory_item', 'ticket_number', 'patch_date', 'comment']
+    nullable_fields = ['device', 'module', 'ticket_number', 'patch_date', 'comment']

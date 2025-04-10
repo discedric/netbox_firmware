@@ -119,13 +119,6 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
         to_field_name='name',
         help_text=_('Module name')
     )
-    inventory_item = CSVModelChoiceField(
-        label=_('Inventory item'),
-        queryset=InventoryItem.objects.all(),
-        required=False,
-        to_field_name='name',
-        help_text=_('Inventory item name')
-    )
     comments = forms.CharField(
         label=_('Comments'),
         required=False,
@@ -149,12 +142,11 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
 
     class Meta:
         model = BiosAssignment
-        fields = ['bios', 'device', 'module', 'inventory_item', 'comments', 'patch_date', 'ticket_number', 'description']
+        fields = ['bios', 'device', 'module', 'comments', 'patch_date', 'ticket_number', 'description']
         labels = {
             'bios': 'Bios',
             'device': 'Device',
             'module': 'Module',
-            'inventory_item': 'Inventory item',
             'comments': 'Comments',
             'patch_date': 'Patch date',
             'ticket_number': 'Ticket number',
@@ -164,7 +156,6 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
             'bios': 'Bios name',
             'device': 'Device name',
             'module': 'Module name',
-            'inventory_item': 'Inventory item name',
             'comments': 'Additional comments about the bios assignment',
             'patch_date': 'Date of the bios patch',
             'ticket_number': 'Ticket number of the bios patch',

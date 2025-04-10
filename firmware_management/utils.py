@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_save
 
-from dcim.models import Device, Module, InventoryItem, Rack
+from dcim.models import Device, Module, Rack
 from netbox.plugins import get_plugin_config
 from .choices import FirmwareStatusChoices
 
@@ -112,15 +112,6 @@ def firmware_set_new_hw(firmware, hw):
         if firmware_type != hw_type:
             setattr(hw, firmware.kind+'_type', firmware_type)
             hw_save = True
-    # for inventory items also set manufacturer and part_number
-    if firmware.inventoryitem_type:
-        if hw.manufacturer != firmware.inventoryitem_type.manufacturer:
-            hw.manufacturer = firmware.inventoryitem_type.manufacturer
-            hw_save = True
-        part_id = firmware.inventoryitem_type.part_number
-        if hw.part_id != part_id:
-            hw.part_id = part_id
-            hw_save = True
     if hw_save:
         hw.save()
 
@@ -149,8 +140,7 @@ def query_located(queryset, field_name, values, firmwares_shown='all'):
     q_installed = (
         q_installed|
         Q(**{f'device__{field_name}__in':values})|
-        Q(**{f'module__device__{field_name}__in':values})|
-        Q(**{f'inventoryitem__device__{field_name}__in':values})
+        Q(**{f'module__device__{field_name}__in':values})
     )
 
     # Q expressions for stored

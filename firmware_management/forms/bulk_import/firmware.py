@@ -139,13 +139,6 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
         to_field_name='name',
         help_text=_('Module name')
     )
-    inventory_item = CSVModelChoiceField(
-        label=_('Inventory item'),
-        queryset=InventoryItem.objects.all(),
-        required=False,
-        to_field_name='name',
-        help_text=_('Inventory item name')
-    )
     comments = forms.CharField(
         label=_('Comments'),
         required=False,
@@ -169,7 +162,7 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
 
     class Meta:
         model = FirmwareAssignment
-        fields = ['manufacturer', 'device_type', 'firmware', 'module_type', 'device', 'module', 'inventory_item', 'comments', 'patch_date', 'ticket_number', 'description']
+        fields = ['manufacturer', 'device_type', 'firmware', 'module_type', 'device', 'module', 'comments', 'patch_date', 'ticket_number', 'description']
         labels = {
             'firmware': 'Firmware',
             'manufacturer': 'Manufacturer',
@@ -177,7 +170,6 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
             'module_type': 'Module type',
             'device': 'Device',
             'module': 'Module',
-            'inventory_item': 'Inventory item',
             'comments': 'Comments',
             'patch_date': 'Patch date',
             'ticket_number': 'Ticket number',
@@ -190,7 +182,6 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
             'module_type': 'Module type',
             'device': 'Device name',
             'module': 'Module name',
-            'inventory_item': 'Inventory item name',
             'comments': 'Additional comments about the firmware assignment',
             'patch_date': 'Date of the firmware patch',
             'ticket_number': 'Ticket number of the firmware patch',
