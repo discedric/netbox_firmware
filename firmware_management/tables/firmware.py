@@ -44,7 +44,7 @@ class FirmwareTable(NetBoxTable):
                   'module_type', 'device_type', 'inventory_item_type',
                   'actions'
                   )
-        attrs = {"class": "table table-striped table-bordered"}
+        
 
 class FirmwareAssignmentTable(NetBoxTable):
     description = tables.Column()
@@ -67,5 +67,5 @@ class FirmwareAssignmentTable(NetBoxTable):
                   'inventory_item','inventory_item_type',
                   'module','module_type'
                   )
-        attrs = {"class": "table table-striped table-bordered"}
+        
 

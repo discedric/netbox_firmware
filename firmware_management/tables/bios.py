@@ -38,7 +38,6 @@ class BiosTable(NetBoxTable):
                   'module_type', 'device_type', 'inventory_item_type',
                   'actions'
                   )
-        attrs = {"class": "table table-striped table-bordered"}
 
 class BiosAssignmentTable(NetBoxTable):
     description = tables.Column()
@@ -55,5 +54,4 @@ class BiosAssignmentTable(NetBoxTable):
                   'firmware','device',
                   'inventory_item', 'module',
                   )
-        attrs = {"class": "table table-striped table-bordered"}
 
