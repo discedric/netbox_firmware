@@ -214,11 +214,4 @@ class BiosAssignment(NetBoxModel):
         ]
 
     def __str__(self):
-        if self.device:
-            return f"{self.bios} - {self.device}"
-        elif self.module:
-            return f"{self.bios} - {self.module}"
-        elif self.inventory_item:
-            return f"{self.bios} - {self.inventory_item}"
-        else:
-            return f"{self.bios} - None"
+        return f"{self.device} - {self.device_type} - {self.inventory_item_type}"

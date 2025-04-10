@@ -45,9 +45,9 @@ class BiosAssignmentJournalView(generic.ObjectJournalView):
 @register_model_view(models.BiosAssignment, 'list', path='', detail=False)
 class BiosAssignmentListView(generic.ObjectListView):
     queryset = models.BiosAssignment.objects.prefetch_related(
-        'device',
-        'module',
-        'inventory_item'
+        'manufacturer',
+        'device_type',
+        'inventory_item_type'
     )
     filterset = filtersets.BiosAssignmentFilterSet
     filterset_form = forms.BiosAssignmentFilterForm
