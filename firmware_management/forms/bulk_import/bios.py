@@ -20,32 +20,17 @@ from wireless.choices import WirelessRoleChoices
 from jsonschema._keywords import required
 
 class BiosImportForm(NetBoxModelImportForm):
-    """_summary_
-    Zorgen dat we de hardware type en model meegeven in plaats van de 3 dingen appart
-    
-    """
-    device_type = CSVModelChoiceField(
-        label=_('Device type'),
-        queryset=DeviceType.objects.all(),
-        required=False,
-        to_field_name='model',
-        help_text=_('Device type model')
-    )
-    module_type = CSVModelChoiceField(
-        label=_('Module type'),
-        queryset=ModuleType.objects.all(),
-        required=False,
-        to_field_name='name',
-        help_text=_('Module type')
-    )
-    
     hardware_kind = CSVTypedChoiceField(
         label=_('Hardware kind'),
         choices=HardwareKindChoices,
         required=True,
         help_text=_('Type of hardware')
     )
-    
+    hardware_name = forms.CharField(
+        label=_('Hardware name'),
+        required=True,
+        help_text=_('Name of the hardware')
+    )
     status = CSVChoiceField(
         label=_('Status'),
         choices=DeviceStatusChoices,
@@ -79,24 +64,42 @@ class BiosImportForm(NetBoxModelImportForm):
             'file_name': 'File name',
             'status': 'Status',
             'description': 'Description',
-            'comments': 'Comments',
-            'device_type': 'Device type',
-            'module_type': 'Module type',
+            'comments': 'Comments'
         }
         help_texts = {
             'name': 'Name of the firmware',
             'file_name': 'File name of the firmware',
             'status': 'Firmware lifecycle status',
             'description': 'Description of the firmware',
-            'comments': 'Additional comments about the firmware',
-            'device_type': 'The type of device',
-            'module_type': 'The type of module',
+            'comments': 'Additional comments about the firmware'
         }
 
     def clean(self):
         super().clean()
         # Perform additional validation on the form
         pass
+    
+    def clean_hardware_name(self):
+        hardware_kind = self.cleaned_data.get('hardware_kind')
+        model = self.cleaned_data.get('hardware_name')
+        if not hardware_kind:
+            # clean on manufacturer or hardware_kind already raises
+            return None
+        if hardware_kind == 'device':
+            hardware_class = DeviceType
+            test = DeviceType.objects.get(model=model)
+            print(test)
+        elif hardware_kind == 'module':
+            hardware_class = ModuleType
+            test = ModuleType.objects.get(model=model)
+            print(test)
+        try:
+            hardware_type = hardware_class.objects.get(model=model)
+        except ObjectDoesNotExist:
+            print(f'Hardware type not found: "{hardware_kind}", "{hardware_class}", "{model}"')
+            raise forms.ValidationError(f'Hardware type not found: "{hardware_kind}", "{hardware_class}", "{model}"')
+        setattr(self.instance, f'{hardware_kind}_type', hardware_type)
+        return hardware_type
 
 class BiosAssignmentImportForm(NetBoxModelImportForm):
     bios = CSVModelChoiceField(

@@ -54,10 +54,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='firmwareassignment',
-            constraint=models.CheckConstraint(condition=models.Q(('device__isnull', False), ('module__isnull', False), ('inventory_item__isnull', False), _connector='OR'), name='firmassign_either_device_or_module_or_inventory_item_required'),
-        ),
-        migrations.AddConstraint(
-            model_name='firmwareassignment',
             constraint=models.CheckConstraint(condition=models.Q(('device_type__isnull', False), ('module_type__isnull', False), _connector='OR'), name='firmassign_either_device_type_or_module_type_required'),
         ),
         migrations.RemoveField(

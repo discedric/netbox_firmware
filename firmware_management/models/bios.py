@@ -38,7 +38,7 @@ class Bios(NetBoxModel):
         max_length=50,
         choices= DeviceStatusChoices,
         default= DeviceStatusChoices.STATUS_ACTIVE,
-        help_text='Firmware lifecycle status',
+        help_text='Bios lifecycle status',
     )
     description = models.CharField(
         help_text='Description of the bios',

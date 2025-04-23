@@ -18,6 +18,7 @@ class BiosTable(NetBoxTable):
     name = tables.Column(
         linkify=True,
     )
+    description = tables.Column()
     file_name = tables.Column()
     comments = tables.Column()
     status = tables.Column()
@@ -33,7 +34,7 @@ class BiosTable(NetBoxTable):
 
     class Meta(NetBoxTable.Meta):
         model = Bios
-        fields = ('name', 'file_name', 'comments', 'status', 
+        fields = ('name', 'description', 'file_name', 'comments', 'status', 
                   'module_type', 'device_type',
                   'actions'
                   )
@@ -51,6 +52,6 @@ class BiosAssignmentTable(NetBoxTable):
     class Meta(NetBoxTable.Meta):
         model = BiosAssignment
         fields = ('description','ticket_number','patch_date',
-                  'firmware','device', 'module'
+                  'bios','device', 'module'
                   )
 
