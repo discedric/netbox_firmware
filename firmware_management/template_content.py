@@ -74,9 +74,6 @@ class ModuleFirmwareInfo(FirmwareAssignedInfoExtension):
     models = ['dcim.module']
     kind = 'module'
 
-class InventoryItemFirmwareInfo(FirmwareAssignedInfoExtension):
-    models = ['dcim.inventoryitem']
-    kind = 'inventoryitem'
 
 class ManufacturerFirmwareCounts(PluginTemplateExtension):
     models = ['dcim.manufacturer']
@@ -111,6 +108,5 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
 template_extensions = (
     DeviceFirmwareInfo,
     ModuleFirmwareInfo,
-    InventoryItemFirmwareInfo,
     ManufacturerFirmwareCounts,
 )
