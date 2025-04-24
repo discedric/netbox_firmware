@@ -57,18 +57,18 @@ WARRANTY_PROGRESSBAR = '''
 class FirmwareAssignedInfoExtension(PluginTemplateExtension):
     def right_page(self):
         object = self.context.get('object')
-        assignment = FirmwareAssignment.objects.filter(**{f'{self.kind}_id':object.id}).first()
+        assignments = FirmwareAssignment.objects.filter(**{f'{self.kind}_id':object.id}).order_by('-patch_date')[:5]
         context = {
-          'assignment': assignment
+          'assignments': assignments
         }
         return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
 
 class BiosAssignedInfoExtension(PluginTemplateExtension):
     def right_page(self):
         object = self.context.get('object')
-        assignment = BiosAssignment.objects.filter(**{f'{self.kind}_id':object.id}).first()
+        assignments = BiosAssignment.objects.filter(**{f'{self.kind}_id':object.id}).order_by('-patch_date')[:5]
         context = {
-          'assignment': assignment
+          'assignments': assignments
         }
         return self.render('firmware_management/inc/bios_info.html', extra_context=context)
 
@@ -121,10 +121,36 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         }
         return self.render('firmware_management/inc/firmware_stats_counts.html', extra_context=context)
 
+class FirmwareAssignmentsTable(PluginTemplateExtension):
+  models = ['firmware_management.firmware']
+  kind = 'firmware'
+  
+  def right_page(self):
+        object = self.context.get('object')
+        assignments = FirmwareAssignment.objects.filter(**{f'{self.kind}':object.id})
+        context = {
+          'assignments': assignments
+        }
+        return self.render('firmware_management/inc/firmware_assignment_table.html', extra_context=context)
+
+class BiosAssignmentsTable(PluginTemplateExtension):
+  models = ['firmware_management.bios']
+  kind = 'bios'
+  
+  def right_page(self):
+        object = self.context.get('object')
+        assignments = BiosAssignment.objects.filter(**{f'{self.kind}':object.id})
+        context = {
+          'assignments': assignments
+        }
+        return self.render('firmware_management/inc/bios_assignment_table.html', extra_context=context)
+
 template_extensions = (
     DeviceFirmwareInfo,
     ModuleFirmwareInfo,
     DeviceBiosInfo,
     ModuleBiosInfo,
     ManufacturerFirmwareCounts,
+    FirmwareAssignmentsTable,
+    BiosAssignmentsTable,
 )

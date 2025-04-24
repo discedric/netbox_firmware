@@ -3,23 +3,7 @@
 
 <div class="card">
   <h5 class="card-header">
-    Firmware 
-    {# only show reassign button if user has change permissions on firmware #}
-    {% if perms.firmware_management.change_firmware %}
-      <div class="card-actions">
-        {% with object|meta:"model_name" as object_type %}
-        {% if object_type == "device" %}
-        <a href="{% url 'plugins:firmware_management:firmware_device_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "module" %}
-        <a href="{% url 'plugins:firmware_management:firmware_module_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "inventoryitem" %}
-        <a href="{% url 'plugins:firmware_management:firmware_inventoryitem_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% endif %}
-        {% endwith %}
-          <i class="mdi mdi-vector-link" aria-hidden="true"></i> Edit Assignment
-        </a>
-      </div>
-    {% endif %}
+    Assignments
   </h5>
   <!--check if firmware item is filled and then show name version and status that is given-->
   {% if assignments %}
@@ -47,7 +31,7 @@
     </div>
   {% else %}
     <div class="card-body">
-      <p class="card-text">No firmware assigned voor {{ object }}</p>
+      <p class="card-text">No assignments</p>
     </div>
   {% endif %}
 </div>
