@@ -8,7 +8,7 @@ from utilities.forms.fields import (
 )
 from utilities.forms.rendering import FieldSet, TabbedGroups
 
-from firmware_management.choices import FirmwareStatusChoices
+from firmware_management.choices import BiosStatusChoices
 from firmware_management.models import (
     Bios,
     BiosAssignment
@@ -18,7 +18,7 @@ from firmware_management.utils import get_plugin_setting
 class BiosBulkEditForm(NetBoxModelBulkEditForm):
     name = forms.CharField(required=False, label='Name')
     status = forms.ChoiceField(
-        choices=FirmwareStatusChoices,
+        choices=BiosStatusChoices,
         required=False,
         label='Status',
     )

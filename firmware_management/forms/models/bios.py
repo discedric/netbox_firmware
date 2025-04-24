@@ -132,7 +132,7 @@ class BiosAssignmentForm(NetBoxModelForm):
         queryset=Bios.objects.all(),
         selector=True,
         required=True,
-        label='Bios',
+        label='BIOS',
         query_params={
             'status': 'active',
         },

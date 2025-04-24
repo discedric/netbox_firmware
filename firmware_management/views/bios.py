@@ -4,7 +4,9 @@ from django.db import IntegrityError
 from django.shortcuts import redirect
 from django.template import Template
 from netbox.views import generic
+from utilities.query import count_related
 from utilities.views import register_model_view, ViewTab
+from ..utils import get_subfield
 
 from firmware_management import tables
 from firmware_management import forms
@@ -48,6 +50,8 @@ class BiosListView(generic.ObjectListView):
     queryset = models.Bios.objects.prefetch_related(
         'device_type',
         'module_type'
+    ).annotate(
+        instance_count=count_related(models.BiosAssignment,'bios'),
     )
     filterset = filtersets.BiosFilterSet
     filterset_form = forms.BiosFilterForm

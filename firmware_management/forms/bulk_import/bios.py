@@ -1,23 +1,15 @@
 from django import forms
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.forms.array import SimpleArrayField
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from firmware_management.models import *
 from firmware_management.choices import *
-from extras.models import ConfigTemplate
-from ipam.models import VRF, IPAddress
 from netbox.choices import *
 from netbox.forms import NetBoxModelImportForm
 from utilities.forms.fields import (
     CSVChoiceField, CSVContentTypeField, CSVModelChoiceField, CSVModelMultipleChoiceField, CSVTypedChoiceField,
     SlugField,
 )
-from virtualization.models import Cluster, VMInterface, VirtualMachine
-from wireless.choices import WirelessRoleChoices
-from jsonschema._keywords import required
 
 class BiosImportForm(NetBoxModelImportForm):
     hardware_kind = CSVTypedChoiceField(
@@ -33,7 +25,7 @@ class BiosImportForm(NetBoxModelImportForm):
     )
     status = CSVChoiceField(
         label=_('Status'),
-        choices=DeviceStatusChoices,
+        choices=BiosStatusChoices,
         help_text=_('Operational status')
     )
     name = forms.CharField(

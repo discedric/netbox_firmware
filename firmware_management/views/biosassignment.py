@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.shortcuts import redirect
 from django.template import Template
+from utilities.query import count_related
 from netbox.views import generic
 from utilities.views import register_model_view
 
@@ -49,6 +50,7 @@ class BiosAssignmentListView(generic.ObjectListView):
         'module',
         'bios',
     )
+    
     filterset = filtersets.BiosAssignmentFilterSet
     filterset_form = forms.BiosAssignmentFilterForm
     table = tables.BiosAssignmentTable

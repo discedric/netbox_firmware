@@ -6,7 +6,7 @@ from utilities.filters import (
 )
 from django.utils.translation import gettext as _
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
-from dcim.choices import DeviceStatusChoices
+from firmware_management.choices import FirmwareStatusChoices
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Firmware, FirmwareAssignment
 from .. import choices
@@ -21,7 +21,7 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         label=_('File name'),
     )
     status = django_filters.MultipleChoiceFilter(
-        choices=DeviceStatusChoices,
+        choices=FirmwareStatusChoices,
         label=_('Status'),
     )
     manufacturer_id = django_filters.ModelMultipleChoiceFilter(

@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect
 from django.template import Template
 from netbox.views import generic
+from utilities.query import count_related
 from utilities.views import register_model_view, ViewTab
 
 from .. import tables
@@ -49,6 +50,8 @@ class FirmwareListView(generic.ObjectListView):
         'manufacturer',
         'device_type',
         'module_type'
+    ).annotate(
+        instance_count=count_related(models.FirmwareAssignment,'firmware'),
     )
     filterset = filtersets.FirmwareFilterSet
     filterset_form = forms.FirmwareFilterForm

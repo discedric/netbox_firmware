@@ -1,4 +1,5 @@
 from utilities.choices import ChoiceSet
+from django.utils.translation import gettext_lazy as _
 
 
 #
@@ -8,13 +9,48 @@ from utilities.choices import ChoiceSet
 class FirmwareStatusChoices(ChoiceSet):
     key = 'Firmware.status'
 
+    STATUS_ACTIVE = 'active'
+    STATUS_STAGED = 'staged'
+    STATUS_PLANNED = 'planned'
+    STATUS_DECOMMISSIONING = 'decommissioning'
+    STATUS_CORRUPTED = 'corrupted'
+    STATUS_ARCHIVED = 'archived'
+    
+
     CHOICES = [
-        ('active', 'Active'),
-        ('deprecated', 'Deprecated'),
-        ('beta', 'Beta'),
-        ('archived', 'Archived'),
+        (STATUS_ACTIVE, _('Active'), 'green'),
+        (STATUS_STAGED, _('Staged'), 'blue'),
+        (STATUS_PLANNED, _('Planned'), 'cyan'),
+        (STATUS_DECOMMISSIONING, _('Decommissioning'), 'yellow'),
+        (STATUS_CORRUPTED, _('Corrupted'), 'red'),
+        (STATUS_ARCHIVED, _('Archived'), 'purple'),
+        
     ]
 
+#
+# Bios
+#
+
+class BiosStatusChoices(ChoiceSet):
+    key = 'Bios.status'
+
+    STATUS_ACTIVE = 'active'
+    STATUS_STAGED = 'staged'
+    STATUS_PLANNED = 'planned'
+    STATUS_DECOMMISSIONING = 'decommissioning'
+    STATUS_CORRUPTED = 'corrupted'
+    STATUS_ARCHIVED = 'archived'
+    
+
+    CHOICES = [
+        (STATUS_ACTIVE, _('Active'), 'green'),
+        (STATUS_STAGED, _('Staged'), 'blue'),
+        (STATUS_PLANNED, _('Planned'), 'cyan'),
+        (STATUS_DECOMMISSIONING, _('Decommissioning'), 'yellow'),
+        (STATUS_CORRUPTED, _('Corrupted'), 'red'),
+        (STATUS_ARCHIVED, _('Archived'), 'purple'),
+        
+    ]
 
 class HardwareKindChoices(ChoiceSet):
     CHOICES = [

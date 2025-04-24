@@ -1,7 +1,7 @@
 from django.template import Template
 from netbox.plugins import PluginTemplateExtension
 
-from .models import Firmware, FirmwareAssignment
+from .models import Firmware, FirmwareAssignment, Bios, BiosAssignment
 from .utils import query_located
 
 
@@ -63,6 +63,15 @@ class FirmwareAssignedInfoExtension(PluginTemplateExtension):
         }
         return self.render('firmware_management/inc/firmware_info.html', extra_context=context)
 
+class BiosAssignedInfoExtension(PluginTemplateExtension):
+    def right_page(self):
+        object = self.context.get('object')
+        assignment = BiosAssignment.objects.filter(**{f'{self.kind}_id':object.id}).first()
+        context = {
+          'assignment': assignment
+        }
+        return self.render('firmware_management/inc/bios_info.html', extra_context=context)
+
 class DeviceFirmwareInfo(FirmwareAssignedInfoExtension):
     """_summary_
       We willen in het scherm van de device zien welke firmware erop zit.
@@ -74,6 +83,13 @@ class ModuleFirmwareInfo(FirmwareAssignedInfoExtension):
     models = ['dcim.module']
     kind = 'module'
 
+class DeviceBiosInfo(BiosAssignedInfoExtension):
+    models = ['dcim.device']
+    kind = 'device'
+
+class ModuleBiosInfo(BiosAssignedInfoExtension):
+    models = ['dcim.module']
+    kind = 'module'
 
 class ManufacturerFirmwareCounts(PluginTemplateExtension):
     models = ['dcim.manufacturer']
@@ -108,5 +124,7 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
 template_extensions = (
     DeviceFirmwareInfo,
     ModuleFirmwareInfo,
+    DeviceBiosInfo,
+    ModuleBiosInfo,
     ManufacturerFirmwareCounts,
 )

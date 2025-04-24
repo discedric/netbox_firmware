@@ -5,7 +5,6 @@ from django.urls import reverse
 from ..choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
 from dcim.models import Manufacturer, DeviceType, ModuleType, Device, Module
-from dcim.choices import DeviceStatusChoices
 
 class Firmware(NetBoxModel):
     #
@@ -36,8 +35,8 @@ class Firmware(NetBoxModel):
     )
     status = models.CharField(
         max_length=50,
-        choices= DeviceStatusChoices,
-        default= DeviceStatusChoices.STATUS_ACTIVE,
+        choices= FirmwareStatusChoices,
+        default= FirmwareStatusChoices.STATUS_ACTIVE,
         help_text='Firmware lifecycle status',
     )
     description = models.CharField(
@@ -230,6 +229,18 @@ class FirmwareAssignment(NetBoxModel):
                 name='firmassign_either_device_type_or_module_type_required'
             )
         ]
+
+    @property
+    def device_sn(self):
+        return self.device.serial if self.device else None
+    
+    @property
+    def module_device(self):
+        return self.module.device if self.module else None
+    
+    @property
+    def module_sn(self):
+        return self.module.serial if self.module else None
 
     def __str__(self):
         return f"{self.firmware} - {self.device}"

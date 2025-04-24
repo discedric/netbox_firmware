@@ -6,7 +6,7 @@ from utilities.filters import (
 )
 from django.utils.translation import gettext as _
 from dcim.models import DeviceType, Manufacturer, ModuleType
-from dcim.choices import DeviceStatusChoices
+from firmware_management.choices import BiosStatusChoices
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Bios, BiosAssignment
 from .. import choices
@@ -20,7 +20,7 @@ class BiosFilterSet(NetBoxModelFilterSet):
         label=_('File name'),
     )
     status = django_filters.MultipleChoiceFilter(
-        choices=DeviceStatusChoices,
+        choices=BiosStatusChoices,
         label=_('Status'),
     )
     device_type = django_filters.ModelMultipleChoiceFilter(

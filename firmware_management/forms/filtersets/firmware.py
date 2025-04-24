@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from dcim.choices import DeviceStatusChoices
+from firmware_management.choices import FirmwareStatusChoices
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.choices import *
 from netbox.forms import NetBoxModelFilterSetForm
@@ -45,7 +45,7 @@ class FirmwareFilterForm(NetBoxModelFilterSetForm):
     )
     status = forms.MultipleChoiceField(
         label=_('Status'),
-        choices=DeviceStatusChoices,
+        choices=FirmwareStatusChoices,
         required=False
     )
     tag = TagFilterField(model)

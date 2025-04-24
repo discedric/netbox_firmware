@@ -1,0 +1,29 @@
+{% load helpers %}
+{# renders panel on object (device, module, inventory_item) with firmware info assigned to it #}
+
+<div class="card">
+  <h5 class="card-header">
+    BIOS
+  </h5>
+  <!--check if firmware item is filled and then show name version and status that is given-->
+  {% if assignment %}
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-6">
+              <p>Name: <a class="card-text" href='{% url 'plugins:firmware_management:bios' assignment.bios.id %}' >{{ assignment.bios.name }}</a></p>
+            </div>
+            <div class="col-6">
+              <p class="card-text">Status: {{ assignment.bios.status }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card-body">
+      <p class="card-text">No Bios assigned voor {{ object }}</p>
+    </div>
+  {% endif %}
+</div>

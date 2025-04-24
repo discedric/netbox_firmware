@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db.models import Q
+from django.db.models import Count, OuterRef, Subquery
+from django.db.models.functions import Coalesce
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_save
 
@@ -186,3 +188,20 @@ def get_firmware_custom_fields_search_filters():
         for filter in filters:
             fields.append(f"custom_field_data__{field_name}__{filter}")
     return fields
+
+
+def get_subfield(model,modelfield,field):
+    """
+    Return a Subquery suitable for annotating a child object count.
+    """
+    subquery = Subquery(
+        model.objects.filter(
+            **{modelfield: OuterRef('pk')}
+        ).order_by().values(
+            field
+        ).annotate(
+            c=Count('*')
+        ).values('c')
+    )
+
+    return Coalesce(subquery, 0)

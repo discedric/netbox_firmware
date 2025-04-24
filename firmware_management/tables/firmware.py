@@ -1,4 +1,5 @@
 from django_tables2 import tables
+from django.utils.translation import gettext_lazy as _
 
 from netbox.tables import NetBoxTable, columns
 from ..models import Firmware, FirmwareAssignment
@@ -35,6 +36,11 @@ class FirmwareTable(NetBoxTable):
         accessor='module_type',
         linkify=True,
         )
+    instance_count = columns.LinkedCountColumn(
+        viewname='plugins:firmware_management:firmwareassignment_list',
+        url_params={'firmware_id': 'pk'},
+        verbose_name=_('Instances')
+    )
     actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
@@ -57,6 +63,10 @@ class FirmwareAssignmentTable(NetBoxTable):
     module = tables.Column(accessor='module',verbose_name="Module",linkify=True,)
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
 
+    module_device= tables.Column(accessor='module_device',verbose_name='Module owner',linkify=True)
+    device_sn = tables.Column(accessor='device_sn',verbose_name='Device Serial',linkify=True)
+    module_sn = tables.Column(accessor='module_sn',verbose_name='Module Serial',linkify=True)
+    
     class Meta(NetBoxTable.Meta):
         model = FirmwareAssignment
         fields = ('description','ticket_number','patch_date',

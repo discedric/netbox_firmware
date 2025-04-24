@@ -2,10 +2,9 @@ from django.db import models
 from django.forms import ValidationError
 from django.urls import reverse
 
-from ..choices import HardwareKindChoices, FirmwareStatusChoices
+from ..choices import HardwareKindChoices, BiosStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
 from dcim.models import Manufacturer, DeviceType, ModuleType, Device, Module
-from dcim.choices import DeviceStatusChoices
 
 class Bios(NetBoxModel):
     #
@@ -36,8 +35,8 @@ class Bios(NetBoxModel):
     )
     status = models.CharField(
         max_length=50,
-        choices= DeviceStatusChoices,
-        default= DeviceStatusChoices.STATUS_ACTIVE,
+        choices= BiosStatusChoices,
+        default= BiosStatusChoices.STATUS_ACTIVE,
         help_text='Bios lifecycle status',
     )
     description = models.CharField(
@@ -153,7 +152,7 @@ class BiosAssignment(NetBoxModel):
         to=Bios,
         related_name='BiosAssignment',
         on_delete=models.PROTECT,
-        verbose_name='Bios',
+        verbose_name='BIOS',
         null=True,
         blank=True
     )
@@ -192,5 +191,25 @@ class BiosAssignment(NetBoxModel):
             ),
         ]
 
+    @property
+    def module_device(self):
+        return self.module.device if self.module else None
+    
+    @property
+    def device_sn(self):
+        return self.device.serial if self.device else None
+    
+    @property
+    def module_sn(self):
+        return self.module.serial if self.module else None
+    
+    @property
+    def device_type(self):
+        return self.device.device_type if self.device else None
+    
+    @property
+    def module_type(self):
+        return self.module.module_type if self.module else None
+    
     def __str__(self):
         return f"{self.device}"
