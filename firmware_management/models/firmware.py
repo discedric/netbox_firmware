@@ -89,9 +89,9 @@ class Firmware(NetBoxModel):
     @property
     def kind(self):
         if self.device_type_id:
-            return 'device'
+            return HardwareKindChoices.DEVICE
         elif self.module_type_id:
-            return 'module'
+            return HardwareKindChoices.MODULE
         else:
             return None
         

@@ -6,7 +6,7 @@ from django.template import Template
 from netbox.views import generic
 from utilities.query import count_related
 from utilities.views import register_model_view, ViewTab
-from ..utils import get_subfield
+from ..utils import get_countdevice
 
 from firmware_management import tables
 from firmware_management import forms

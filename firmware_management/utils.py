@@ -88,8 +88,6 @@ def get_tags_and_edit_protected_firmware_fields():
     return get_plugin_setting('firmware_disable_editing_fields_for_tags')
 
 
-
-
 def firmware_set_new_hw(firmware, hw):
     """
     Firmware was assigned to hardware (device/module/inventory item/rack) and we want to
@@ -190,7 +188,7 @@ def get_firmware_custom_fields_search_filters():
     return fields
 
 
-def get_subfield(model,modelfield,field):
+def get_countdevice(model,modelfield,field):
     """
     Return a Subquery suitable for annotating a child object count.
     """
@@ -198,9 +196,9 @@ def get_subfield(model,modelfield,field):
         model.objects.filter(
             **{modelfield: OuterRef('pk')}
         ).order_by().values(
-            field
+            modelfield
         ).annotate(
-            c=Count('*')
+            c=Count(field)
         ).values('c')
     )
 

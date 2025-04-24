@@ -10,12 +10,13 @@ from utilities.forms.fields import ColorField, DynamicModelMultipleChoiceField, 
 from utilities.forms.rendering import FieldSet
 from utilities.forms.widgets import NumberWithOptions
 from wireless.choices import *
+from firmware_management.choices import HardwareKindChoices
 from firmware_management.models import Firmware, FirmwareAssignment
 
 class FirmwareFilterForm(NetBoxModelFilterSetForm):
     model = Firmware
     fieldsets = (
-        FieldSet('q', 'tag', name=_('General')),
+        FieldSet('q', 'tag', 'kind', name=_('General')),
         FieldSet('status',name=_('Status')),
         FieldSet('manufacturer_id', 'device_type_id', 'module_type_id', name=_('Hardware')),
     )
@@ -47,6 +48,11 @@ class FirmwareFilterForm(NetBoxModelFilterSetForm):
         label=_('Status'),
         choices=FirmwareStatusChoices,
         required=False
+    )
+    kind = forms.MultipleChoiceField(
+        choices=HardwareKindChoices,
+        required=False,
+        label=_('Type')
     )
     tag = TagFilterField(model)
     
@@ -112,4 +118,6 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
         label=_('Patch Date'),
         required=False
     )
+    
+    
     tag = TagFilterField(model)

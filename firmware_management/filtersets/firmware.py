@@ -60,7 +60,7 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
     kind = django_filters.MultipleChoiceFilter(
         choices=choices.HardwareKindChoices,
         method='filter_kind',
-        label=_('Hardware kind'),
+        label=_('Type'),
     )
     
     class Meta:
@@ -68,7 +68,7 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         fields = {
             'id', 'name', 'file_name', 'status',
             'manufacturer', 
-            'device_type', 'module_type',
+            'device_type', 'module_type'
         }
     
     def search(self, queryset, name, value):
@@ -81,24 +81,11 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         ).distinct()
     
     def filter_kind(self, queryset, name, value):
-        """
-        Dynamically filter the queryset based on which type field is not null.
-        """
-        # Check which type field is provided in the filter
-        device_type = self.data.get('device_type')
-        module_type = self.data.get('module_type')
-
-        # Apply filtering based on the provided type
-        if device_type:
+        if value == choices.HardwareKindChoices.DEVICE:
             return queryset.filter(device_type__isnull=False)
-        elif module_type:
+        elif value == choices.HardwareKindChoices.MODULE:
             return queryset.filter(module_type__isnull=False)
-
-        # If no specific type is provided, return all firmware objects where any type is not null
-        return queryset.filter(
-            Q(device_type__isnull=False) |
-            Q(module_type__isnull=False)
-    )
+        return queryset
 
 
 class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):

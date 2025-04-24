@@ -212,4 +212,4 @@ class BiosAssignment(NetBoxModel):
         return self.module.module_type if self.module else None
     
     def __str__(self):
-        return f"{self.device}"
+        return f"{self.bios} - {self.device}"

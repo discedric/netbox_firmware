@@ -53,7 +53,10 @@ class BiosStatusChoices(ChoiceSet):
     ]
 
 class HardwareKindChoices(ChoiceSet):
+    DEVICE = 'device'
+    MODULE = 'module'
+
     CHOICES = [
-        ('device', 'Device'),
-        ('module', 'Module'),
+        (DEVICE, 'Device'),
+        (MODULE, 'Module'),
     ]

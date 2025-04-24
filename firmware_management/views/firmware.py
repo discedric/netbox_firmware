@@ -1,12 +1,14 @@
 import logging
 from django.contrib import messages
 from django.db import IntegrityError
+from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.template import Template
 from netbox.views import generic
 from utilities.query import count_related
 from utilities.views import register_model_view, ViewTab
 
+from ..utils import get_countdevice
 from .. import tables
 from .. import forms
 from .. import models
