@@ -188,6 +188,18 @@ class BiosAssignment(NetBoxModel):
         ]
 
     @property
+    def kind(self):
+        if self.device_id:
+            return HardwareKindChoices.DEVICE
+        elif self.module_id:
+            return HardwareKindChoices.MODULE
+        else:
+            return None
+        
+    def get_kind_display(self):
+        return dict(HardwareKindChoices)[self.kind]
+
+    @property
     def module_device(self):
         return self.module.device if self.module else None
     

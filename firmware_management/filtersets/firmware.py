@@ -57,10 +57,9 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         label=_('Module type (ID)'),
     )
     
-    kind = django_filters.MultipleChoiceFilter(
-        choices=choices.HardwareKindChoices,
+    kind = MultiValueCharFilter(
         method='filter_kind',
-        label=_('Type'),
+        label='Type of hardware',
     )
     
     class Meta:
@@ -81,11 +80,18 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         ).distinct()
     
     def filter_kind(self, queryset, name, value):
-        if value == choices.HardwareKindChoices.DEVICE:
-            return queryset.filter(device_type__isnull=False)
-        elif value == choices.HardwareKindChoices.MODULE:
-            return queryset.filter(module_type__isnull=False)
-        return queryset
+        query = None
+        for kind in choices.HardwareKindChoices.values():
+            if kind in value:
+                q = Q(**{f'{kind}_type__isnull': False})
+                if query:
+                    query = query | q
+                else:
+                    query = q
+        if query:
+            return queryset.filter(query)
+        else:
+            return queryset
 
 
 class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
@@ -157,7 +163,10 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Module.objects.all(),
         label=_('Module (ID)'),
     )
-    
+    kind = MultiValueCharFilter(
+        method='filter_kind',
+        label='Type of hardware',
+    )
     
     class Meta:
         model = FirmwareAssignment
@@ -176,3 +185,17 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
             Q(ticket_number__icontains=value) |
             Q(comment__icontains=value)
         ).distinct()
+
+    def filter_kind(self, queryset, name, value):
+        query = None
+        for kind in choices.HardwareKindChoices.values():
+            if kind in value:
+                q = Q(**{f'{kind}__isnull': False})
+                if query:
+                    query = query | q
+                else:
+                    query = q
+        if query:
+            return queryset.filter(query)
+        else:
+            return queryset

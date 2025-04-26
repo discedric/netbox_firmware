@@ -18,7 +18,7 @@ class FirmwareFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag', 'kind', name=_('General')),
         FieldSet('status',name=_('Status')),
-        FieldSet('manufacturer_id', 'device_type_id', 'module_type_id', name=_('Hardware')),
+        FieldSet('kind', 'manufacturer_id', 'device_type_id', 'module_type_id', name=_('Hardware')),
     )
     
     selector_fields = ('q', 'status', 'manufacturer_id')
@@ -52,7 +52,7 @@ class FirmwareFilterForm(NetBoxModelFilterSetForm):
     kind = forms.MultipleChoiceField(
         choices=HardwareKindChoices,
         required=False,
-        label=_('Type')
+        label=_('Kind')
     )
     tag = TagFilterField(model)
     
@@ -62,7 +62,7 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', name=_('Hardware')), 
+        FieldSet('kind', 'manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', name=_('Hardware')), 
         FieldSet('firmware_id',name=_('Firmware')),
     )
     
@@ -118,6 +118,10 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
         label=_('Patch Date'),
         required=False
     )
-    
+    kind = forms.MultipleChoiceField(
+        label=_('Kind'),
+        choices=HardwareKindChoices,
+        required=False
+    )
     
     tag = TagFilterField(model)
