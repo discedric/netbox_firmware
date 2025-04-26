@@ -10,10 +10,6 @@ class Bios(NetBoxModel):
     #
     # fields that identify bios
     #
-    """_summary_
-        toe te voegen:
-        - (als kan) hyperlinks
-    """
     name = models.CharField(
         help_text='Name of the bios',
         max_length=255,
@@ -80,9 +76,9 @@ class Bios(NetBoxModel):
     @property
     def kind(self):
         if self.device_type_id:
-            return 'device'
+            return HardwareKindChoices.DEVICE
         elif self.module_type_id:
-            return 'module'
+            return HardwareKindChoices.MODULE
         else:
             return None
         
@@ -196,6 +192,18 @@ class BiosAssignment(NetBoxModel):
         return self.module.device if self.module else None
     
     @property
+    def hardware_sn(self):
+        return self.device.serial if self.device else self.module.serial if self.module else None
+
+    @property
+    def hardware_type(self):
+        return self.device.device_type or self.module.module_type or None
+    
+    @property
+    def hardware(self):
+        return self.device or self.module or None
+    
+    @property
     def device_sn(self):
         return self.device.serial if self.device else None
     
@@ -210,6 +218,7 @@ class BiosAssignment(NetBoxModel):
     @property
     def module_type(self):
         return self.module.module_type if self.module else None
-    
+
     def __str__(self):
         return f"{self.bios} - {self.device}"
+

@@ -2,14 +2,14 @@ import django_filters
 from django.db.models import Q
 from utilities.filters import (
     ContentTypeFilter, MultiValueCharFilter, MultiValueMACAddressFilter, MultiValueNumberFilter, MultiValueWWNFilter,
-    NumericArrayFilter, TreeNodeMultipleChoiceFilter,
+    NumericArrayFilter, TreeNodeMultipleChoiceFilter
 )
 from django.utils.translation import gettext as _
 from dcim.models import DeviceType, Manufacturer, ModuleType
-from firmware_management.choices import BiosStatusChoices
+from firmware_management.choices import BiosStatusChoices, HardwareKindChoices
+
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Bios, BiosAssignment
-from .. import choices
 
 class BiosFilterSet(NetBoxModelFilterSet):
     name = MultiValueCharFilter(
@@ -22,6 +22,10 @@ class BiosFilterSet(NetBoxModelFilterSet):
     status = django_filters.MultipleChoiceFilter(
         choices=BiosStatusChoices,
         label=_('Status'),
+    )
+    kind = MultiValueCharFilter(
+        method='filter_kind',
+        label='Type of hardware',
     )
     device_type = django_filters.ModelMultipleChoiceFilter(
         field_name='device_type__slug',
@@ -61,6 +65,20 @@ class BiosFilterSet(NetBoxModelFilterSet):
             Q(comments__icontains=value) 
         ).distinct()
 
+    def filter_kind(self, queryset, name, value):
+        query = None
+        for kind in HardwareKindChoices.values():
+            if kind in value:
+                q = Q(**{f'{kind}_type__isnull': False})
+                if query:
+                    query = query | q
+                else:
+                    query = q
+        if query:
+            return queryset.filter(query)
+        else:
+            return queryset
+
 
 class BiosAssignmentFilterSet(NetBoxModelFilterSet):
     description = MultiValueCharFilter(
@@ -92,7 +110,10 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
     module = MultiValueCharFilter(
         lookup_expr='icontains',
     )
-    
+    kind = MultiValueCharFilter(
+        method='filter_kind',
+        label='Type of hardware',
+    )
     
     class Meta:
         model = BiosAssignment
@@ -110,3 +131,17 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
             Q(ticket_number__icontains=value) |
             Q(comment__icontains=value)
         ).distinct()
+
+    def filter_kind(self, queryset, name, value):
+        query = None
+        for kind in HardwareKindChoices.values():
+            if kind in value:
+                q = Q(**{f'{kind}__isnull': False})
+                if query:
+                    query = query | q
+                else:
+                    query = q
+        if query:
+            return queryset.filter(query)
+        else:
+            return queryset

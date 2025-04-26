@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from firmware_management.choices import BiosStatusChoices
+from firmware_management.choices import BiosStatusChoices,HardwareKindChoices
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.choices import *
 from netbox.forms import NetBoxModelFilterSetForm
@@ -17,7 +17,7 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag', name=_('General')),
         FieldSet('status',name=_('Status')),
-        FieldSet('device_type_id', 'module_type_id', name=_('Hardware')),
+        FieldSet('kind','device_type_id', 'module_type_id', name=_('Hardware')),
     )
     
     selector_fields = ('q', 'status')
@@ -48,6 +48,11 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
         choices=BiosStatusChoices,
         required=False
     )
+    kind = forms.MultipleChoiceField(
+        label=_('Kind'),
+        choices=HardwareKindChoices,
+        required=False
+    )
     tag = TagFilterField(model)
     
 
@@ -56,18 +61,22 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('device_id', 'module_id',name=_('Hardware')), 
+        FieldSet('kind','device_id', 'module_id',name=_('Hardware')), 
         FieldSet('bios_id',name=_('Bios')),
     )
     
     selector_fields = ('q', 'patch_date', 'device_id', 'module_id', 'bios_id')
     
+    kind = forms.MultipleChoiceField(
+        label=_('Kind'),
+        choices=HardwareKindChoices,
+        required=False
+    )
     manufacturer_id = DynamicModelMultipleChoiceField(
         queryset=Manufacturer.objects.all(),
         required=False,
         label=_('Manufacturer')
     )
-
     device_id = DynamicModelMultipleChoiceField(
         queryset=Device.objects.all(),
         required=False,
