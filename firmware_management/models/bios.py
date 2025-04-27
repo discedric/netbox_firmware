@@ -86,6 +86,10 @@ class Bios(NetBoxModel):
         return dict(HardwareKindChoices)[self.kind]
     
     @property
+    def filename(self):
+        return self.file.name if self.file else None
+
+    @property
     def hardware_type(self):
         return self.device_type or self.module_type or None
     
@@ -123,6 +127,12 @@ class Bios(NetBoxModel):
     def get_fields(cls):
         return {field.name: field for field in cls._meta.get_fields()}
     
+    def delete(self,*args, **kwargs):
+        _name = self.file.name
+        super().delete(*args, **kwargs)
+        self.file.delete(save=False)
+        self.file.name = _name
+
     class Meta:
         ordering = ('name','device_type', 'module_type')
         unique_together = ('name', 'device_type', 'module_type')

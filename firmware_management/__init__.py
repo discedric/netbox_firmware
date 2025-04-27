@@ -28,5 +28,6 @@ class FirmwareManagerConfig(PluginConfig):
         if not os.path.exists(firmware_dir):
             os.makedirs(firmware_dir)
         super().ready()
+        from . import signals
 
 config = FirmwareManagerConfig

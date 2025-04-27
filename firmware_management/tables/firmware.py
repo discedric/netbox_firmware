@@ -41,6 +41,10 @@ class FirmwareTable(NetBoxTable):
         url_params={'firmware_id': 'pk'},
         verbose_name=_('Instances')
     )
+    filename = tables.Column(
+        accessor='filename',
+        verbose_name=_('File path'),
+    )
     actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
