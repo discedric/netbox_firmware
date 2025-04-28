@@ -1,0 +1,19 @@
+{% load helpers %}
+{# renders panel simmilar to Related Objects with counts of firmwares related to object #}
+
+<div class="card">
+  <h5 class="card-header">Firmwares</h5>
+  <ul class="list-group list-group-flush">
+    {% for firmware_stat in firmware_stats %}
+      <a href="{% url 'plugins:netbox_firmware:firmware_list' %}?{{ firmware_stat.filter_field }}={{ object.pk }}{{ firmware_stat.extra_filter }}" class="list-group-item list-group-item-action d-flex justify-content-between">
+        {{ firmware_stat.label|bettertitle }}
+        {% if firmware_stat.count %}
+          <span class="badge text-bg-primary rounded-pill">{{ firmware_stat.count }}</span>
+        {% else %}
+          <span class="badge text-bg-light rounded-pill">&mdash;</span>
+        {% endif %}
+      </tr>
+      </a>
+    {% endfor %}
+  </ul>
+</div>

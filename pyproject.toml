@@ -5,7 +5,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "firmware_management"
+name = "netbox_firmware"
 version = "1.0.0"
 authors = [
   { name="Cedric Vaneessen", email="cedric.vaneessen@zabun.be" },
@@ -24,4 +24,4 @@ keywords = ["netbox", "netbox-plugin", "Firmware"]
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["firmware_management*"]
+include = ["netbox_firmware*"]
