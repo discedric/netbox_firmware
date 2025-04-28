@@ -22,17 +22,14 @@ Je kan de plugin installeren via de github cli of via git
 ```bash
 $ source /opt/netbox/venv/bin/activate
 (venv) $ cd /opt/netbox/netbox/netbox/plugins
-(venv) $ gh repo clone discedric/firmware_management
+(venv) $ gh repo clone discedric/netbox_firmware
+(venv) $ pip install ./netbox_firmware
 ```
 
 ```python
 PLUGINS = [
-    'firmware_management'
+    'netbox_firmware'
 ]
-
-PLUGINS_CONFIG = {
-    "firmware_management": {},
-}
 ```
 
 Je zal ook moeten database migrations en netbox search index moeten updaten:
