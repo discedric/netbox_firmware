@@ -219,7 +219,11 @@ class BiosAssignment(NetBoxModel):
 
     @property
     def hardware_type(self):
-        return self.device.device_type or self.module.module_type or None
+        if self.device and self.device.device_type:
+            return self.device.device_type
+        if self.module and self.module.module_type:
+            return self.module.module_type
+        return None
     
     @property
     def hardware(self):

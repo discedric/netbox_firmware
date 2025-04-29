@@ -1,11 +1,24 @@
 {% load helpers %}
-{# renders panel on object (device, module, inventory_item) with firmware info assigned to it #}
+{# renders panel on object (device, module, inventory_item) with bios info assigned to it #}
 
 <div class="card">
   <h5 class="card-header">
     BIOS
+    {% if perms.netbox_firmware.change_bios %}
+      <div class="card-actions">
+        {% with object|meta:"model_name" as object_type %}
+          {% if object_type == "device" %}
+          <a href="{% url 'plugins:netbox_firmware:biosassignment_add' %}?device={{object.id}}" class="btn btn-sm btn-ghost-primary">
+          {% elif object_type == "module" %}
+          <a href="{% url 'plugins:netbox_firmware:biosassignment_add'%}?module={{object.id}}" class="btn btn-sm btn-ghost-primary">
+          {% endif %}
+        {% endwith %}
+          <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
+        </a>
+      </div>
+    {% endif %}
   </h5>
-  <!--check if firmware item is filled and then show name version and status that is given-->
+  <!--check if bios item is filled and then show name version and status that is given-->
   {% if assignments %}
   <div class="card-body">
     <table class="table">

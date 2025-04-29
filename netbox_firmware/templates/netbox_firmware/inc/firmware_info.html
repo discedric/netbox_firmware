@@ -4,19 +4,16 @@
 <div class="card">
   <h5 class="card-header">
     Firmware 
-    {# only show reassign button if user has change permissions on firmware #}
     {% if perms.netbox_firmware.change_firmware %}
       <div class="card-actions">
         {% with object|meta:"model_name" as object_type %}
-        {% if object_type == "device" %}
-        <a href="{% url 'plugins:netbox_firmware:firmware_device_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "module" %}
-        <a href="{% url 'plugins:netbox_firmware:firmware_module_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% elif object_type == "inventoryitem" %}
-        <a href="{% url 'plugins:netbox_firmware:firmware_inventoryitem_reassign' object.pk %}" class="btn btn-sm btn-ghost-orange">
-        {% endif %}
+          {% if object_type == "device" %}
+          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?device={{object.id}}&device_type={{object.device_type.id}}&manufacturer={{object.device_type.manufacturer.id}}" class="btn btn-sm btn-ghost-primary">
+          {% elif object_type == "module" %}
+          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add'%}?module={{object.id}}&module_type={{object.module_type.id}}&manufacturer={{object.module_type.manufacturer.id}}" class="btn btn-sm btn-ghost-primary">
+          {% endif %}
         {% endwith %}
-          <i class="mdi mdi-vector-link" aria-hidden="true"></i> Edit Assignment
+          <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
         </a>
       </div>
     {% endif %}
