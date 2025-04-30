@@ -61,7 +61,7 @@
             </tr>
             <tr>
               <th scope="row">Device Serial</th>
-              <td><a href="{{ object.device.get_absolute_url }}">{{ object.device_serial|placeholder }}</a></td>
+              <td><a href="{{ object.device.get_absolute_url }}">{{ object.device_sn|placeholder }}</a></td>
             </tr>
           {% elif object.module %}
             <tr>
@@ -78,7 +78,7 @@
             </tr>
             <tr>
               <th scope="row">Module Serial</th>
-              <td><a href="{{ object.module.get_absolute_url }}">{{ object.module_serial|placeholder }}</a></td>
+              <td><a href="{{ object.module.get_absolute_url }}">{{ object.module_sn|placeholder }}</a></td>
             </tr>
           {% endif %}
         </table>
