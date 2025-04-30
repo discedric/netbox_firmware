@@ -4,6 +4,13 @@
 <div class="card">
   <h5 class="card-header">
     Assignments
+    {% if perms.netbox_firmware.change_bios %}
+    <div class="card-actions">
+      <a href="{% url 'plugins:netbox_firmware:biosassignment_add' %}?bios={{object.id}}" class="btn btn-sm btn-ghost-primary">
+        <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
+      </a>
+    </div>
+  {% endif %}
   </h5>
   <!--check if firmware item is filled and then show name version and status that is given-->
   {% if assignments %}
