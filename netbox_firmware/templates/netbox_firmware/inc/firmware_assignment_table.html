@@ -6,7 +6,11 @@
     Assignments
     {% if perms.netbox_firmware.change_firmware %}
       <div class="card-actions">
-        <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?firmware={{object.id}}" class="btn btn-sm btn-ghost-primary">
+        {% if object.device_type %}
+          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?firmware={{object.id}}&manufacturer={{ object.manufacturer.id }}&device_type={{ object.device_type.id }}" class="btn btn-sm btn-ghost-primary">
+        {% elif object.module_type %}
+          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?firmware={{object.id}}&manufacturer={{ object.manufacturer.id }}&module_type={{ object.module_type.id }}" class="btn btn-sm btn-ghost-primary">
+        {% endif %}
           <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
         </a>
       </div>
@@ -15,6 +19,15 @@
   <!--check if firmware item is filled and then show name version and status that is given-->
   {% if assignments %}
     <div class="card-body">
+      <a href="{% url 'plugins:netbox_firmware:firmwareassignment_list' %}?firmware_id={{ object.pk }}" class="list-group-item list-group-item-action d-flex justify-content-between">
+        {{ 'Assignments'|bettertitle }}
+        {% if count %}
+          <span class="badge text-bg-primary rounded-pill">{{ count }}</span>
+        {% else %}
+          <span class="badge text-bg-light rounded-pill">&mdash;</span>
+        {% endif %}
+      </tr>
+      </a>
       <table class="table">
         <thead>
           <tr>

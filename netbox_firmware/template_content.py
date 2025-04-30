@@ -122,26 +122,28 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         return self.render('netbox_firmware/inc/firmware_stats_counts.html', extra_context=context)
 
 class FirmwareAssignmentsTable(PluginTemplateExtension):
-  models = ['netbox_firmware.firmware']
-  kind = 'firmware'
+    models = ['netbox_firmware.firmware']
+    kind = 'firmware'
   
-  def right_page(self):
+    def right_page(self):
         object = self.context.get('object')
         assignments = FirmwareAssignment.objects.filter(**{f'{self.kind}':object.id})
         context = {
-          'assignments': assignments
+          'assignments': assignments.order_by('-id')[:5],
+          'count': assignments.count(),
         }
         return self.render('netbox_firmware/inc/firmware_assignment_table.html', extra_context=context)
 
 class BiosAssignmentsTable(PluginTemplateExtension):
-  models = ['netbox_firmware.bios']
-  kind = 'bios'
+    models = ['netbox_firmware.bios']
+    kind = 'bios'
   
-  def right_page(self):
+    def right_page(self):
         object = self.context.get('object')
         assignments = BiosAssignment.objects.filter(**{f'{self.kind}':object.id})
         context = {
-          'assignments': assignments
+          'assignments': assignments.order_by('-id')[:5],
+          'count': assignments.count(),
         }
         return self.render('netbox_firmware/inc/bios_assignment_table.html', extra_context=context)
 
