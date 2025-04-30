@@ -44,6 +44,7 @@ class FirmwareTable(NetBoxTable):
     filename = tables.Column(
         accessor='filename',
         verbose_name=_('File path'),
+        orderable=False
     )
     actions = columns.ActionsColumn()
 

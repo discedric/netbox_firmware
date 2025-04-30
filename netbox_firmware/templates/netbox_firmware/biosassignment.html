@@ -52,8 +52,8 @@
               <td><a href="{{ object.device_type.get_absolute_url }}">{{ object.device_type|placeholder }}</a></td>
             </tr>
             <tr>
-              <th scope="row">Device Serial</th>
-              <td><a href="{{ object.device.get_absolute_url }}">{{ object.device_sn|placeholder }}</a></td>
+              <th scope="row">Device Serial Number</th>
+              <td><p>{{ object.device_sn|placeholder }}</p></td>
             </tr>
           {% elif object.module %}
             <tr>
@@ -69,8 +69,8 @@
               <td><a href="{{ object.module_type.get_absolute_url }}">{{ object.module_type|placeholder }}</a></td>
             </tr>
             <tr>
-              <th scope="row">Module Serial</th>
-              <td><a href="{{ object.module.get_absolute_url }}">{{ object.module_sn|placeholder }}</a></td>
+              <th scope="row">Module Serial Number</th>
+              <td><p>{{ object.module_sn|placeholder }}</p></td>
             </tr>
           {% endif %}
         </table>
