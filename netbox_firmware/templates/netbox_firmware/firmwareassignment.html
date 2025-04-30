@@ -50,30 +50,35 @@
             <th scope="row">Manufacturer</th>
             <td><a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer|placeholder }}</a></td>
           </tr>
-          <tr>
-            <th scope="row">Device</th>
-            <td><a href="{{ object.device.get_absolute_url }}">{{ object.device|placeholder }}</a></td>
-          </tr>
-          <tr>
-            <th scope="row">Device Type</th>
-            <td><a href="{{ object.device_type.get_absolute_url }}">{{ object.device_type|placeholder }}</a></td>
-          </tr>
-          <tr>
-            <th scope="row">Module</th>
-            <td><a href="{{ object.module.get_absolute_url }}">{{ object.module|placeholder }}</a></td>
-          </tr>
-          <tr>
-            <th scope="row">Module Type</th>
-            <td><a href="{{ object.module_type.get_absolute_url }}">{{ object.module_type|placeholder }}</a></td>
-          </tr>
-          {% if object.inventory_item %}
+          {% if object.device %}
             <tr>
-              <th scope="row">Inventory Item</th>
-              <td><a href="{{ object.inventory_item.get_absolute_url }}">{{ object.inventory_item|placeholder }}</a></td>
+              <th scope="row">Device</th>
+              <td><a href="{{ object.device.get_absolute_url }}">{{ object.device|placeholder }}</a></td>
             </tr>
             <tr>
-              <th scope="row">Inventory Item Type</th>
-              <td><a href="{{ object.inventory_item_type.get_absolute_url }}">{{ object.inventory_item_type|placeholder }}</a></td>
+              <th scope="row">Device Type</th>
+              <td><a href="{{ object.device_type.get_absolute_url }}">{{ object.device_type|placeholder }}</a></td>
+            </tr>
+            <tr>
+              <th scope="row">Device Serial</th>
+              <td><a href="{{ object.device.get_absolute_url }}">{{ object.device_serial|placeholder }}</a></td>
+            </tr>
+          {% elif object.module %}
+            <tr>
+              <th scope="row">Module</th>
+              <td><a href="{{ object.module.get_absolute_url }}">{{ object.module|placeholder }}</a></td>
+            </tr>
+            <tr>
+              <th scope="row">Module Owner</th>
+              <td><a href="{{ object.module_device.get_absolute_url }}">{{ object.module_device|placeholder }}</a></td>
+            </tr>
+            <tr>
+              <th scope="row">Module Type</th>
+              <td><a href="{{ object.module_type.get_absolute_url }}">{{ object.module_type|placeholder }}</a></td>
+            </tr>
+            <tr>
+              <th scope="row">Module Serial</th>
+              <td><a href="{{ object.module.get_absolute_url }}">{{ object.module_serial|placeholder }}</a></td>
             </tr>
           {% endif %}
         </table>

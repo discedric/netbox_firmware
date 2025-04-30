@@ -62,9 +62,9 @@ class BiosAssignmentTable(NetBoxTable):
     actions = columns.ActionsColumn()
     
     device_type = tables.Column(accessor='device_type',verbose_name='Device Type',linkify=True)
-    device_sn = tables.Column(accessor='device_sn',verbose_name='Device Serial',linkify=True)
+    device_sn = tables.Column(accessor='device_sn',verbose_name='Device Serial Number')
     module_type = tables.Column(accessor='module_type',verbose_name='Module Type',linkify=True)
-    module_sn = tables.Column(accessor='module_sn',verbose_name='Module Serial',linkify=True)
+    module_sn = tables.Column(accessor='module_sn',verbose_name='Module Serial Number')
     
     class Meta(NetBoxTable.Meta):
         model = BiosAssignment

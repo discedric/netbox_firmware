@@ -68,8 +68,8 @@ class FirmwareAssignmentTable(NetBoxTable):
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
 
     module_device= tables.Column(accessor='module_device',verbose_name='Module owner',linkify=True)
-    device_sn = tables.Column(accessor='device_sn',verbose_name='Device Serial',linkify=True)
-    module_sn = tables.Column(accessor='module_sn',verbose_name='Module Serial',linkify=True)
+    device_sn = tables.Column(accessor='device_sn',verbose_name='Device Serial Number')
+    module_sn = tables.Column(accessor='module_sn',verbose_name='Module Serial Number')
     
     class Meta(NetBoxTable.Meta):
         model = FirmwareAssignment
