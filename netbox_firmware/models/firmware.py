@@ -237,7 +237,9 @@ class FirmwareAssignment(NetBoxModel):
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
                 name='firmassign_either_device_type_or_module_type_required'
-            )
+            ),
+            models.UniqueConstraint(fields=['device'], name='unique_firmware_per_device'),
+            models.UniqueConstraint(fields=['module'], name='unique_firmware_per_module'),
         ]
 
     @property

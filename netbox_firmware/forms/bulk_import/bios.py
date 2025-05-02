@@ -170,7 +170,6 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
 
     def clean(self):
         super().clean()
-        # Perform additional validation on the form
         pass
     
     def _clean_fields(self):
@@ -189,20 +188,28 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
         if not hardware_kind or not manufacturer:
             # clean on manufacturer or hardware_kind already raises
             return None
+        
         try:
             if hardware_kind == 'device':
                 hardware_type = Device.objects.get(
                     device_type__manufacturer=manufacturer, name=model
                 )
+                if BiosAssignment.objects.filter(device=model).exists():
+                    raise ValidationError(f'Device "{model}" heeft al een BIOS toegewezen.')
             elif hardware_kind == 'module':
                 if model.isdigit():
                     hardware_type = Module.objects.get(
                         module_type__manufacturer=manufacturer, pk=model
                     )
+                    if BiosAssignment.objects.filter(module=model).exists():
+                        raise ValidationError(f'Module "{model}" heeft al een BIOS toegewezen.')
                 else:
                     hardware_type = Module.objects.get(
                         module_type__manufacturer=manufacturer, serial=model
                     )
+                    if BiosAssignment.objects.filter(module__serial=model).exists():
+                         raise ValidationError(f'Module "{model}" heeft al een BIOS toegewezen.')
+                    
         except ObjectDoesNotExist:
             raise forms.ValidationError(
                 f'Hardware type not found: "{hardware_kind}", "{manufacturer}", "{model}"'

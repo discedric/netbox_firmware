@@ -211,6 +211,8 @@ class BiosAssignment(NetBoxModel):
                 check=models.Q(device__isnull=False) | models.Q(module__isnull=False) ,
                 name='bios_device_or_module_required'
             ),
+            models.UniqueConstraint(fields=['device'], name='unique_bios_per_device'),
+            models.UniqueConstraint(fields=['module'], name='unique_bios_per_module'),
         ]
 
     @property
