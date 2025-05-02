@@ -126,10 +126,20 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         method='filter_kind',
         label='Type of hardware',
     )
+    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Manufacturer.objects.all(),
+        label=_('Manufacturer (ID)'),
+        method='filter_by_manufacturer',  # Custom filter method
+    )
     module_device = django_filters.ModelMultipleChoiceFilter(
         queryset=Module.objects.all(),
         field_name='module__device',
         label=_('Module (device)'),
+    )
+    module_device_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        field_name='module__device_id',
+        label=_('Module (device ID)'),
     )
     module_sn = django_filters.ModelMultipleChoiceFilter(
         queryset=Module.objects.all(),
@@ -140,6 +150,22 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Device.objects.all(),
         field_name='device__serial',
         label=_('Device (serial)'),
+    )
+    device_type = django_filters.ModelMultipleChoiceFilter(
+        queryset=DeviceType.objects.all(),
+        field_name='device__device_type__slug',
+        to_field_name='slug',
+        label=_('Device type (slug)'),
+    )
+    device_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=DeviceType.objects.all(),
+        field_name='device__device_type',
+        label=_('Device type (ID)'),
+    )
+    module_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=ModuleType.objects.all(),
+        field_name='module__module_type',
+        label=_('Module type (ID)'),
     )
     
     class Meta:
@@ -178,3 +204,11 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
             return queryset.filter(query)
         else:
             return queryset
+    
+    def filter_by_manufacturer(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(device__device_type__manufacturer__in=value) |
+                Q(module__module_type__manufacturer__in=value)
+            ).distinct()
+        return queryset
