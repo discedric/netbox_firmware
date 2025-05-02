@@ -37,6 +37,13 @@
           <td>{{ assignment.bios.status }}</td>
           <td>{{ assignment.description }}</td>
           <td>{{ assignment.patch_date }}</td>
+          {% if perms.netbox_firmware.change_biosassignment %}
+            <td>
+              <a href="{% url 'plugins:netbox_firmware:biosassignment_edit' assignment.id %}" class="btn btn-sm btn-ghost-primary">
+                <i class="mdi mdi-pencil" aria-hidden="true"></i> Edit
+              </a>
+            </td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>

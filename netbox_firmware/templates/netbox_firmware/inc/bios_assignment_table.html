@@ -31,6 +31,7 @@
           <th>Status</th>
           <th>Description</th>
           <th>Patch date</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -40,16 +41,21 @@
             <td>{{ assignment.bios.status }}</td>
             <td>{{ assignment.description }}</td>
             <td>{{ assignment.patch_date }}</td>
-            {% if actions %}
-              <td class="bulk-action-buttons" hx-swap-oob="outerHTML:.bulk-action-buttons">
-                {% if 'update' in actions %}
-                  {% bulk_edit_button model query_params=request.GET %}
-                {% endif %}
-                {% if 'delete' in actions %}
-                  {% bulk_delete_button model query_params=request.GET %}
-                {% endif %}
-              </td>
-            {% endif %}
+            <td class="bulk-action-buttons">
+              <!-- Edit button -->
+              {% if perms.netbox_firmware.change_bios %}
+              <a href="{% url 'plugins:netbox_firmware:biosassignment_edit' assignment.id %}" class="btn btn-sm btn-ghost-secondary">
+                <i class="mdi mdi-pencil" aria-hidden="true"></i> Edit
+              </a>
+              {% endif %}
+              
+              <!-- Delete button -->
+              {% if perms.netbox_firmware.delete_bios %}
+              <a href="{% url 'plugins:netbox_firmware:biosassignment_delete' assignment.id %}" class="btn btn-sm btn-ghost-danger" onclick="return confirm('Are you sure you want to delete this assignment?');">
+                <i class="mdi mdi-delete" aria-hidden="true"></i> Delete
+              </a>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
