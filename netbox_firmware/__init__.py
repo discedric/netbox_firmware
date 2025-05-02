@@ -6,7 +6,7 @@ from .version import __version__
 
 class FirmwareManagerConfig(PluginConfig):
     name = 'netbox_firmware'
-    verbose_name = 'Netbox Firmware Management'
+    verbose_name = 'Netbox Firmware'
     version = __version__
     description = 'Firmware management in NetBox'
     author = 'Cedric Vaneessen'

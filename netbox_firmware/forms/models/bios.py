@@ -62,6 +62,16 @@ class BiosForm(NetBoxModelForm):
                 }),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        device = cleaned_data.get('device_type')
+        module = cleaned_data.get('module_type')
+
+        if device and module:
+            raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
+        
+        return cleaned_data
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._disable_fields_by_tags()
@@ -168,4 +178,10 @@ class BiosAssignmentForm(NetBoxModelForm):
     
     def clean(self):
         cleaned_data = super().clean()
+        device = cleaned_data.get('device')
+        module = cleaned_data.get('module')
+
+        if device and module:
+            raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
+        
         return cleaned_data

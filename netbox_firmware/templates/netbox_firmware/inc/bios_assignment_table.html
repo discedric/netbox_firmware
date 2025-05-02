@@ -35,12 +35,22 @@
       </thead>
       <tbody>
         {% for assignment in assignments %}
-        <tr>
-          <td><a href="{% url 'plugins:netbox_firmware:biosassignment' assignment.id %}">{{ assignment }}</a></td>
-          <td>{{ assignment.bios.status }}</td>
-          <td>{{ assignment.description }}</td>
-          <td>{{ assignment.patch_date }}</td>
-        </tr>
+          <tr>
+            <td><a href="{% url 'plugins:netbox_firmware:biosassignment' assignment.id %}">{{ assignment }}</a></td>
+            <td>{{ assignment.bios.status }}</td>
+            <td>{{ assignment.description }}</td>
+            <td>{{ assignment.patch_date }}</td>
+            {% if actions %}
+              <td class="bulk-action-buttons" hx-swap-oob="outerHTML:.bulk-action-buttons">
+                {% if 'update' in actions %}
+                  {% bulk_edit_button model query_params=request.GET %}
+                {% endif %}
+                {% if 'delete' in actions %}
+                  {% bulk_delete_button model query_params=request.GET %}
+                {% endif %}
+              </td>
+            {% endif %}
+          </tr>
         {% endfor %}
       </tbody>
     </table>

@@ -131,6 +131,7 @@ class FirmwareAssignmentsTable(PluginTemplateExtension):
         context = {
           'assignments': assignments.order_by('-id')[:5],
           'count': assignments.count(),
+          'actions': ['update', 'delete']
         }
         return self.render('netbox_firmware/inc/firmware_assignment_table.html', extra_context=context)
 
@@ -144,6 +145,7 @@ class BiosAssignmentsTable(PluginTemplateExtension):
         context = {
           'assignments': assignments.order_by('-id')[:5],
           'count': assignments.count(),
+          'actions': ['update', 'delete']
         }
         return self.render('netbox_firmware/inc/bios_assignment_table.html', extra_context=context)
 

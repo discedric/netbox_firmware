@@ -195,10 +195,14 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
                     device_type__manufacturer=manufacturer, name=model
                 )
             elif hardware_kind == 'module':
-                hardware_type = Module.objects.get(
-                    module_type__manufacturer=manufacturer, id=model
-                )
-            
+                if model.isdigit():
+                    hardware_type = Module.objects.get(
+                        module_type__manufacturer=manufacturer, pk=model
+                    )
+                else:
+                    hardware_type = Module.objects.get(
+                        module_type__manufacturer=manufacturer, serial=model
+                    )
         except ObjectDoesNotExist:
             raise forms.ValidationError(
                 f'Hardware type not found: "{hardware_kind}", "{manufacturer}", "{model}"'

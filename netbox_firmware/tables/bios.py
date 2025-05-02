@@ -41,13 +41,11 @@ class BiosTable(NetBoxTable):
         verbose_name=_('File path'),
         orderable=False
     )
-    actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
         model = Bios
         fields = ('name', 'description', 'file_name', 'comments', 'status', 
-                  'module_type', 'device_type',
-                  'actions'
+                  'module_type', 'device_type'
                   )
         
 

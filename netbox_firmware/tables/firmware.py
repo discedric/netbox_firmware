@@ -46,14 +46,12 @@ class FirmwareTable(NetBoxTable):
         verbose_name=_('File path'),
         orderable=False
     )
-    actions = columns.ActionsColumn()
 
     class Meta(NetBoxTable.Meta):
         model = Firmware
         fields = ('name', 'file_name', 'comments', 'status', 
                   'manufacturer', 
-                  'module_type', 'device_type',
-                  'actions'
+                  'module_type', 'device_type'
                   )
         
 
