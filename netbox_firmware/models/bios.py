@@ -152,6 +152,15 @@ class Bios(NetBoxModel):
             )
         ]
 
+    def get_manufacturer(self):
+        """ Haalt de manufacturer op afhankelijk van device_type of module_type """
+        if self.device_type:
+            return self.device_type.manufacturer  # Haal de fabrikant via device_type
+        elif self.module_type:
+            return self.module_type.manufacturer  # Haal de fabrikant via module_type
+        print('No manufacturer found')
+        return None
+
     def __str__(self):
         return f'{self.name}'
 
@@ -251,6 +260,15 @@ class BiosAssignment(NetBoxModel):
     @property
     def module_type(self):
         return self.module.module_type if self.module else None
+
+    def get_manufacturer(self):
+        """ Haalt de manufacturer op afhankelijk van device_type of module_type """
+        if self.device:
+            return self.device.device_type.manufacturer  # Haal de fabrikant via device_type
+        elif self.module:
+            return self.module.module_type.manufacturer  # Haal de fabrikant via module_type
+        print('No manufacturer found')
+        return None
 
     def __str__(self):
         return f"{self.bios} - {self.device}"

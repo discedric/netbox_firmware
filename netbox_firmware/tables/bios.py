@@ -23,6 +23,11 @@ class BiosTable(NetBoxTable):
     file_name = tables.Column()
     comments = tables.Column()
     status = tables.Column()
+    manufacturer = tables.Column(
+        verbose_name=_('Manufacturer'),
+        accessor='get_manufacturer',  # We gebruiken de method get_manufacturer
+        linkify=True,
+    )
     device_type = tables.Column(
         accessor='device_type',
         linkify=True,
@@ -47,7 +52,18 @@ class BiosTable(NetBoxTable):
         fields = ('name', 'description', 'file_name', 'comments', 'status', 
                   'module_type', 'device_type'
                   )
-        
+
+    def order_manufacturer(self, queryset, is_descending):
+        if is_descending:
+            ordering_device = '-device_type__manufacturer'
+            ordering_module = '-module_type__manufacturer'
+        else:
+            ordering_device = 'device_type__manufacturer'
+            ordering_module = 'module_type__manufacturer'
+    
+        # Voeg de twee velden toe aan de query voor een gecombineerde sortering
+        queryset = queryset.order_by(ordering_device, ordering_module)
+        return queryset, True
 
 class BiosAssignmentTable(NetBoxTable):
     description = tables.Column()
@@ -57,7 +73,11 @@ class BiosAssignmentTable(NetBoxTable):
     module = tables.Column(accessor='module',verbose_name="Module",linkify=True,)
     module_device= tables.Column(accessor='module_device',verbose_name='Module owner',linkify=True)
     device = tables.Column(accessor='device',verbose_name="Device",linkify=True,)
-    actions = columns.ActionsColumn()
+    manufacturer = tables.Column(
+        verbose_name=_('Manufacturer'),
+        accessor='get_manufacturer',  # We gebruiken de method get_manufacturer
+        linkify=True,
+    )
     
     device_type = tables.Column(accessor='device_type',verbose_name='Device Type',linkify=True)
     device_sn = tables.Column(accessor='device_sn',verbose_name='Device Serial Number')
@@ -69,8 +89,20 @@ class BiosAssignmentTable(NetBoxTable):
         fields = ('description','ticket_number','patch_date',
                   'bios','device', 'module'
                   )
-    
+
     # Order methods
+    def order_manufacturer(self, queryset, is_descending):
+        if is_descending:
+            ordering_device = '-device__device_type__manufacturer'
+            ordering_module = '-module__module_type__manufacturer'
+        else:
+            ordering_device = 'device__device_type__manufacturer'
+            ordering_module = 'module__module_type__manufacturer'
+    
+        # Voeg de twee velden toe aan de query voor een gecombineerde sortering
+        queryset = queryset.order_by(ordering_device, ordering_module)
+        return queryset, True
+
     def order_device_sn(self, queryset, is_descending):
         ordering = ('-device__serial' if is_descending else 'device__serial')
         queryset = queryset.order_by(ordering)
