@@ -76,7 +76,10 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         return queryset.filter(
             Q(name__icontains=value) |
             Q(description__icontains=value.strip()) |
-            Q(comments__icontains=value) 
+            Q(comments__icontains=value)  |
+            Q(device_type__slug__icontains=value) |
+            Q(module_type__model__icontains=value) |
+            Q(manufacturer__slug__icontains=value)
         ).distinct()
     
     def filter_kind(self, queryset, name, value):
@@ -183,7 +186,14 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         return queryset.filter(
             Q(description__icontains=value) |
             Q(ticket_number__icontains=value) |
-            Q(comment__icontains=value)
+            Q(comment__icontains=value) |
+            Q(firmware__name__icontains=value) |
+            Q(device_type__slug__icontains=value) |
+            Q(module_type__model__icontains=value) |
+            Q(device__name__icontains=value) |
+            Q(device__serial__icontains=value) |
+            Q(module__serial__icontains=value) |
+            Q(manufacturer__slug__icontains=value)
         ).distinct()
 
     def filter_kind(self, queryset, name, value):
