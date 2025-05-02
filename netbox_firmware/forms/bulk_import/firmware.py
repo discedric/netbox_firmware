@@ -86,9 +86,9 @@ class FirmwareImportForm(NetBoxModelImportForm):
         }
 
     def clean(self):
-        super().clean()
+        clean_data = super().clean()
         # Perform additional validation on the form
-        pass
+        return clean_data
 
 class FirmwareAssignmentImportForm(NetBoxModelImportForm):
     manufacturer = CSVModelChoiceField(
@@ -128,8 +128,8 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
         label=_('Module'),
         queryset=Module.objects.all(),
         required=False,
-        to_field_name='name',
-        help_text=_('Module name')
+        to_field_name='id',
+        help_text=_('Module id')
     )
     comments = forms.CharField(
         label=_('Comments'),
@@ -173,7 +173,7 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
             'device_type': 'Device type model',
             'module_type': 'Module type',
             'device': 'Device name',
-            'module': 'Module name',
+            'module': 'Module id',
             'comments': 'Additional comments about the firmware assignment',
             'patch_date': 'Date of the firmware patch',
             'ticket_number': 'Ticket number of the firmware patch',
@@ -181,6 +181,12 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
         }
 
     def clean(self):
-        super().clean()
+        clean_data = super().clean()
+        module = self.cleaned_data.get('module')
+        device = self.cleaned_data.get('device')
         # Perform additional validation on the form
-        pass
+        if FirmwareAssignment.objects.filter(module=module).exists():
+            raise ValidationError(f'Module "{module}" heeft al een BIOS toegewezen.')
+        if FirmwareAssignment.objects.filter(device=device).exists():
+            raise ValidationError(f'Device "{device}" heeft al een BIOS toegewezen.')
+        return clean_data
