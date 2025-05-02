@@ -18,10 +18,10 @@ class BiosImportForm(NetBoxModelImportForm):
         required=True,
         help_text=_('Type of hardware')
     )
-    hardware_name = forms.CharField(
-        label=_('Hardware name'),
+    hardware_type_name = forms.CharField(
+        label=_('Hardware Type name'),
         required=True,
-        help_text=_('Name of the hardware')
+        help_text=_('Name of the hardware Type')
     )
     manufacturer= CSVModelChoiceField(
         queryset=Manufacturer.objects.all(),
@@ -60,7 +60,7 @@ class BiosImportForm(NetBoxModelImportForm):
             'name', 
             'manufacturer', 
             'hardware_kind', 
-            'hardware_name', 
+            'hardware_type_name', 
             'file_name', 
             'status', 
             'description', 
@@ -81,10 +81,10 @@ class BiosImportForm(NetBoxModelImportForm):
         exclude.remove('module_type')
         return exclude
 
-    def clean_hardware_name(self):
+    def clean_hardware_type_name(self):
         hardware_kind = self.cleaned_data.get('hardware_kind')
         manufacturer = self.cleaned_data.get('manufacturer')
-        model = self.cleaned_data.get('hardware_name')
+        model = self.cleaned_data.get('hardware_type_name')
         if not hardware_kind or not manufacturer:
             # clean on manufacturer or hardware_kind already raises
             return None
@@ -132,7 +132,7 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
     hardware_name = forms.CharField(
         label=_('Hardware name'),
         required=True,
-        help_text=_('Name of the hardware')
+        help_text=_('Name of the hardware, e.g. device name or module id')
     )
     comments = forms.CharField(
         label=_('Comments'),
@@ -196,7 +196,7 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
                 )
             elif hardware_kind == 'module':
                 hardware_type = Module.objects.get(
-                    module_type__manufacturer=manufacturer, serial=model
+                    module_type__manufacturer=manufacturer, id=model
                 )
             
         except ObjectDoesNotExist:

@@ -1,6 +1,8 @@
 from django.db import models
 from django.forms import ValidationError
 from django.urls import reverse
+from django.db.models.functions import Lower
+from django.utils.translation import gettext_lazy as _
 
 from ..choices import HardwareKindChoices, BiosStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
@@ -139,6 +141,11 @@ class Bios(NetBoxModel):
         verbose_name = 'BIOS'
         verbose_name_plural = 'BIOS'
         constraints = [
+            models.UniqueConstraint(
+                Lower('name'),
+                name='%(app_label)s_%(class)s_unique_name',
+                violation_error_message=_("Device name must be unique.")
+            ),
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
                 name='bios_device_type_or_module_type_required'
