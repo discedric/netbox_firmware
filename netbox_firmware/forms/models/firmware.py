@@ -93,14 +93,14 @@ class FirmwareForm(NetBoxModelForm):
                 self.no_hardware_type = False
 
     def clean(self):
-        cleaned_data = super().clean()
-        device_type = cleaned_data.get('device_type')
-        module_type = cleaned_data.get('module_type')
+        super().clean()
+        device_type = self.cleaned_data.get('device_type')
+        module_type = self.cleaned_data.get('module_type')
 
         if device_type and module_type:
             raise forms.ValidationError("Je mag slechts één van 'Device Type' of 'Module Type' selecteren, niet allebei.")
         
-        return cleaned_data
+        pass
     
     def _disable_fields_by_tags(self):
         """
@@ -232,17 +232,17 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         }
     
     def clean(self):
-        cleaned_data = super().clean()
-        device_type = cleaned_data.get('device_type')
-        module_type = cleaned_data.get('module_type')
+        super().clean()
+        device_type = self.cleaned_data.get('device_type')
+        module_type = self.cleaned_data.get('module_type')
 
         if device_type and module_type:
             raise forms.ValidationError("Je mag slechts één van 'Device Type' of 'Module Type' selecteren, niet allebei.")
         
-        device = cleaned_data.get('device')
-        module = cleaned_data.get('module')
+        device = self.cleaned_data.get('device')
+        module = self.cleaned_data.get('module')
 
         if device and module:
             raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
         
-        return cleaned_data
+        pass

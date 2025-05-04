@@ -13,7 +13,7 @@
   {% endif %}
   </h5>
   <!--check if firmware item is filled and then show name version and status that is given-->
-  {% if assignments %}
+  
   <div class="card-body">
     <a href="{% url 'plugins:netbox_firmware:biosassignment_list' %}?bios_id={{ object.pk }}" class="list-group-item list-group-item-action d-flex justify-content-between">
       {{ 'Assignments'|bettertitle }}
@@ -22,8 +22,8 @@
       {% else %}
         <span class="badge text-bg-light rounded-pill">&mdash;</span>
       {% endif %}
-    </tr>
     </a>
+    {% if assignments %}
     <table class="table">
       <thead>
         <tr>
@@ -60,10 +60,6 @@
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
   </div>
-{% else %}
-  <div class="card-body">
-    <p class="card-text">No assignments</p>
-  </div>
-{% endif %}
 </div>

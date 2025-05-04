@@ -63,14 +63,18 @@ class BiosForm(NetBoxModelForm):
         }
 
     def clean(self):
-        cleaned_data = super().clean()
-        device = cleaned_data.get('device_type')
-        module = cleaned_data.get('module_type')
+        try:
+            super().clean()
+            device = self.cleaned_data.get('device_type')
+            module = self.cleaned_data.get('module_type')
 
-        if device and module:
-            raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
-        
-        return cleaned_data
+            if device and module:
+                raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
+            
+            pass
+        except Exception as e:
+            print('clean() exception:', e)
+            raise
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,7 +124,6 @@ class BiosAssignmentForm(NetBoxModelForm):
         label='Device',
         query_params={
             'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
         },
     )
     module = DynamicModelChoiceField(
@@ -130,7 +133,6 @@ class BiosAssignmentForm(NetBoxModelForm):
         label='Module',
         query_params={
             'manufacturer_id': '$manufacturer',
-            'module_type_id': '$module_type',
         },
     )
     
@@ -177,11 +179,11 @@ class BiosAssignmentForm(NetBoxModelForm):
         }
     
     def clean(self):
-        cleaned_data = super().clean()
-        device = cleaned_data.get('device')
-        module = cleaned_data.get('module')
+        super().clean()
+        device = self.cleaned_data.get('device')
+        module = self.cleaned_data.get('module')
 
         if device and module:
             raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
         
-        return cleaned_data
+        pass

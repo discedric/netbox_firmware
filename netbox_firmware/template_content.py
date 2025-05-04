@@ -103,13 +103,13 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
                 {
                     'label': 'Devices',
                     'filter_field': 'manufacturer_id',
-                    'extra_filter': '&sort=device_type',
+                    'extra_filter': '&kind=device',
                     'count': count_device,
                 },
                 {
                     'label': 'Modules',
                     'filter_field': 'manufacturer_id',
-                    'extra_filter': '&sort=module_type',
+                    'extra_filter': '&kind=module',
                     'count': count_module,
                 },
                 {
@@ -121,6 +121,36 @@ class ManufacturerFirmwareCounts(PluginTemplateExtension):
         }
         return self.render('netbox_firmware/inc/firmware_stats_counts.html', extra_context=context)
 
+class ManufacturerBiosCounts(PluginTemplateExtension):
+    models = ['dcim.manufacturer']
+    def right_page(self):
+        object = self.context.get('object')
+        user = self.context['request'].user
+        count_device = Bios.objects.restrict(user, 'view').filter(device_type__manufacturer=object).count()
+        count_module = Bios.objects.restrict(user, 'view').filter(module_type__manufacturer=object).count()
+        context = {
+            'bios_stats': [
+                {
+                    'label': 'Devices',
+                    'filter_field': 'manufacturer_id',
+                    'extra_filter': '&kind=device',
+                    'count': count_device,
+                },
+                {
+                    'label': 'Modules',
+                    'filter_field': 'manufacturer_id',
+                    'extra_filter': '&kind=module',
+                    'count': count_module,
+                },
+                {
+                    'label': 'Total',
+                    'filter_field': 'manufacturer_id',
+                    'count': count_device + count_module,
+                },
+            ],
+        }
+        return self.render('netbox_firmware/inc/bios_stats_counts.html', extra_context=context)
+
 class FirmwareAssignmentsTable(PluginTemplateExtension):
     models = ['netbox_firmware.firmware']
     kind = 'firmware'
@@ -129,7 +159,7 @@ class FirmwareAssignmentsTable(PluginTemplateExtension):
         object = self.context.get('object')
         assignments = FirmwareAssignment.objects.filter(**{f'{self.kind}':object.id})
         context = {
-          'assignments': assignments.order_by('-id')[:5],
+          #'assignments': assignments.order_by('-id')[:5],
           'count': assignments.count()
         }
         return self.render('netbox_firmware/inc/firmware_assignment_table.html', extra_context=context)
@@ -142,7 +172,7 @@ class BiosAssignmentsTable(PluginTemplateExtension):
         object = self.context.get('object')
         assignments = BiosAssignment.objects.filter(**{f'{self.kind}':object.id})
         context = {
-          'assignments': assignments.order_by('-id')[:5],
+          #'assignments': assignments.order_by('-id')[:5],
           'count': assignments.count()
         }
         return self.render('netbox_firmware/inc/bios_assignment_table.html', extra_context=context)
@@ -153,6 +183,7 @@ template_extensions = (
     DeviceBiosInfo,
     ModuleBiosInfo,
     ManufacturerFirmwareCounts,
+    ManufacturerBiosCounts,
     FirmwareAssignmentsTable,
     BiosAssignmentsTable,
 )

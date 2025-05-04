@@ -132,7 +132,7 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
     hardware_name = forms.CharField(
         label=_('Hardware name'),
         required=True,
-        help_text=_('Name of the hardware, e.g. device name or module id')
+        help_text=_('Name of the hardware, e.g. device name or module id/serial')
     )
     comments = forms.CharField(
         label=_('Comments'),

@@ -17,7 +17,7 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag', name=_('General')),
         FieldSet('status',name=_('Status')),
-        FieldSet('kind','device_type_id', 'module_type_id', name=_('Hardware')),
+        FieldSet('kind','manufacturer_id','device_type_id', 'module_type_id', name=_('Hardware')),
     )
     
     selector_fields = ('q', 'status')
@@ -61,7 +61,7 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('kind','manufacturer_id','device_id', 'module_id','module_device_id','device_type_id','module_type_id',name=_('Hardware')), 
+        FieldSet('kind','manufacturer_id','device_type_id','device_id','module_type_id','module_id','module_device_id',name=_('Hardware')), 
         FieldSet('bios_id',name=_('Bios')),
     )
     

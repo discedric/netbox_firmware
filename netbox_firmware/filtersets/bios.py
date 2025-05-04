@@ -27,6 +27,11 @@ class BiosFilterSet(NetBoxModelFilterSet):
         method='filter_kind',
         label='Type of hardware',
     )
+    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Manufacturer.objects.all(),
+        label=_('Manufacturer (ID)'),
+        method='filter_by_manufacturer',  # Custom filter method
+    )
     device_type = django_filters.ModelMultipleChoiceFilter(
         field_name='device_type__slug',
         queryset=DeviceType.objects.all(),
@@ -83,6 +88,13 @@ class BiosFilterSet(NetBoxModelFilterSet):
         else:
             return queryset
 
+    def filter_by_manufacturer(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(device_type__manufacturer__in=value) |
+                Q(module_type__manufacturer__in=value)
+            ).distinct()
+        return queryset
 
 class BiosAssignmentFilterSet(NetBoxModelFilterSet):
     description = MultiValueCharFilter(
