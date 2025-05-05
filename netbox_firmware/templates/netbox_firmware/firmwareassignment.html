@@ -9,7 +9,7 @@
 {% if object.device or object.module or object.inventory_item %}
   {{ block.super }}
   <li class="breadcrumb-item">
-    <a href="{% url 'plugins:netbox_firmware:firmwareassignment_list' %}??{{ object.kind }}_type_id={{ object.hardware_type.pk }}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a>
+    <a href="{% url 'plugins:netbox_firmware:firmwareassignment_list' %}?{{ object.kind }}_id={{ object.hardware.pk }}&manufacturer_id={{object.hardware_type.manufacturer.id}}">{{ object.hardware_type.manufacturer }} {{ object.hardware }}</a>
   </li>
 {% endif %}
 {% endblock %}

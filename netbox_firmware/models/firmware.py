@@ -255,6 +255,14 @@ class FirmwareAssignment(NetBoxModel):
         return dict(HardwareKindChoices)[self.kind]
 
     @property
+    def hardware(self):
+        return self.device or self.module or None
+
+    @property
+    def hardware_type(self):
+        return self.device_type or self.module_type or None
+
+    @property
     def hardware_sn(self):
         return self.device.serial if self.device else self.module.serial if self.module else None
 
