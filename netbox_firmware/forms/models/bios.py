@@ -145,6 +145,8 @@ class BiosAssignmentForm(NetBoxModelForm):
         help_text='Only showing Active and Staged',
         query_params={
             'status__in': ['active','staged'],
+            'device': '$device',
+            'module': '$module',
         },
     )
     comment = CommentField()
