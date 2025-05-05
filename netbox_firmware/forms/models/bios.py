@@ -69,7 +69,7 @@ class BiosForm(NetBoxModelForm):
             module = self.cleaned_data.get('module_type')
 
             if device and module:
-                raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
+                raise forms.ValidationError("You may only select one of 'Device' or 'Module', not both.")
             
             pass
         except Exception as e:
@@ -184,6 +184,6 @@ class BiosAssignmentForm(NetBoxModelForm):
         module = self.cleaned_data.get('module')
 
         if device and module:
-            raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
+            raise forms.ValidationError("You may only select one of 'Device' or 'Module', not both.")
         
         pass

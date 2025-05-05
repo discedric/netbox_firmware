@@ -98,7 +98,7 @@ class FirmwareForm(NetBoxModelForm):
         module_type = self.cleaned_data.get('module_type')
 
         if device_type and module_type:
-            raise forms.ValidationError("Je mag slechts één van 'Device Type' of 'Module Type' selecteren, niet allebei.")
+            raise forms.ValidationError("You may only select one of 'Device Type' or 'Module Type', not both.")
         
         pass
     
@@ -237,12 +237,12 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         module_type = self.cleaned_data.get('module_type')
 
         if device_type and module_type:
-            raise forms.ValidationError("Je mag slechts één van 'Device Type' of 'Module Type' selecteren, niet allebei.")
+            raise forms.ValidationError("You may only select one of 'Device Type' or 'Module Type', not both.")
         
         device = self.cleaned_data.get('device')
         module = self.cleaned_data.get('module')
 
         if device and module:
-            raise forms.ValidationError("Je mag slechts één van 'Device' of 'Module' selecteren, niet allebei.")
+            raise forms.ValidationError("You may only select one of 'Device' or 'Module', not both.")
         
         pass

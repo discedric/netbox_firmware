@@ -186,7 +186,7 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
         device = self.cleaned_data.get('device')
         # Perform additional validation on the form
         if FirmwareAssignment.objects.filter(module=module).exists():
-            raise ValidationError(f'Module "{module}" heeft al een BIOS toegewezen.')
+            raise ValidationError(f'Module "{module}" already has a BIOS assigned.')
         if FirmwareAssignment.objects.filter(device=device).exists():
-            raise ValidationError(f'Device "{device}" heeft al een BIOS toegewezen.')
+            raise ValidationError(f'Device "{device}" already has a BIOS assigned.')
         return clean_data
