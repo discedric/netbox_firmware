@@ -201,9 +201,7 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         model = FirmwareAssignment
         fields = {
             'id', 'description', 'ticket_number', 'patch_date', 'comment',
-            'firmware', 'manufacturer', 
-            'device_type', 'device', 
-            'module_type', 'module',
+            'firmware', 'device', 'module',
         }
     
     def search(self, queryset, name, value):

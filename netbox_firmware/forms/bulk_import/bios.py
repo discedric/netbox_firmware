@@ -61,7 +61,7 @@ class BiosImportForm(NetBoxModelImportForm):
             'file_name', 
             'status', 
             'description', 
-            'comments'
+            'comments',
             'manufacturer', 
             'hardware_kind', 
             'hardware_type_name', 
