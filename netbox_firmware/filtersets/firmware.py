@@ -7,9 +7,9 @@ from utilities.filters import (
 from django.utils.translation import gettext as _
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox_firmware.choices import FirmwareStatusChoices, HardwareKindChoices
+
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Firmware, FirmwareAssignment
-
 
 class FirmwareFilterSet(NetBoxModelFilterSet):
     name = MultiValueCharFilter(

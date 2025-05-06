@@ -8,8 +8,6 @@ class FirmwareSerializer(NetBoxModelSerializer):
     class Meta:
         model = Firmware
         fields = '__all__'
-    def get_kind(self,obj):
-        return obj.kind
 
 
 class FirmwareAssignmentSerializer(NetBoxModelSerializer):
