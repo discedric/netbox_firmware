@@ -143,7 +143,7 @@ class Firmware(NetBoxModel):
         return None
 
     def __str__(self):
-        return f'{self.name} ({self.manufacturer})'
+        return f'{self.name}'
 
 
 class FirmwareAssignment(NetBoxModel):
@@ -237,6 +237,10 @@ class FirmwareAssignment(NetBoxModel):
     def module_type(self):
         return self.module.module_type if self.module else None
 
+    @property
+    def manufacturer(self):
+        return self.get_manufacturer()
+
     def get_manufacturer(self):
         """ Haalt de manufacturer op afhankelijk van device_type of module_type """
         if self.device:
@@ -247,4 +251,6 @@ class FirmwareAssignment(NetBoxModel):
         return None
 
     def __str__(self):
-        return f"{self.firmware} - {self.hardware}"
+        if self.hardware:
+            return f"{self.firmware} - {self.hardware}"
+        return f"{self.firmware}"

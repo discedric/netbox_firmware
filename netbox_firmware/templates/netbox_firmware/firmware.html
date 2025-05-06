@@ -46,35 +46,15 @@
             <th scope="row">Hardware</th>
             <td><a href="{{object.manufacturer.get_absolute_url}}">{{ object.manufacturer|placeholder }}</a></td>
           </tr>
-
           {% if object.kind == 'device' %}
             <tr>
-              <th scope="row">{{ object.get_kind_display }} Type</th>
-              <td><a href="{{object.hardware_type.get_absolute_url}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
+              <th scope="row">Device Type</th>
+              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
             </tr>
           {% elif object.kind == 'module' %}
             <tr>
-              <th scope="row">{{ object.kind }} Type</th>
-              <td><a href="{{object.hardware_type.get_absolute_url}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
-            </tr>
-          {% elif object.kind == 'inventoryitem' %}
-            <tr>
-              <th scope="row">Inventory Item Group</th>
-              <td>
-                {% if object.inventoryitem_type.inventoryitem_group %}
-                  {% for group in object.inventoryitem_type.inventoryitem_group.get_ancestors %}
-                    {{ group|linkify }} /
-                  {% endfor %}
-                  {{ object.inventoryitem_type.inventoryitem_group|linkify }}
-                {% else %}
-                  {{ ''|placeholder }}
-                {% endif %}
-              </td>
-            </tr>
-          {% elif object.kind == None %}
-            <tr>
-              <th scope="row">any Type</th>
-              <td>{{ ''|placeholder }}</td>
+              <th scope="row">Module Type</th>
+              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
             </tr>
           {% endif %}
         </table>

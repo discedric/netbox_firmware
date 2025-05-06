@@ -240,6 +240,10 @@ class BiosAssignment(NetBoxModel):
     def module_type(self):
         return self.module.module_type if self.module else None
 
+    @property
+    def manufacturer(self):
+        return self.get_manufacturer()
+
     def get_manufacturer(self):
         """ Haalt de manufacturer op afhankelijk van device_type of module_type """
         if self.device:
@@ -250,9 +254,7 @@ class BiosAssignment(NetBoxModel):
         return None
 
     def __str__(self):
-        if self.device:
-            return f"{self.bios} - {self.device}"
-        elif self.module:
-            return f"{self.bios} - {self.module}"
+        if self.hardware:
+            return f"{self.bios} - {self.hardware}"
         return f"{self.bios}"
 

@@ -46,19 +46,18 @@
       <div class="card">
         <h5 class="card-header">Hardware</h5>
         <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Hardware</th>
+            <td><a href="{{object.manufacturer.get_absolute_url}}">{{ object.manufacturer|placeholder }}</a></td>
+          </tr>
           {% if object.kind == 'device' %}
             <tr>
               <th scope="row">Device Type</th>
-              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
+              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
             </tr>
           {% elif object.kind == 'module' %}
             <tr>
               <th scope="row">Module Type</th>
-              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a></td>
-            </tr>
-          {% elif object.kind == 'inventoryitem' %}
-            <tr>
-              <th scope="row">Inventory Item Type</th>
               <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
             </tr>
           {% endif %}
