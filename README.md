@@ -1,12 +1,12 @@
-# Netbox firmware Plugin
+# Netbox Firmware Plugin
 
-Een [Netbox](https://github.com/netbox-community/netbox) plugin voor het bijhouden van de firmwares en bios van de apparaten
-Dit is een plugin geschreven door een student tijdens een stage dus tijdelijke updates kunnen nog gebeuren tijdens de geduurte van deze stage.
+A [Netbox](https://github.com/netbox-community/netbox) plugin for tracking the firmware of devices.
+This plugin was developed by a student during an internship, so temporary updates may occur during the duration of this internship.
 
 ## Features
 
-Een plugin voor het bijhouden van de firmware en bios versies die op uw devices, modules en inventory items staan.
-Dit is een simpele plugin die een basis legt voor eigen uitbreidingen
+A plugin for tracking the firmware versions installed on your devices and modules.
+This is a simple plugin that lays the foundation for custom extensions.
 
 ## Compatibility
 | Netbox Version | Plugin Version |
@@ -15,10 +15,9 @@ Dit is een simpele plugin die een basis legt voor eigen uitbreidingen
 
 ## Installing
 
-Officiele installeer instructies: [official Netbox plugin documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins)
-Je zal ook de plugin [netbox-inventory](https://github.com/ArnesSI/netbox-inventory) moeten installeren omdat we deze gebruiken.
+Official installation instructions: [official Netbox plugin documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins)
 
-Je kan de plugin installeren via de github cli of via git
+You can install the plugin via the GitHub CLI or Git:
 ```bash
 $ source /opt/netbox/venv/bin/activate
 (venv) $ cd /opt/netbox/netbox/netbox/plugins
@@ -32,11 +31,10 @@ PLUGINS = [
 ]
 ```
 
-Je zal ook moeten database migrations en netbox search index moeten updaten:
+You will also need to update the database migrations and Netbox search index:
 
 ```bash
 (venv) $ cd /opt/netbox/netbox/
 (venv) $ python3 manage.py migrate
 (venv) $ python3 manage.py reindex --lazy
 ```
-
