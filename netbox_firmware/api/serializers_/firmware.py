@@ -1,7 +1,6 @@
 from netbox.api.serializers import NetBoxModelSerializer
 from rest_framework import serializers
 from dcim.api.serializers import DeviceTypeSerializer, ManufacturerSerializer, ModuleTypeSerializer
-from netbox_inventory.api.serializers import InventoryItemTypeSerializer
 from netbox_firmware.models import Firmware, FirmwareAssignment
 
 
