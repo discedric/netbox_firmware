@@ -200,8 +200,9 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         model = BiosAssignment
         fields = {
             'id', 'description', 'ticket_number', 'patch_date', 'comment',
-            'bios', 'device', 
-            'module',
+            'bios', 'manufacturer', 
+            'device_type', 'device', 
+            'module_type', 'module',
         }
     
     def search(self, queryset, name, value):
@@ -216,7 +217,8 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
             Q(module__module_type__model__icontains=value) |
             Q(device__name__icontains=value) |
             Q(device__serial__icontains=value) |
-            Q(module__serial__icontains=value)
+            Q(module__serial__icontains=value) |
+            Q(manufacturer__slug__icontains=value)
         ).distinct()
 
     def filter_kind(self, queryset, name, value):

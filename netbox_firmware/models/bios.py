@@ -95,32 +95,12 @@ class Bios(NetBoxModel):
     def hardware_type(self):
         return self.device_type or self.module_type or None
     
+    @property
+    def manufacturer(self):
+        return self.get_manufacturer()
+
     def clean(self):
         return super().clean()
-
-    def validate_hardware_type(self):
-        if(
-            sum(
-                map(
-                    bool,
-                    [
-                        self.device_type,
-                        self.module_type
-                    ],
-                )
-            )
-            > 1
-        ):
-            raise ValidationError(
-                'Only one of device type or module type can be set'
-            )
-        if (
-            not self.device_type
-            and not self.module_type
-        ):
-            raise ValidationError(
-                'One of device type or module type must be set'
-        )
 
     def get_absolute_url(self):
         return reverse('plugins:netbox_firmware:bios', args=[self.pk])
@@ -196,13 +176,10 @@ class BiosAssignment(NetBoxModel):
     )
 
     clone_fields = [
-        'bios', 'patch_date',
+        'bios', 'patch_date', 'description', 'comment', 'module', 'device'
     ]
 
     class Meta:
-        """
-        check constraints to ensure that either a device, module or inventory item type is set
-        """
         ordering = ('bios', 'device', 'module')
         verbose_name = 'BIOS Assignment'
         verbose_name_plural = 'BIOS Assignments'

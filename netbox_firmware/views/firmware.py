@@ -13,7 +13,6 @@ from .. import tables
 from .. import forms
 from .. import models
 from .. import filtersets
-from ..template_content import WARRANTY_PROGRESSBAR
 
 __all__ = (
     'FirmwareView',
@@ -65,16 +64,6 @@ class FirmwareEditView(generic.ObjectEditView):
     queryset = models.Firmware.objects.all()
     form = forms.FirmwareForm
     default_return_url = 'plugins:netbox_firmware:firmware_list'
-    
-    def get_initial(self):
-        initial = super().get_initial()
-        if 'manufacturer' in self.request.GET:
-            initial['manufacturer'] = self.request.GET.get('manufacturer')
-        if 'device_type' in self.request.GET:
-            initial['device_type'] = self.request.GET.get('device_type')
-        if 'module_type' in self.request.GET:
-            initial['module_type'] = self.request.GET.get('module_type')
-        return initial
 
 @register_model_view(models.Firmware,'delete')
 class FirmwareDeleteView(generic.ObjectDeleteView):

@@ -42,6 +42,10 @@
             <th scope="row">Bios</th>
             <td><a href="{{ object.bios.get_absolute_url }}">{{ object.bios|placeholder }}</a></td>
           </tr>
+          <tr>
+            <th scope="row">Manufacturer</th>
+            <td><a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer|placeholder }}</a></td>
+          </tr>
           {% if object.device %}
             <tr>
               <th scope="row">Device</th>

@@ -12,7 +12,6 @@ from netbox_firmware import tables
 from netbox_firmware import forms
 from netbox_firmware import models
 from netbox_firmware import filtersets
-from netbox_firmware.template_content import WARRANTY_PROGRESSBAR
 
 __all__ = (
     'BiosView',

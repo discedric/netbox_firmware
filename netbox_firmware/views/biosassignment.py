@@ -50,7 +50,6 @@ class BiosAssignmentListView(generic.ObjectListView):
         'module',
         'bios',
     )
-    
     filterset = filtersets.BiosAssignmentFilterSet
     filterset_form = forms.BiosAssignmentFilterForm
     table = tables.BiosAssignmentTable

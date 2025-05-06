@@ -62,6 +62,18 @@ class BiosForm(NetBoxModelForm):
                 }),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._disable_fields_by_tags()
+        # Used for picking the default active tab for hardware type selection
+        self.no_hardware_type = True
+        if self.instance:
+            if (
+                self.instance.device_type
+                or self.instance.module_type
+            ):
+                self.no_hardware_type = False
+    
     def clean(self):
         try:
             super().clean()
@@ -75,40 +87,8 @@ class BiosForm(NetBoxModelForm):
         except Exception as e:
             print('clean() exception:', e)
             raise
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._disable_fields_by_tags()
-        # Used for picking the default active tab for hardware type selection
-        self.no_hardware_type = True
-        if self.instance:
-            if (
-                self.instance.device_type
-                or self.instance.module_type
-            ):
-                self.no_hardware_type = False
     
-    def _disable_fields_by_tags(self):
-        """
-        We need to disable fields that are not editable based on the tags that are assigned to the firmware.
-        """
-        if not self.instance.pk:
-            # If we are creating a new firmware we can't disable fields
-            return
 
-        # Disable fields that should not be edited
-        tags = self.instance.tags.all().values_list('slug', flat=True)
-        tags_and_disabled_fields = get_tags_and_edit_protected_firmware_fields()
-
-        for tag in tags:
-            if tag not in tags_and_disabled_fields:
-                continue
-
-            for field in tags_and_disabled_fields[tag]:
-                if field in self.fields:
-                    self.fields[field].disabled = True
-    
-    
 class BiosAssignmentForm(NetBoxModelForm):
     # Hardware ------------------------------
     description = forms.CharField(
@@ -116,7 +96,6 @@ class BiosAssignmentForm(NetBoxModelForm):
     )
     
     # Hardware Items ------------------------
-    
     device = DynamicModelChoiceField(
         queryset = Device.objects.all(),
         required=False,

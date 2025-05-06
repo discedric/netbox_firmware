@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import ValidationError
 from django.urls import reverse
+from django.db.models.functions import Lower
 
 from ..choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
@@ -10,10 +11,6 @@ class Firmware(NetBoxModel):
     #
     # fields that identify firmware
     #
-    """_summary_
-        toe te voegen:
-        - (als kan) hyperlinks
-    """
     name = models.CharField(
         help_text='Name of the firmware',
         max_length=255,
@@ -55,15 +52,7 @@ class Firmware(NetBoxModel):
     #
     # hardware type fields
     #
-    
-    manufacturer = models.ForeignKey(
-        to=Manufacturer,
-        on_delete=models.PROTECT,
-        related_name='firmware',
-        blank=True,
-        null=True,
-        verbose_name='Manufacturer',
-    )
+
     device_type = models.ForeignKey(
         to=DeviceType,
         on_delete=models.PROTECT,
@@ -83,7 +72,7 @@ class Firmware(NetBoxModel):
     
     clone_fields = [
         'name','description', 'file_name', 'status', 'device_type',
-        'manufacturer', 'comments', 'module_type'
+        'comments', 'module_type'
     ]
 
     @property
@@ -106,32 +95,12 @@ class Firmware(NetBoxModel):
     def hardware_type(self):
         return self.device_type or self.module_type or None
     
+    @property
+    def manufacturer(self):
+        return self.get_manufacturer()
+    
     def clean(self):
         return super().clean()
-
-    def validate_hardware_type(self):
-        if(
-            sum(
-                map(
-                    bool,
-                    [
-                        self.device_type,
-                        self.module_type
-                    ],
-                )
-            )
-            > 1
-        ):
-            raise ValidationError(
-                'Only one of device type or module type can be set'
-            )
-        if (
-            not self.device_type
-            and not self.module_type
-        ):
-            raise ValidationError(
-                'One of device type or module type must be set'
-        )
 
     def get_absolute_url(self):
         return reverse('plugins:netbox_firmware:firmware', args=[self.pk])
@@ -147,16 +116,30 @@ class Firmware(NetBoxModel):
         self.file.name = _name
 
     class Meta:
-        ordering = ('name','device_type', 'module_type', 'manufacturer')
-        unique_together = ('name', 'manufacturer', 'device_type', 'module_type')
+        ordering = ('name','device_type', 'module_type')
+        unique_together = ('name', 'device_type', 'module_type')
         verbose_name = 'Firmware'
         verbose_name_plural = 'Firmwares'
         constraints = [
+            models.UniqueConstraint(
+                Lower('name'),
+                name='%(app_label)s_%(class)s_unique_name',
+                violation_error_message=_("Device name must be unique.")
+            ),
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
-                name='firmware_either_device_type_or_module_type_required'
+                name='firmware_device_type_or_module_type_required'
             )
         ]
+
+    def get_manufacturer(self):
+        """ Haalt de manufacturer op afhankelijk van device_type of module_type """
+        if self.device_type:
+            return self.device_type.manufacturer  # Haal de fabrikant via device_type
+        elif self.module_type:
+            return self.module_type.manufacturer  # Haal de fabrikant via module_type
+        print('No manufacturer found')
+        return None
 
     def __str__(self):
         return f'{self.name} ({self.manufacturer})'
@@ -175,14 +158,6 @@ class FirmwareAssignment(NetBoxModel):
         null=True,
         blank=True
     )
-    manufacturer = models.ForeignKey(
-        to=Manufacturer, 
-        related_name='FirmwareAssignment',
-        on_delete=models.PROTECT,
-        verbose_name='Manufacturer',
-        null=True, 
-        blank=True,
-    )
     module = models.ForeignKey(
         to=Module,
         related_name='FirmwareAssignment',
@@ -199,32 +174,12 @@ class FirmwareAssignment(NetBoxModel):
         null=True, 
         blank=True
     )
-    
-    module_type = models.ForeignKey(
-        to=ModuleType,
-        on_delete=models.PROTECT,
-        related_name='FirmwareAssignment',
-        blank=True,
-        null=True,
-        verbose_name='Module Type',
-    )
-    device_type = models.ForeignKey(
-        to=DeviceType,
-        on_delete=models.PROTECT,
-        related_name='FirmwareAssignment',
-        blank=True,
-        null=True,
-        verbose_name='Device Type',
-    )
 
     clone_fields = [
-        'manufacturer', 'device_type', 'module_type', 'firmware'
+        'firmware', 'patch_date', 'description', 'comment', 'module', 'device'
     ]
 
     class Meta:
-        """
-        check constraints to ensure that either a device, module is set
-        """
         ordering = ('firmware', 'device', 'module')
         verbose_name = 'Firmware Assignment'
         verbose_name_plural = 'Firmware Assignments'
@@ -232,11 +187,6 @@ class FirmwareAssignment(NetBoxModel):
             models.CheckConstraint(
                 check=models.Q(device__isnull=False) | models.Q(module__isnull=False),
                 name='firmassign_either_device_or_module_required'
-            ),
-            
-            models.CheckConstraint(
-                check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
-                name='firmassign_either_device_type_or_module_type_required'
             ),
             models.UniqueConstraint(fields=['device'], name='unique_firmware_per_device'),
             models.UniqueConstraint(fields=['module'], name='unique_firmware_per_module'),
@@ -278,5 +228,22 @@ class FirmwareAssignment(NetBoxModel):
     def module_sn(self):
         return self.module.serial if self.module else None
 
+    @property
+    def device_type(self):
+        return self.device.device_type if self.device else None
+    
+    @property
+    def module_type(self):
+        return self.module.module_type if self.module else None
+
+    def get_manufacturer(self):
+        """ Haalt de manufacturer op afhankelijk van device_type of module_type """
+        if self.device:
+            return self.device.device_type.manufacturer  # Haal de fabrikant via device_type
+        elif self.module:
+            return self.module.module_type.manufacturer  # Haal de fabrikant via module_type
+        print('No manufacturer found')
+        return None
+
     def __str__(self):
-        return f"{self.firmware} - {self.device}"
+        return f"{self.firmware} - {self.hardware}"

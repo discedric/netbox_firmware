@@ -58,13 +58,13 @@ class BiosImportForm(NetBoxModelImportForm):
         model = Bios
         fields = [
             'name', 
-            'manufacturer', 
-            'hardware_kind', 
-            'hardware_type_name', 
             'file_name', 
             'status', 
             'description', 
             'comments'
+            'manufacturer', 
+            'hardware_kind', 
+            'hardware_type_name', 
             ]
 
     def clean(self):

@@ -6,10 +6,9 @@ from utilities.filters import (
 )
 from django.utils.translation import gettext as _
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
-from netbox_firmware.choices import FirmwareStatusChoices
+from netbox_firmware.choices import FirmwareStatusChoices, HardwareKindChoices
 from netbox.filtersets import NetBoxModelFilterSet
 from ..models import Firmware, FirmwareAssignment
-from .. import choices
 
 
 class FirmwareFilterSet(NetBoxModelFilterSet):
@@ -24,16 +23,24 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         choices=FirmwareStatusChoices,
         label=_('Status'),
     )
+    kind = MultiValueCharFilter(
+        method='filter_kind',
+        label='Type of hardware',
+    )
     manufacturer_id = django_filters.ModelMultipleChoiceFilter(
-        field_name='manufacturer',
         queryset=Manufacturer.objects.all(),
         label=_('Manufacturer (ID)'),
+        method='filter_by_manufacturer',  # Custom filter method
     )
-    manufacturer = django_filters.ModelMultipleChoiceFilter(
-        field_name='manufacturer__slug',
-        queryset=Manufacturer.objects.all(),
-        to_field_name='slug',
-        label=_('Manufacturer name (slug)'),
+    device = django_filters.ModelChoiceFilter(
+        queryset=Device.objects.all(),
+        method='filter_by_device',
+        label=_('Device'),
+    )
+    module = django_filters.ModelChoiceFilter(
+        queryset=Module.objects.all(),
+        method='filter_by_module',
+        label=_('Module'),
     )
     device_type = django_filters.ModelMultipleChoiceFilter(
         field_name='device_type__slug',
@@ -57,16 +64,10 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         label=_('Module type (ID)'),
     )
     
-    kind = MultiValueCharFilter(
-        method='filter_kind',
-        label='Type of hardware',
-    )
-    
     class Meta:
         model = Firmware
         fields = {
             'id', 'name', 'file_name', 'status',
-            'manufacturer', 
             'device_type', 'module_type'
         }
     
@@ -79,12 +80,13 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
             Q(comments__icontains=value)  |
             Q(device_type__slug__icontains=value) |
             Q(module_type__model__icontains=value) |
-            Q(manufacturer__slug__icontains=value)
+            Q(device_type__manufacturer__slug__icontains=value) |
+            Q(module_type__manufacturer__slug__icontains=value)
         ).distinct()
     
     def filter_kind(self, queryset, name, value):
         query = None
-        for kind in choices.HardwareKindChoices.values():
+        for kind in HardwareKindChoices.values():
             if kind in value:
                 q = Q(**{f'{kind}_type__isnull': False})
                 if query:
@@ -96,39 +98,21 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         else:
             return queryset
 
+    def filter_by_device(self, queryset, name, value):
+        return queryset.filter(device_type=value.device_type)
+
+    def filter_by_module(self, queryset, name, value):
+        return queryset.filter(module_type=value.module_type)
+
+    def filter_by_manufacturer(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(device_type__manufacturer__in=value) |
+                Q(module_type__manufacturer__in=value)
+            ).distinct()
+        return queryset
 
 class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
-    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
-        field_name='manufacturer',
-        queryset=Manufacturer.objects.all(),
-        label=_('Manufacturer (ID)'),
-    )
-    manufacturer = django_filters.ModelMultipleChoiceFilter(
-        field_name='manufacturer__slug',
-        queryset=Manufacturer.objects.all(),
-        to_field_name='slug',
-        label=_('Manufacturer (slug)'),
-    )
-    device_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='device_type__slug',
-        queryset=DeviceType.objects.all(),
-        to_field_name='slug',
-        label=_('Device type (slug)'),
-    )
-    device_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=DeviceType.objects.all(),
-        label=_('Device type (ID)'),
-    )
-    module_type = django_filters.ModelMultipleChoiceFilter(
-        field_name='module_type__model',
-        queryset=ModuleType.objects.all(),
-        to_field_name='name',
-        label=_('Module type (model)'),
-    )
-    module_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=ModuleType.objects.all(),
-        label=_('Module type (ID)'),
-    )
     description = MultiValueCharFilter(
         lookup_expr='icontains',
     )
@@ -170,7 +154,49 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         method='filter_kind',
         label='Type of hardware',
     )
-    
+    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Manufacturer.objects.all(),
+        label=_('Manufacturer (ID)'),
+        method='filter_by_manufacturer',  # Custom filter method
+    )
+    module_device = django_filters.ModelMultipleChoiceFilter(
+        queryset=Module.objects.all(),
+        field_name='module__device',
+        label=_('Module (device)'),
+    )
+    module_device_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        field_name='module__device_id',
+        label=_('Module (device ID)'),
+    )
+    module_sn = django_filters.ModelMultipleChoiceFilter(
+        queryset=Module.objects.all(),
+        field_name='module__serial',
+        label=_('Module (serial)'),
+    )
+    device_sn = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        field_name='device__serial',
+        label=_('Device (serial)'),
+    )
+    device_type = django_filters.ModelMultipleChoiceFilter(
+        queryset=DeviceType.objects.all(),
+        field_name='device__device_type__slug',
+        to_field_name='slug',
+        label=_('Device type (slug)'),
+    )
+    device_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=DeviceType.objects.all(),
+        field_name='device__device_type',
+        label=_('Device type (ID)'),
+    )
+    module_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=ModuleType.objects.all(),
+        field_name='module__module_type',
+        label=_('Module type (ID)'),
+    )
+
+
     class Meta:
         model = FirmwareAssignment
         fields = {
@@ -188,8 +214,8 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
             Q(ticket_number__icontains=value) |
             Q(comment__icontains=value) |
             Q(firmware__name__icontains=value) |
-            Q(device_type__slug__icontains=value) |
-            Q(module_type__model__icontains=value) |
+            Q(device__device_type__slug__icontains=value) |
+            Q(module__module_type__model__icontains=value) |
             Q(device__name__icontains=value) |
             Q(device__serial__icontains=value) |
             Q(module__serial__icontains=value) |
@@ -198,7 +224,7 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
 
     def filter_kind(self, queryset, name, value):
         query = None
-        for kind in choices.HardwareKindChoices.values():
+        for kind in HardwareKindChoices.values():
             if kind in value:
                 q = Q(**{f'{kind}__isnull': False})
                 if query:
@@ -209,3 +235,11 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
             return queryset.filter(query)
         else:
             return queryset
+    
+    def filter_by_manufacturer(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(device__device_type__manufacturer__in=value) |
+                Q(module__module_type__manufacturer__in=value)
+            ).distinct()
+        return queryset

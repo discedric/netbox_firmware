@@ -19,33 +19,17 @@ class FirmwareForm(NetBoxModelForm):
         required=False,
     )
     file_name = forms.CharField(required=False, label='File Name')
-    manufacturer = DynamicModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        required=True,
-        label='Manufacturer',
-        selector=True,
-        quick_add=True,
-        initial_params={
-            'device_types': '$device_type',
-        },
-    )
     device_type = DynamicModelChoiceField(
         queryset=DeviceType.objects.all(),
         required=False,
         selector=True,
         label='Supported Device Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
     )
     module_type = DynamicModelChoiceField(
         queryset=ModuleType.objects.all(),
         required=False,
         selector=True,
         label='Module Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
     )
     comments = CommentField()
     
@@ -68,7 +52,6 @@ class FirmwareForm(NetBoxModelForm):
             'file_name',
             'file',
             'description',
-            'manufacturer',
             'device_type',
             'module_type',
             'status',
@@ -101,62 +84,14 @@ class FirmwareForm(NetBoxModelForm):
             raise forms.ValidationError("You may only select one of 'Device Type' or 'Module Type', not both.")
         
         pass
-    
-    def _disable_fields_by_tags(self):
-        """
-        We need to disable fields that are not editable based on the tags that are assigned to the firmware.
-        """
-        if not self.instance.pk:
-            # If we are creating a new firmware we can't disable fields
-            return
-
-        # Disable fields that should not be edited
-        tags = self.instance.tags.all().values_list('slug', flat=True)
-        tags_and_disabled_fields = get_tags_and_edit_protected_firmware_fields()
-
-        for tag in tags:
-            if tag not in tags_and_disabled_fields:
-                continue
-
-            for field in tags_and_disabled_fields[tag]:
-                if field in self.fields:
-                    self.fields[field].disabled = True
-    
-    
+      
 class FirmwareAssignmentForm(NetBoxModelForm):
     # Hardware ------------------------------
-    manufacturer = DynamicModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        selector=True,
-        required=True,
-        label='Manufacturer',
-    )
     description = forms.CharField(
         required=False,
     )
-    
-    # Hardware Type -------------------------
-    device_type = DynamicModelChoiceField(
-        queryset=DeviceType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Device Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
-    )
-    module_type = DynamicModelChoiceField(
-        queryset=ModuleType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Module Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
-    )
-    
+
     # Hardware Items ------------------------
-    
     device = DynamicModelChoiceField(
         queryset = Device.objects.all(),
         required=False,
@@ -164,7 +99,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         label='Device',
         query_params={
             'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
         },
     )
     module = DynamicModelChoiceField(
@@ -174,7 +108,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         label='Module',
         query_params={
             'manufacturer_id': '$manufacturer',
-            'module_type_id': '$module_type',
         },
     )
     
@@ -187,20 +120,15 @@ class FirmwareAssignmentForm(NetBoxModelForm):
         help_text='Only showing Active and Staged',
         query_params={
             'status__in': ['active','staged'],
-            'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
-            'module_type_id': '$module_type',
+            'device': '$device',
+            'module': '$module',
         },
     )
     comment = CommentField()
     
     fieldsets = (
         FieldSet(
-            'manufacturer','description',
-            TabbedGroups(
-                FieldSet('device_type',name='Device Type'),
-                FieldSet('module_type',name='Module Type'),
-            ),
+            'description',
             TabbedGroups(
                 FieldSet('device',name='Device'),
                 FieldSet('module',name='Module'),
@@ -221,10 +149,7 @@ class FirmwareAssignmentForm(NetBoxModelForm):
             'patch_date',
             'comment',
             'firmware',
-            'manufacturer',
-            'device_type',
             'device',
-            'module_type',
             'module',
         ]
         widgets = {
@@ -233,12 +158,6 @@ class FirmwareAssignmentForm(NetBoxModelForm):
     
     def clean(self):
         super().clean()
-        device_type = self.cleaned_data.get('device_type')
-        module_type = self.cleaned_data.get('module_type')
-
-        if device_type and module_type:
-            raise forms.ValidationError("You may only select one of 'Device Type' or 'Module Type', not both.")
-        
         device = self.cleaned_data.get('device')
         module = self.cleaned_data.get('module')
 

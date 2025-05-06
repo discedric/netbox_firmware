@@ -13,7 +13,6 @@ from netbox_firmware.models import (
     Bios,
     BiosAssignment
 )
-from netbox_firmware.utils import get_plugin_setting
 
 class BiosBulkEditForm(NetBoxModelBulkEditForm):
     name = forms.CharField(required=False, label='Name')

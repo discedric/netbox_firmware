@@ -20,7 +20,7 @@ class BiosFilterForm(NetBoxModelFilterSetForm):
         FieldSet('kind','manufacturer_id','device_type_id', 'module_type_id', name=_('Hardware')),
     )
     
-    selector_fields = ('q', 'status')
+    selector_fields = ('q', 'status','manufacturer_id','device_type_id','module_type_id')
     
     manufacturer_id = DynamicModelMultipleChoiceField(
         queryset=Manufacturer.objects.all(),
@@ -119,9 +119,8 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
         required=False,
         label=_('Bios'),
         query_params={
-            'device__manufacturer_id': '$manufacturer_id',
             'device_id': '$device_id',
-            'module_id': '$module_id',
+            'module_id': '$module_id'
         },
     )
     patch_date = forms.DateField(

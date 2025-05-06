@@ -45,8 +45,9 @@ class FirmwareAssignmentJournalView(generic.ObjectJournalView):
 @register_model_view(models.FirmwareAssignment, 'list', path='', detail=False)
 class FirmwareAssignmentListView(generic.ObjectListView):
     queryset = models.FirmwareAssignment.objects.prefetch_related(
-        'manufacturer',
-        'device_type'
+        'device',
+        'module',
+        'firmware',
     )
     filterset = filtersets.FirmwareAssignmentFilterSet
     filterset_form = forms.FirmwareAssignmentFilterForm
