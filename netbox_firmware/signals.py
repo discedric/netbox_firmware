@@ -5,7 +5,6 @@ from django.dispatch import receiver
 
 from netbox_firmware.models import *
 
-@receiver(pre_save, sender=Bios)
 @receiver(pre_save, sender=Firmware)
 def delete_old_file_on_change(sender, instance, **kwargs):
     if not instance.pk:

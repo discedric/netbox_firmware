@@ -111,27 +111,13 @@ class Firmware(NetBoxModel):
 
     def validate_hardware_type(self):
         if(
-            sum(
-                map(
-                    bool,
-                    [
-                        self.device_type,
-                        self.module_type
-                    ],
-                )
-            )
-            > 1
+            sum(map(bool,[self.device_type,self.module_type],))> 1
         ):
-            raise ValidationError(
-                'Only one of device type or module type can be set'
-            )
+            raise ValidationError('Only one of device type or module type can be set')
         if (
-            not self.device_type
-            and not self.module_type
+            not self.device_type and not self.module_type
         ):
-            raise ValidationError(
-                'One of device type or module type must be set'
-        )
+            raise ValidationError('One of device type or module type must be set')
 
     def get_absolute_url(self):
         return reverse('plugins:netbox_firmware:firmware', args=[self.pk])
