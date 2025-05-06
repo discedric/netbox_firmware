@@ -48,7 +48,6 @@ class FirmwareJournalView(generic.ObjectJournalView):
 @register_model_view(models.Firmware, 'list', path='', detail=False)
 class FirmwareListView(generic.ObjectListView):
     queryset = models.Firmware.objects.prefetch_related(
-        'manufacturer',
         'device_type',
         'module_type'
     ).annotate(

@@ -65,7 +65,6 @@ class FirmwareForm(NetBoxModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._disable_fields_by_tags()
         # Used for picking the default active tab for hardware type selection
         self.no_hardware_type = True
         if self.instance:

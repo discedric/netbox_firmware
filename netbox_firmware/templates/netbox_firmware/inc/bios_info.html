@@ -7,11 +7,7 @@
     {% if perms.netbox_firmware.change_bios %}
       <div class="card-actions">
         {% with object|meta:"model_name" as object_type %}
-          {% if object_type == "device" %}
-          <a href="{% url 'plugins:netbox_firmware:biosassignment_add' %}?device={{object.id}}" class="btn btn-sm btn-ghost-primary">
-          {% elif object_type == "module" %}
-          <a href="{% url 'plugins:netbox_firmware:biosassignment_add'%}?module={{object.id}}" class="btn btn-sm btn-ghost-primary">
-          {% endif %}
+          <a href="{% url 'plugins:netbox_firmware:biosassignment_add' %}?{{object_type}}={{object.id}}" class="btn btn-sm btn-ghost-primary">
         {% endwith %}
           <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
         </a>
