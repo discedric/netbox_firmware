@@ -13,7 +13,6 @@ from .. import tables
 from .. import forms
 from .. import models
 from .. import filtersets
-from ..template_content import WARRANTY_PROGRESSBAR
 
 __all__ = (
     'FirmwareView',
