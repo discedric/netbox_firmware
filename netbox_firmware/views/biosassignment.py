@@ -64,7 +64,8 @@ class BiosAssignmentEditView(generic.ObjectEditView):
 @register_model_view(models.BiosAssignment,'delete')
 class BiosAssignmentDeleteView(generic.ObjectDeleteView):
     queryset = models.BiosAssignment.objects.all()
-
+    default_return_url = 'plugins:netbox_firmware:biosassignment_list'
+    
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 

@@ -63,7 +63,8 @@ class FirmwareAssignmentEditView(generic.ObjectEditView):
 @register_model_view(models.FirmwareAssignment,'delete')
 class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
     queryset = models.FirmwareAssignment.objects.all()
-
+    default_return_url = 'plugins:netbox_firmware:firmwareassignment_list'
+    
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 

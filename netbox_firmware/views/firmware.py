@@ -67,7 +67,8 @@ class FirmwareEditView(generic.ObjectEditView):
 @register_model_view(models.Firmware,'delete')
 class FirmwareDeleteView(generic.ObjectDeleteView):
     queryset = models.Firmware.objects.all()
-
+    default_return_url = 'plugins:netbox_firmware:firmware_list'
+    
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
