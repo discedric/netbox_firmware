@@ -2,6 +2,10 @@ from netbox.api.serializers import NetBoxModelSerializer
 from dcim.api.serializers import DeviceTypeSerializer, ModuleTypeSerializer, DeviceSerializer, ModuleSerializer
 from netbox_firmware.models import Firmware, FirmwareAssignment
 
+__all__ = (
+    'FirmwareSerializer',
+    'FirmwareAssignmentSerializer',
+)
 
 class FirmwareSerializer(NetBoxModelSerializer):
     device_type = DeviceTypeSerializer(nested=True, required=False)

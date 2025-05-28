@@ -15,9 +15,7 @@ from netbox_firmware import filtersets
 
 __all__ = (
     'BiosView',
-    'BiosListView',
-    'BiosChangeLogView',
-    'BiosJournalView',
+    'BiosListView'
 )
 
 @register_model_view(models.Bios)
@@ -27,22 +25,6 @@ class BiosView(generic.ObjectView):
     def get_extra_context(self, request, instance):
         context = super().get_extra_context(request, instance)
         return context
-
-class BiosChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a Bios object"""
-    queryset = models.Bios.objects.all()
-    model = models.Bios
-    
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class BiosJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a Bios object"""
-    queryset = models.Bios.objects.all()
-    model = models.Bios
-    
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
 
 @register_model_view(models.Bios, 'list', path='', detail=False)
 class BiosListView(generic.ObjectListView):

@@ -15,8 +15,6 @@ from netbox_firmware import models
 __all__ = (
     'BiosAssignmentView',
     'BiosAssignmentListView',
-    'BiosAssignmentChangeLogView',
-    'BiosAssignmentJournalView'
 )
 
 @register_model_view(models.BiosAssignment)
@@ -26,22 +24,6 @@ class BiosAssignmentView(generic.ObjectView):
     def get_extra_context(self, request, instance):
         context = super().get_extra_context(request, instance)
         return context
-
-class BiosAssignmentChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a BiosAssignment object"""
-    queryset = models.BiosAssignment.objects.all()
-    model = models.BiosAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class BiosAssignmentJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a BiosAssignment object"""
-    queryset = models.BiosAssignment.objects.all()
-    model = models.BiosAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
 
 @register_model_view(models.BiosAssignment, 'list', path='', detail=False)
 class BiosAssignmentListView(generic.ObjectListView):

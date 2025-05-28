@@ -17,8 +17,6 @@ from .. import filtersets
 __all__ = (
     'FirmwareView',
     'FirmwareListView',
-    'FirmwareChangeLogView',
-    'FirmwareJournalView',
 )
 
 @register_model_view(models.Firmware)
@@ -28,22 +26,6 @@ class FirmwareView(generic.ObjectView):
     def get_extra_context(self, request, instance):
         context = super().get_extra_context(request, instance)
         return context
-
-class FirmwareChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a Firmware object"""
-    queryset = models.Firmware.objects.all()
-    model = models.Firmware
-    
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class FirmwareJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a Firmware object"""
-    queryset = models.Firmware.objects.all()
-    model = models.Firmware
-    
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
 
 @register_model_view(models.Firmware, 'list', path='', detail=False)
 class FirmwareListView(generic.ObjectListView):

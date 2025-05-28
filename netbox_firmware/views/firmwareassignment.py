@@ -13,9 +13,7 @@ from .. import models
 
 __all__ = (
     'FirmwareAssignmentView',
-    'FirmwareAssignmentListView',
-    'FirmwareAssignmentChangeLogView',
-    'FirmwareAssignmentJournalView'
+    'FirmwareAssignmentListView'
 )
 
 @register_model_view(models.FirmwareAssignment)
@@ -25,22 +23,6 @@ class FirmwareAssignmentView(generic.ObjectView):
     def get_extra_context(self, request, instance):
         context = super().get_extra_context(request, instance)
         return context
-
-class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a FirmwareAssignment object"""
-    queryset = models.FirmwareAssignment.objects.all()
-    model = models.FirmwareAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class FirmwareAssignmentJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a FirmwareAssignment object"""
-    queryset = models.FirmwareAssignment.objects.all()
-    model = models.FirmwareAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
 
 @register_model_view(models.FirmwareAssignment, 'list', path='', detail=False)
 class FirmwareAssignmentListView(generic.ObjectListView):

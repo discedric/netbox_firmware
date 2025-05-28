@@ -22,7 +22,7 @@ class FirmwareTable(NetBoxTable):
     status = tables.Column()
     manufacturer = tables.Column(
         verbose_name=_('Manufacturer'),
-        accessor='get_manufacturer',  # We gebruiken de method get_manufacturer
+        accessor='manufacturer',  # We gebruiken de method manufacturer
         linkify=True,
     )
     device_type = tables.Column(
@@ -50,6 +50,7 @@ class FirmwareTable(NetBoxTable):
                   'manufacturer', 
                   'module_type', 'device_type'
                   )
+        #░ Default columns moeten nog gedefinieerd worden in de Meta class
 
     def order_manufacturer(self, queryset, is_descending):
         if is_descending:
@@ -96,7 +97,7 @@ class FirmwareAssignmentTable(NetBoxTable):
             'manufacturer', 'ticket_number',
         )
     
-    # Order methods
+    # Order methods required for non database fields
     def order_manufacturer(self, queryset, is_descending):
         if is_descending:
             ordering_device = '-device__device_type__manufacturer'

@@ -6,6 +6,7 @@ from utilities.forms.fields import (
     CommentField,
     DynamicModelChoiceField,
 )
+from utilities.forms.widgets import DatePicker
 from utilities.forms.rendering import FieldSet, TabbedGroups
 
 from netbox_firmware.choices import FirmwareStatusChoices
@@ -95,6 +96,7 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
     )
     comment = CommentField()
     patch_date = forms.DateField(
+        widget=DatePicker(attrs={'is_clearable': True}),
         required=False,
         label='Patch Date',
         help_text='Date of the firmware patch'

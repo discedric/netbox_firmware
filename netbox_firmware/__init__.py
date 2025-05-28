@@ -4,7 +4,7 @@ from django.conf import settings
 from django.urls import include, path
 from .version import __version__
 
-class FirmwareManagerConfig(PluginConfig):
+class NetboxFirmwareConfig(PluginConfig):
     name = 'netbox_firmware'
     verbose_name = 'Netbox Firmware'
     version = __version__
@@ -24,4 +24,4 @@ class FirmwareManagerConfig(PluginConfig):
         super().ready()
         from . import signals
 
-config = FirmwareManagerConfig
+config = NetboxFirmwareConfig

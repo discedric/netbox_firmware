@@ -36,10 +36,9 @@ class FirmwareForm(NetBoxModelForm):
     fieldsets=(
         FieldSet('name', 'file_name', 'file', 'status', 'description',name='General'),
         FieldSet(
-            'manufacturer',
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
-                FieldSet('module_type',name='Module Type'),
+                FieldSet('module_type',name='Module Type')
             ),
             name='Hardware'
         ),
