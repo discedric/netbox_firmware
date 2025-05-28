@@ -11,7 +11,7 @@ Dit is een simpele plugin die een basis legt voor eigen uitbreidingen
 ## Compatibility
 | Netbox Version | Plugin Version |
 |----------------|----------------|
-|      4.2.7     |      2.7.0     |
+|      4.2.4     |      2.7.0     |
 
 ## Installing
 

@@ -107,7 +107,7 @@ class FirmwareAssignmentsTable(PluginTemplateExtension):
         object = self.context.get('object')
         assignments = FirmwareAssignment.objects.filter(**{f'{self.kind}':object.id})
         context = {
-          #'assignments': assignments.order_by('-id')[:5],
+          #'assignments': assignments.order_by('-id')[:5], # Uncomment if you want a limited number of assignments visible in the model view
           'count': assignments.count()
         }
         return self.render('netbox_firmware/inc/firmware_assignment_table.html', extra_context=context)
@@ -120,7 +120,7 @@ class BiosAssignmentsTable(PluginTemplateExtension):
         object = self.context.get('object')
         assignments = BiosAssignment.objects.filter(**{f'{self.kind}':object.id})
         context = {
-          #'assignments': assignments.order_by('-id')[:5],
+          #'assignments': assignments.order_by('-id')[:5], # Uncomment if you want a limited number of assignments visible in the model view
           'count': assignments.count()
         }
         return self.render('netbox_firmware/inc/bios_assignment_table.html', extra_context=context)
