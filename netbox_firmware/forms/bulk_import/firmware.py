@@ -195,20 +195,20 @@ class FirmwareAssignmentImportForm(NetBoxModelImportForm):
                 hardware_type = Device.objects.get(
                     device_type__manufacturer=manufacturer, name=model
                 )
-                if BiosAssignment.objects.filter(device=model).exists():
+                if FirmwareAssignment.objects.filter(device__name=model).exists():
                     raise ValidationError(f'Device "{model}" already has a BIOS assigned.')
             elif hardware_kind == 'module':
                 if model.isdigit():
                     hardware_type = Module.objects.get(
                         module_type__manufacturer=manufacturer, pk=model
                     )
-                    if BiosAssignment.objects.filter(module=model).exists():
+                    if FirmwareAssignment.objects.filter(module=model).exists():
                         raise ValidationError(f'Module "{model}" already has a BIOS assigned.')
                 else:
                     hardware_type = Module.objects.get(
                         module_type__manufacturer=manufacturer, serial=model
                     )
-                    if BiosAssignment.objects.filter(module__serial=model).exists():
+                    if FirmwareAssignment.objects.filter(module__serial=model).exists():
                          raise ValidationError(f'Module "{model}" already has a BIOS assigned.')
                     
         except ObjectDoesNotExist:
