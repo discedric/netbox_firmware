@@ -15,8 +15,6 @@ from netbox_firmware import models
 __all__ = (
     'BiosAssignmentView',
     'BiosAssignmentListView',
-    'BiosAssignmentChangeLogView',
-    'BiosAssignmentJournalView'
 )
 
 @register_model_view(models.BiosAssignment)
@@ -27,22 +25,6 @@ class BiosAssignmentView(generic.ObjectView):
         context = super().get_extra_context(request, instance)
         return context
 
-class BiosAssignmentChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a BiosAssignment object"""
-    queryset = models.BiosAssignment.objects.all()
-    model = models.BiosAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class BiosAssignmentJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a BiosAssignment object"""
-    queryset = models.BiosAssignment.objects.all()
-    model = models.BiosAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
 @register_model_view(models.BiosAssignment, 'list', path='', detail=False)
 class BiosAssignmentListView(generic.ObjectListView):
     queryset = models.BiosAssignment.objects.prefetch_related(
@@ -50,7 +32,6 @@ class BiosAssignmentListView(generic.ObjectListView):
         'module',
         'bios',
     )
-    
     filterset = filtersets.BiosAssignmentFilterSet
     filterset_form = forms.BiosAssignmentFilterForm
     table = tables.BiosAssignmentTable
@@ -65,7 +46,8 @@ class BiosAssignmentEditView(generic.ObjectEditView):
 @register_model_view(models.BiosAssignment,'delete')
 class BiosAssignmentDeleteView(generic.ObjectDeleteView):
     queryset = models.BiosAssignment.objects.all()
-
+    default_return_url = 'plugins:netbox_firmware:biosassignment_list'
+    
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 

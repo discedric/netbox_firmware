@@ -58,13 +58,13 @@ class BiosImportForm(NetBoxModelImportForm):
         model = Bios
         fields = [
             'name', 
-            'manufacturer', 
-            'hardware_kind', 
-            'hardware_type_name', 
             'file_name', 
             'status', 
             'description', 
-            'comments'
+            'comments',
+            'manufacturer', 
+            'hardware_kind', 
+            'hardware_type_name', 
             ]
 
     def clean(self):
@@ -194,7 +194,7 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
                 hardware_type = Device.objects.get(
                     device_type__manufacturer=manufacturer, name=model
                 )
-                if BiosAssignment.objects.filter(device=model).exists():
+                if BiosAssignment.objects.filter(device__name=model).exists():
                     raise ValidationError(f'Device "{model}" already has a BIOS assigned.')
             elif hardware_kind == 'module':
                 if model.isdigit():

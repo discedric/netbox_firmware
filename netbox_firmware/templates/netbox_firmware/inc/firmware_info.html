@@ -1,5 +1,5 @@
 {% load helpers %}
-{# renders panel on object (device, module, inventory_item) with firmware info assigned to it #}
+{# renders panel on object (device, module) with firmware info assigned to it #}
 
 <div class="card">
   <h5 class="card-header">
@@ -7,11 +7,7 @@
     {% if perms.netbox_firmware.change_firmware %}
       <div class="card-actions">
         {% with object|meta:"model_name" as object_type %}
-          {% if object_type == "device" %}
-          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?device={{object.id}}&device_type={{object.device_type.id}}&manufacturer={{object.device_type.manufacturer.id}}" class="btn btn-sm btn-ghost-primary">
-          {% elif object_type == "module" %}
-          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add'%}?module={{object.id}}&module_type={{object.module_type.id}}&manufacturer={{object.module_type.manufacturer.id}}" class="btn btn-sm btn-ghost-primary">
-          {% endif %}
+          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?{{object_type}}={{object.id}}" class="btn btn-sm btn-ghost-primary">
         {% endwith %}
           <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
         </a>

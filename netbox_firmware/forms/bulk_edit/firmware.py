@@ -6,6 +6,7 @@ from utilities.forms.fields import (
     CommentField,
     DynamicModelChoiceField,
 )
+from utilities.forms.widgets import DatePicker
 from utilities.forms.rendering import FieldSet, TabbedGroups
 
 from netbox_firmware.choices import FirmwareStatusChoices
@@ -13,7 +14,6 @@ from netbox_firmware.models import (
     Firmware,
     FirmwareAssignment
 )
-from netbox_firmware.utils import get_plugin_setting
 
 class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
     name = forms.CharField(required=False, label='Name')
@@ -68,39 +68,8 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
     
 
 class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
-    manufacturer = DynamicModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        selector=True,
-        required=False,
-        label='Manufacturer',
-        initial_params={
-            'device_types': '$device_type',
-            'module_types': '$module_type',
-            'firmware': '$firmware',
-        },
-    )
     description = forms.CharField(
         required=False,
-    )
-    
-    # Hardware Type -------------------------
-    device_type = DynamicModelChoiceField(
-        queryset=DeviceType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Device Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
-    )
-    module_type = DynamicModelChoiceField(
-        queryset=ModuleType.objects.all(),
-        required=False,
-        selector=True,
-        label='Supported Netbox Inventory Item Type',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-        },
     )
     
     # Hardware Items ------------------------
@@ -110,20 +79,12 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
         required=False,
         selector=True,
         label='Device',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
-        },
     )
     module = DynamicModelChoiceField(
         queryset = Module.objects.all(),
         required=False,
         selector=True,
         label='Module',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'module_type_id': '$module_type',
-        },
     )
     
     # Update --------------------------------
@@ -132,14 +93,10 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
         selector=True,
         required=False,
         label='Firmware',
-        query_params={
-            'manufacturer_id': '$manufacturer',
-            'device_type_id': '$device_type',
-            'module_type_id': '$module_type',
-        },
     )
     comment = CommentField()
     patch_date = forms.DateField(
+        widget=DatePicker(attrs={'is_clearable': True}),
         required=False,
         label='Patch Date',
         help_text='Date of the firmware patch'
@@ -155,10 +112,6 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
         FieldSet(
             'manufacturer','description',
             TabbedGroups(
-                FieldSet('device_type',name='Device Type'),
-                FieldSet('module_type',name='Module Type'),
-            ),
-            TabbedGroups(
                 FieldSet('device',name='Device'),
                 FieldSet('module',name='Module'),
             ),
@@ -169,4 +122,4 @@ class FirmwareAssignmentBulkEditForm(NetBoxModelBulkEditForm):
             name='Update'
         ),
     )
-    nullable_fields = ['device_type', 'module_type', 'device', 'module', 'ticket_number', 'patch_date', 'comment']
+    nullable_fields = ['device', 'module', 'ticket_number', 'patch_date', 'comment']

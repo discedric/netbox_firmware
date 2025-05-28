@@ -13,9 +13,7 @@ from .. import models
 
 __all__ = (
     'FirmwareAssignmentView',
-    'FirmwareAssignmentListView',
-    'FirmwareAssignmentChangeLogView',
-    'FirmwareAssignmentJournalView'
+    'FirmwareAssignmentListView'
 )
 
 @register_model_view(models.FirmwareAssignment)
@@ -26,27 +24,12 @@ class FirmwareAssignmentView(generic.ObjectView):
         context = super().get_extra_context(request, instance)
         return context
 
-class FirmwareAssignmentChangeLogView(generic.ObjectChangeLogView):
-    """View for displaying the changelog of a FirmwareAssignment object"""
-    queryset = models.FirmwareAssignment.objects.all()
-    model = models.FirmwareAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
-class FirmwareAssignmentJournalView(generic.ObjectJournalView):
-    """View for displaying the journal of a FirmwareAssignment object"""
-    queryset = models.FirmwareAssignment.objects.all()
-    model = models.FirmwareAssignment
-
-    def get(self, request, pk):
-        return super().get(request, pk=pk, model=self.model)
-
 @register_model_view(models.FirmwareAssignment, 'list', path='', detail=False)
 class FirmwareAssignmentListView(generic.ObjectListView):
     queryset = models.FirmwareAssignment.objects.prefetch_related(
-        'manufacturer',
-        'device_type'
+        'device',
+        'module',
+        'firmware',
     )
     filterset = filtersets.FirmwareAssignmentFilterSet
     filterset_form = forms.FirmwareAssignmentFilterForm
@@ -62,7 +45,8 @@ class FirmwareAssignmentEditView(generic.ObjectEditView):
 @register_model_view(models.FirmwareAssignment,'delete')
 class FirmwareAssignmentDeleteView(generic.ObjectDeleteView):
     queryset = models.FirmwareAssignment.objects.all()
-
+    default_return_url = 'plugins:netbox_firmware:firmwareassignment_list'
+    
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 

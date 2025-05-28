@@ -1,69 +1,65 @@
 {% load helpers %}
-{# renders panel on object (device, module, inventory_item) with firmware info assigned to it #}
+{# renders panel on object (device, module) with firmware info assigned to it #}
 
 <div class="card">
   <h5 class="card-header">
     Assignments
     {% if perms.netbox_firmware.change_firmware %}
-      <div class="card-actions">
-        {% if object.device_type %}
-          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?firmware={{object.id}}&manufacturer={{ object.manufacturer.id }}&device_type={{ object.device_type.id }}" class="btn btn-sm btn-ghost-primary">
-        {% elif object.module_type %}
-          <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?firmware={{object.id}}&manufacturer={{ object.manufacturer.id }}&module_type={{ object.module_type.id }}" class="btn btn-sm btn-ghost-primary">
-        {% endif %}
-          <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
-        </a>
-      </div>
-    {% endif %}
+    <div class="card-actions">
+      <a href="{% url 'plugins:netbox_firmware:firmwareassignment_add' %}?firmware={{object.id}}" class="btn btn-sm btn-ghost-primary">
+        <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
+      </a>
+    </div>
+  {% endif %}
   </h5>
   <!--check if firmware item is filled and then show name version and status that is given-->
   
-    <div class="card-body">
-      <a href="{% url 'plugins:netbox_firmware:firmwareassignment_list' %}?firmware_id={{ object.pk }}" class="list-group-item list-group-item-action d-flex justify-content-between">
-        {{ 'Assignments'|bettertitle }}
-        {% if count %}
-          <span class="badge text-bg-primary rounded-pill">{{ count }}</span>
-        {% else %}
-          <span class="badge text-bg-light rounded-pill">&mdash;</span>
-        {% endif %}
-      </a>  
-      {% if assignments %}
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Description</th>
-            <th>Patch date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for assignment in assignments %}
-          <tr>
-            <td><a href="{% url 'plugins:netbox_firmware:firmwareassignment' assignment.id %}">{{ assignment }}</a></td>
-            <td>{{ assignment.firmware.status }}</td>
-            <td>{{ assignment.description }}</td>
-            <td>{{ assignment.patch_date }}</td>
-            <td class="bulk-action-buttons">
-              <!-- Edit button -->
-              {% if perms.netbox_firmware.change_firmware %}
-              <a href="{% url 'plugins:netbox_firmware:firmwareassignment_edit' assignment.id %}" class="btn btn-sm btn-ghost-secondary">
-                <i class="mdi mdi-pencil" aria-hidden="true"></i> Edit
-              </a>
-              {% endif %}
-              
-              <!-- Delete button -->
-              {% if perms.netbox_firmware.delete_firmware %}
-              <a href="{% url 'plugins:netbox_firmware:firmwareassignment_delete' assignment.id %}" class="btn btn-sm btn-ghost-danger" onclick="return confirm('Are you sure you want to delete this assignment?');">
-                <i class="mdi mdi-delete" aria-hidden="true"></i> Delete
-              </a>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+  <div class="card-body">
+    <a href="{% url 'plugins:netbox_firmware:firmwareassignment_list' %}?firmware_id={{ object.pk }}" class="list-group-item list-group-item-action d-flex justify-content-between">
+      {{ 'Assignments'|bettertitle }}
+      {% if count %}
+        <span class="badge text-bg-primary rounded-pill">{{ count }}</span>
+      {% else %}
+        <span class="badge text-bg-light rounded-pill">&mdash;</span>
       {% endif %}
-    </div>
+    </a>  
+    {% if assignments %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th>Patch date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for assignment in assignments %}
+        <tr>
+          <td><a href="{% url 'plugins:netbox_firmware:firmwareassignment' assignment.id %}">{{ assignment }}</a></td>
+          <td>{{ assignment.firmware.status }}</td>
+          <td>{{ assignment.description }}</td>
+          <td>{{ assignment.patch_date }}</td>
+          <td class="bulk-action-buttons">
+            <!-- Edit button -->
+            {% if perms.netbox_firmware.change_firmware %}
+            <a href="{% url 'plugins:netbox_firmware:firmwareassignment_edit' assignment.id %}" class="btn btn-sm btn-ghost-secondary">
+              <i class="mdi mdi-pencil" aria-hidden="true"></i> Edit
+            </a>
+            {% endif %}
+            
+            <!-- Delete button -->
+            {% if perms.netbox_firmware.delete_firmware %}
+            <a href="{% url 'plugins:netbox_firmware:firmwareassignment_delete' assignment.id %}" class="btn btn-sm btn-ghost-danger" onclick="return confirm('Are you sure you want to delete this assignment?');">
+              <i class="mdi mdi-delete" aria-hidden="true"></i> Delete
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
 </div>

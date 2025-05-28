@@ -4,10 +4,6 @@ from .. import filtersets
 from .serializers import (
     FirmwareSerializer, FirmwareAssignmentSerializer, BiosSerializer, BiosAssignmentSerializer
 )
-"""
-    Let op wanneer je een view aanmaakt.
-    Je moet een filterset meegeven als je query_params wilt gebruiken. (idioot)
-"""
 
 class FirmwareViewSet(NetBoxModelViewSet):
     queryset = models.Firmware.objects.all()

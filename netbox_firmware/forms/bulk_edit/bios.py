@@ -6,6 +6,7 @@ from utilities.forms.fields import (
     CommentField,
     DynamicModelChoiceField,
 )
+from utilities.forms.widgets import DatePicker
 from utilities.forms.rendering import FieldSet, TabbedGroups
 
 from netbox_firmware.choices import BiosStatusChoices
@@ -13,7 +14,6 @@ from netbox_firmware.models import (
     Bios,
     BiosAssignment
 )
-from netbox_firmware.utils import get_plugin_setting
 
 class BiosBulkEditForm(NetBoxModelBulkEditForm):
     name = forms.CharField(required=False, label='Name')
@@ -96,6 +96,7 @@ class BiosAssignmentBulkEditForm(NetBoxModelBulkEditForm):
     )
     comment = CommentField()
     patch_date = forms.DateField(
+        widget=DatePicker(attrs={'is_clearable': True}),
         required=False,
         label='Patch Date',
         help_text='Date of the bios patch'

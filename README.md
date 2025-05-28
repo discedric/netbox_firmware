@@ -5,18 +5,17 @@ Dit is een plugin geschreven door een student tijdens een stage dus tijdelijke u
 
 ## Features
 
-Een plugin voor het bijhouden van de firmware en bios versies die op uw devices, modules en inventory items staan.
+Een plugin voor het bijhouden van de firmware en bios versies die op uw devices en modules staan.
 Dit is een simpele plugin die een basis legt voor eigen uitbreidingen
 
 ## Compatibility
 | Netbox Version | Plugin Version |
 |----------------|----------------|
-|       4.2      |      1.0.0     |
+|      4.2.4     |      2.7.0     |
 
 ## Installing
 
 Officiele installeer instructies: [official Netbox plugin documentation](https://docs.netbox.dev/en/stable/plugins/#installing-plugins)
-Je zal ook de plugin [netbox-inventory](https://github.com/ArnesSI/netbox-inventory) moeten installeren omdat we deze gebruiken.
 
 Je kan de plugin installeren via de github cli of via git
 ```bash
@@ -39,4 +38,3 @@ Je zal ook moeten database migrations en netbox search index moeten updaten:
 (venv) $ python3 manage.py migrate
 (venv) $ python3 manage.py reindex --lazy
 ```
-

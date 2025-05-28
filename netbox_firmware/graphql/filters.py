@@ -18,3 +18,13 @@ class FirmwareFilter(BaseFilterMixin):
 @autotype_decorator(filtersets.FirmwareAssignmentFilterSet)
 class FirmwareAssignmentFilter(BaseFilterMixin):
     pass
+
+@strawberry_django.filter(models.Bios, lookups=True)
+@autotype_decorator(filtersets.BiosFilterSet)
+class BiosFilter(BaseFilterMixin):
+    pass
+
+@strawberry_django.filter(models.BiosAssignment, lookups=True)
+@autotype_decorator(filtersets.BiosAssignmentFilterSet)
+class BiosAssignmentFilter(BaseFilterMixin):
+    pass
