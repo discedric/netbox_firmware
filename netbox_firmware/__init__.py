@@ -1,7 +1,6 @@
 import os
 from netbox.plugins import PluginConfig
 from django.conf import settings
-from django.urls import include, path
 from .version import __version__
 
 class NetboxFirmwareConfig(PluginConfig):
@@ -12,7 +11,7 @@ class NetboxFirmwareConfig(PluginConfig):
     author = 'Cedric Vaneessen'
     author_email = 'cedric.vaneessen@zabun.be'
     base_url = 'firmware'
-    min_version = '4.2.0'
+    min_version = '4.3.0'
     default_settings = {
         'top_level_menu': True,
     }

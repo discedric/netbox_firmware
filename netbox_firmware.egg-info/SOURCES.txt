@@ -3,6 +3,7 @@ pyproject.toml
 netbox_firmware/__init__.py
 netbox_firmware/choices.py
 netbox_firmware/navigation.py
+netbox_firmware/search.py
 netbox_firmware/signals.py
 netbox_firmware/template_content.py
 netbox_firmware/urls.py
@@ -23,7 +24,6 @@ netbox_firmware/filtersets/__init__.py
 netbox_firmware/filtersets/bios.py
 netbox_firmware/filtersets/firmware.py
 netbox_firmware/forms/__init__.py
-netbox_firmware/forms/reassign.py
 netbox_firmware/forms/bulk_edit/__init__.py
 netbox_firmware/forms/bulk_edit/bios.py
 netbox_firmware/forms/bulk_edit/firmware.py
@@ -41,13 +41,6 @@ netbox_firmware/graphql/filters.py
 netbox_firmware/graphql/schema.py
 netbox_firmware/graphql/types.py
 netbox_firmware/migrations/0001_initial.py
-netbox_firmware/migrations/0002_alter_firmwareassignment_options_firmware_file_and_more.py
-netbox_firmware/migrations/0003_firmwareassignment_either_device_type_or_module_type_or_inventory_item_type_required.py
-netbox_firmware/migrations/0004_remove_firmware_either_manufacturer_or_device_type_or_inventory_item_type_or_module_type_required_an.py
-netbox_firmware/migrations/0005_bios_biosassignment_and_more.py
-netbox_firmware/migrations/0006_alter_bios_options_alter_firmware_options_and_more.py
-netbox_firmware/migrations/0007_alter_biosassignment_options_and_more.py
-netbox_firmware/migrations/0008_remove_firmware_either_device_type_or_inventory_item_type_or_module_type_required.py
 netbox_firmware/migrations/__init__.py
 netbox_firmware/models/__init__.py
 netbox_firmware/models/bios.py
@@ -59,5 +52,4 @@ netbox_firmware/views/__init__.py
 netbox_firmware/views/bios.py
 netbox_firmware/views/biosassignment.py
 netbox_firmware/views/firmware.py
-netbox_firmware/views/firmware_reassign.py
 netbox_firmware/views/firmwareassignment.py
