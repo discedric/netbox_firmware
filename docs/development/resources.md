@@ -39,7 +39,7 @@ Hier vind je links die je kunnen helpen om deze plugin beter te begrijpen, onder
 
 ## Community
 
-- NetBox Discuss Forum: https://discuss.netbox.dev/  
+- NetBox Discuss Forum: https://github.com/netbox-community/netbox/discussions 
 - GitHub Discussions (afhankelijk van repo instellingen)  
 - Stack Overflow (zoek op “netbox” en “django”)
 
