@@ -1,30 +1,30 @@
-# Filters in de NetBox Firmware Plugin
+# Filters in the NetBox Firmware Plugin
 
-## Wat zijn filters?
+## What are filters?
 
-Filters zorgen ervoor dat je lijsten in de UI kan beperken tot de records die je interessant vindt. In deze plugin kan je bijvoorbeeld filteren op fabrikant, status van firmware of type device/module.
+Filters allow you to limit lists in the UI to the records you are interested in. In this plugin, you can filter by manufacturer, firmware status, or device/module type.
 
-## Waar vind je de filters?
+## Where can you find the filters?
 
-Filters worden gebruikt in de lijsten van:
+Filters are used in the lists of:
 
-- Firmware (lijst van firmwareversies)
-- FirmwareAssignments (toewijzingen)
+- Firmware (list of firmware versions)
+- FirmwareAssignments (assignments)
 
-Deze vind je onder `Plugins > Firmware` in NetBox.
+You can find these under `Plugins > Firmware` in NetBox.
 
-## Hoe zijn filters geïmplementeerd?
+## How are filters implemented?
 
-De filters staan in `filters.py` in de pluginfolder.
+The filters are defined in `filters.py` in the plugin folder.
 
-### Voorbeeld van een filterclass:
+### Example of a filter class:
 
 ```python
 class FirmwareFilterSet(NetBoxModelFilterSet):
     manufacturer_id = django_filters.ModelMultipleChoiceFilter(
         field_name='manufacturer',
         queryset=Manufacturer.objects.all(),
-        label='Fabrikant',
+        label='Manufacturer',
     )
     status = django_filters.MultipleChoiceFilter(
         choices=StatusChoices,

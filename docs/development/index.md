@@ -1,46 +1,46 @@
-# 📁 NetBox Firmware Plugin – Documentatie
+# 📁 NetBox Firmware Plugin – Documentation
 
-Deze folder bevat alle uitleg over de werking van de plugin [`netbox_firmware`](https://github.com/discedric/netbox_firmware). Dit document is bedoeld voor iedereen die de plugin wil gebruiken, begrijpen, onderhouden of uitbreiden. We leggen stap voor stap uit wat de plugin doet, hoe hij technisch in elkaar zit, en hoe je zelf aanpassingen kan doen.
+This folder contains all explanations about the operation of the [`netbox_firmware`](https://github.com/discedric/netbox_firmware) plugin. This document is intended for anyone who wants to use, understand, maintain, or extend the plugin. We explain step by step what the plugin does, how it is technically structured, and how you can make your own modifications.
 
 ---
 
-## 📌 Inhoud
+## 📌 Contents
 
-* [1. Wat doet deze plugin?](#1-wat-doet-deze-plugin)
-* [2. Architectuur en modellen](models.md)
-* [3. API-functionaliteit](api.md)
-* [4. Gebruik in de UI](ui.md)
+* [1. What does this plugin do?](#1-what-does-this-plugin-do)
+* [2. Architecture and models](models.md)
+* [3. API functionality](api.md)
+* [4. Usage in the UI](ui.md)
 * [5. Filters](filters.md)
 * [6. Forms](forms.md)
-* [7. urls](urls.md)
-* [8. Pluginstructuur en onderhoud](structure.md)
-* [9. Veelvoorkomende fouten en debugging](debugging.md)
-* [10. Nuttige links en bronnen](resources.md)
+* [7. URLs](urls.md)
+* [8. Plugin structure and maintenance](structure.md)
+* [9. Common errors and debugging](debugging.md)
+* [10. Useful links and resources](resources.md)
 
 ---
 
-## 1. Wat doet deze plugin?
+## 1. What does this plugin do?
 
-Deze plugin breidt NetBox uit met de mogelijkheid om **firmwareversies** te beheren en toe te wijzen aan **devices** of **modules**.
+This plugin extends NetBox with the ability to manage **firmware versions** and assign them to **devices** or **modules**.
 
-Je kan:
+You can:
 
-* Firmwareversies registreren (naam, beschrijving, fabrikant, bestand, status)
-* Toewijzingen maken van firmware naar toestellen/modules
-* Zien wanneer een firmware werd toegepast en bij welk ticketnummer
+* Register firmware versions (name, description, manufacturer, file, status)
+* Create assignments of firmware to devices/modules
+* See when a firmware was applied and with which ticket number
 
-Doel: overzicht en historiek bewaren van firmware-updates in een infrastructuur.
+Goal: to maintain an overview and history of firmware updates in an infrastructure.
 
-Meer details vind je in [models.md](models.md).
+More details can be found in [models.md](models.md).
 
 ---
 
-Lees verder in de volgende documenten:
+Continue reading in the following documents:
 
-* [models.md](models.md) – uitleg over de datamodellen en validatie
-* [api.md](api.md) – beschikbare API endpoints
-* [ui.md](ui.md) – hoe de plugin eruitziet en werkt in de NetBox-interface
-* [installation.md](installation.md) – hoe je de plugin installeert
-* [structure.md](structure.md) – mappen en bestanden in de plugin
-* [debugging.md](debugging.md) – tips bij fouten
-* [resources.md](resources.md) – externe links en officiële bronnen
+* [models.md](models.md) – explanation of the data models and validation
+* [api.md](api.md) – available API endpoints
+* [ui.md](ui.md) – how the plugin looks and works in the NetBox interface
+* [installation.md](installation.md) – how to install the plugin
+* [structure.md](structure.md) – folders and files in the plugin
+* [debugging.md](debugging.md) – tips for troubleshooting
+* [resources.md](resources.md) – external links and official resources

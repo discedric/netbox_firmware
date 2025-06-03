@@ -1,16 +1,16 @@
-# Debugging van de NetBox Firmware Plugin
+# Debugging the NetBox Firmware Plugin
 
-## Veelvoorkomende problemen
+## Common issues
 
-### 1. Plugin verschijnt niet in de UI
+### 1. Plugin does not appear in the UI
 
-- Controleer of de plugin is toegevoegd aan `configuration.py` in `PLUGINS`.
-- Controleer logs of er fouten zijn tijdens opstart.
-- Controleer of de URL routes correct zijn.
+- Check if the plugin is added to `configuration.py` in `PLUGINS`.
+- Check logs for errors during startup.
+- Check if the URL routes are correct.
 
-### 2. Database fouten of migraties ontbreken
+### 2. Database errors or missing migrations
 
-- Draai altijd na wijzigingen in `models.py`:
+- Always run after changes in `models.py`:
 
 ```bash
 python manage.py makemigrations netbox_firmware
@@ -18,23 +18,23 @@ python manage.py migrate
 python manage.py reindex
 ```
 
-Check of er dubbele migraties of conflicten zijn.
+Check for duplicate migrations or conflicts.
 
-### 3. API endpoints werken niet of geven errors
+### 3. API endpoints do not work or give errors
 
-- Controleer of de serializers correct zijn geregistreerd.
-- Test met Postman of de NetBox browsable API.
-- Kijk in de logs welke errors er worden gelogd.
+- Check if the serializers are registered correctly.
+- Test with Postman or the NetBox browsable API.
+- Check the logs for any errors.
 
-### 4. Foutmeldingen met assigned_object_type of NoneType
+### 4. Errors with assigned_object_type or NoneType
 
-- Vaak komt dit doordat een ForeignKey niet correct gevuld is.
-- Voeg debug prints toe in clean() of serializers om te checken welke waarden er binnenkomen.
-- Zet DEBUG = True in NetBox config voor uitgebreide foutmeldingen.
+- This is often because a ForeignKey is not filled in correctly.
+- Add debug prints in clean() or serializers to check which values are received.
+- Set DEBUG = True in NetBox config for detailed error messages.
 
-### Debuggen tips
+### Debugging tips
 
-Gebruik de Django shell om models te inspecteren:
+Use the Django shell to inspect models:
 
 ```bash
 python manage.py shell
@@ -42,6 +42,6 @@ python manage.py shell
 >>> Firmware.objects.all()
 ```
 
-- Logs staan vaak in de standaard NetBox logbestanden (/opt/netbox/netbox.log of vergelijkbaar).
+- Logs are often in the default NetBox log files (/opt/netbox/netbox.log or similar).
 
-- Voeg tijdelijk print() statements toe in je code om waarden te checken.
+- Temporarily add print() statements in your code to check values.

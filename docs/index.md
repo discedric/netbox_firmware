@@ -1,104 +1,112 @@
-# 📁 NetBox Firmware Plugin – Documentatie
 
-Deze folder bevat alle uitleg over de werking van de plugin [`netbox_firmware`](https://github.com/discedric/netbox_firmware). Dit document is bedoeld voor mensen die weinig of geen ervaring hebben met NetBox, Django of pluginontwikkeling.
+# 📁 NetBox Firmware Plugin – Documentation
+
+This folder contains all explanations about the operation of the [`netbox_firmware`](https://github.com/discedric/netbox_firmware) plugin. This document is intended for people with little or no experience with NetBox, Django, or plugin development.
 
 ---
 
-## 📌 Inhoud
 
-- [📁 NetBox Firmware Plugin – Documentatie](#-netbox-firmware-plugin--documentatie)
-  - [📌 Inhoud](#-inhoud)
-  - [Wat doet deze plugin?](#wat-doet-deze-plugin)
-  - [Modellen](#modellen)
+## 📌 Contents
+
+- [📁 NetBox Firmware Plugin – Documentation](#-netbox-firmware-plugin--documentation)
+  - [📌 Contents](#-contents)
+  - [What does this plugin do?](#what-does-this-plugin-do)
+  - [Models](#models)
     - [1. `Firmware`](#1-firmware)
     - [2. `FirmwareAssignment`](#2-firmwareassignment)
-  - [Gebruikte technologieën](#gebruikte-technologieën)
-  - [API-functionaliteit](#api-functionaliteit)
-  - [Installatie](#installatie)
-  - [Handleiding voor eindgebruikers](#handleiding-voor-eindgebruikers)
-    - [Nieuwe firmware toevoegen](#nieuwe-firmware-toevoegen)
-    - [Koppeling maken (assignment)](#koppeling-maken-assignment)
-  - [Links en bronnen](#links-en-bronnen)
+  - [Used technologies](#used-technologies)
+  - [API functionality](#api-functionality)
+  - [Installation](#installation)
+  - [User guide](#user-guide)
+    - [Add new firmware](#add-new-firmware)
+    - [Create assignment](#create-assignment)
+  - [Links and resources](#links-and-resources)
 
 ---
 
-## Wat doet deze plugin?
 
-Deze plugin breidt NetBox uit met de mogelijkheid om **firmwareversies** en hun **installaties op toestellen** te beheren. Het laat toe om te registreren:
+## What does this plugin do?
 
-* welke firmwareversies bestaan,
-* welke toestellen of modules die firmware gebruiken,
-* wanneer een upgrade werd uitgevoerd,
-* welk ticketnummer erbij hoort,
-* optioneel: een firmwarebestand.
+This plugin extends NetBox with the ability to manage **firmware versions** and their **installations on devices**. It allows you to record:
 
-Het doel is een **overzicht en historiek van firmware-updates** in je infrastructuur.
+* which firmware versions exist,
+* which devices or modules use that firmware,
+* when an upgrade was performed,
+* which ticket number is associated,
+* optionally: a firmware file.
+
+The goal is to provide an **overview and history of firmware updates** in your infrastructure.
 
 ---
 
-## Modellen
+
+## Models
 
 ### 1. `Firmware`
 
-Informatie over één bepaalde firmwareversie:
+Information about a specific firmware version:
 
-| Veld                          | Uitleg                                                   |
-| ----------------------------- | -------------------------------------------------------- |
-| `name`                        | Naam van de firmware                                     |
-| `description`                 | Beschrijving                                             |
-| `manufacturer`                | Fabrikant                                                |
-| `device_type` / `module_type` | (optioneel) Voor welk type toestel/module is het bedoeld |
-| `file_name`                   | Optioneel, extra naam voor het bestand                   |
-| `file`                        | Optioneel, upload van bijv. `.bin` of `.pdf` bestand     |
-| `status`                      | Actief / verouderd / concept                             |
+| Field                        | Explanation                                              |
+| ---------------------------- | -------------------------------------------------------- |
+| `name`                       | Name of the firmware                                     |
+| `description`                | Description                                              |
+| `manufacturer`               | Manufacturer                                             |
+| `device_type` / `module_type`| (optional) For which device/module type is it intended   |
+| `file_name`                  | Optional, extra name for the file                        |
+| `file`                       | Optional, upload of e.g. `.bin` or `.pdf` file           |
+| `status`                     | Active / deprecated / draft                              |
+
 
 ### 2. `FirmwareAssignment`
 
-Koppeling tussen een firmware en een toestel/module:
+Link between a firmware and a device/module:
 
-| Veld                | Uitleg                         |
+| Field               | Explanation                    |
 | ------------------- | ------------------------------ |
-| `firmware`          | Welke firmwareversie           |
-| `device` / `module` | Waar is het toegepast          |
-| `patch_date`        | Wanneer is het geïnstalleerd   |
-| `ticket_number`     | Interne ticketcode (optioneel) |
-| `comment`           | Vrije opmerkingen              |
+| `firmware`          | Which firmware version         |
+| `device` / `module` | Where it is applied            |
+| `patch_date`        | When it was installed          |
+| `ticket_number`     | Internal ticket code (optional)|
+| `comment`           | Free comments                  |
 
-Er wordt automatisch gevalideerd dat óf een device óf een module is ingevuld (maar nooit beide).
-
----
-
-## Gebruikte technologieën
-
-Deze plugin gebruikt:
-
-* 🧰 **[NetBox](https://netbox.dev/)** – het hoofdplatform
-* 🧱 **[Django](https://www.djangoproject.com/)** – voor datamodellen en admin UI
-* ⚙️ **[Django REST Framework](https://www.django-rest-framework.org/)** – voor API-endpoints
-* 📦 **\[Python 3.12+]** – programmeertaal
+It is automatically validated that either a device or a module is filled in (but never both).
 
 ---
 
-## API-functionaliteit
 
-De plugin stelt automatisch endpoints beschikbaar via NetBox:
+## Used technologies
+
+This plugin uses:
+
+* 🧰 **[NetBox](https://netbox.dev/)** – the main platform
+* 🧱 **[Django](https://www.djangoproject.com/)** – for data models and admin UI
+* ⚙️ **[Django REST Framework](https://www.django-rest-framework.org/)** – for API endpoints
+* 📦 **[Python 3.12+]** – programming language
+
+---
+
+
+## API functionality
+
+The plugin automatically provides endpoints via NetBox:
 
 * `/api/plugins/firmware/firmwares/`
 * `/api/plugins/firmware/assignments/`
 
-Deze zijn compatibel met browsable API van DRF en NetBox’s eigen API-documentatie.
+These are compatible with the browsable API of DRF and NetBox’s own API documentation.
 
 ---
 
-## Installatie
 
-1. Clone deze repo in je NetBox plugins-map:
+## Installation
+
+1. Clone this repo into your NetBox plugins folder:
 
 ```bash
 git clone https://github.com/discedric/netbox_firmware plugins/netbox_firmware
 ```
 
-2. Activeer de plugin in `configuration.py`:
+2. Enable the plugin in `configuration.py`:
 
 ```python
 PLUGINS = [
@@ -106,21 +114,21 @@ PLUGINS = [
 ]
 ```
 
-3. Installeer in je venv:
+3. Install in your venv:
 
 ```bash
 source /opt/netbox/venv/bin/activate
 pip install -e /opt/netbox/netbox/netbox/plugins/netbox_firmware
 ```
 
-4. Migrations uitvoeren:
+4. Run migrations:
 
 ```bash
 cd /opt/netbox/netbox
 python3 manage.py migrate
 ```
 
-5. index opnieuw laden:
+5. Reload the index:
 
 ```bash
 cd /opt/netbox/netbox
@@ -129,32 +137,34 @@ python3 manage.py reindex
 
 ---
 
-## Handleiding voor eindgebruikers
 
-### Nieuwe firmware toevoegen
+## User guide
 
-* Ga naar het menu `Plugins > Firmware > Firmwares`
-* Klik op `Add`
-* Vul naam, fabrikant, bestand en eventueel apparaat-/moduletype in
+### Add new firmware
 
-### Koppeling maken (assignment)
+* Go to the menu `Plugins > Firmware > Firmwares`
+* Click on `Add`
+* Fill in name, manufacturer, file, and optionally device/module type
 
-* Ga naar `Firmware Assignments`
-* Klik op `Add`
-* Kies een firmware, koppel aan een module of toestel
-* Vul datum en optioneel een ticketnummer in
+### Create assignment
+
+* Go to `Firmware Assignments`
+* Click on `Add`
+* Choose a firmware, link to a module or device
+* Fill in date and optionally a ticket number
 
 ---
 
-## Links en bronnen
 
-| Onderwerp           | Link                                                                                                                       |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| NetBox              | [https://netbox.dev](https://netbox.dev)                                                                                   |
-| Plugin documentatie | [https://docs.netbox.dev/en/stable/plugins/development/](https://docs.netbox.dev/en/stable/plugins/development/)           |
-| Django models       | [https://docs.djangoproject.com/en/stable/topics/db/models/](https://docs.djangoproject.com/en/stable/topics/db/models/)   |
-| Django admin        | [https://docs.djangoproject.com/en/stable/ref/contrib/admin/](https://docs.djangoproject.com/en/stable/ref/contrib/admin/) |
-| REST API            | [https://www.redhat.com/en/topics/api/what-is-a-rest-api](https://www.redhat.com/en/topics/api/what-is-a-rest-api)         |
-| Plugin repo         | [https://github.com/discedric/netbox\_firmware](https://github.com/discedric/netbox_firmware)                              |
+## Links and resources
+
+| Subject            | Link                                                                                                                        |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| NetBox             | [https://netbox.dev](https://netbox.dev)                                                                                    |
+| Plugin documentation| [https://docs.netbox.dev/en/stable/plugins/development/](https://docs.netbox.dev/en/stable/plugins/development/)           |
+| Django models      | [https://docs.djangoproject.com/en/stable/topics/db/models/](https://docs.djangoproject.com/en/stable/topics/db/models/)    |
+| Django admin       | [https://docs.djangoproject.com/en/stable/ref/contrib/admin/](https://docs.djangoproject.com/en/stable/ref/contrib/admin/)  |
+| REST API           | [https://www.redhat.com/en/topics/api/what-is-a-rest-api](https://www.redhat.com/en/topics/api/what-is-a-rest-api)          |
+| Plugin repo        | [https://github.com/discedric/netbox_firmware](https://github.com/discedric/netbox_firmware)                               |
 
 ---

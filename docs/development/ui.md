@@ -1,61 +1,65 @@
-# 🖼️ Views en Templates
+# 🖼️ Views and Templates
 
-De plugin maakt gebruik van de NetBox UI-helpers en standaard `ViewSet`-structuren om alle gegevens correct te tonen. Er is geen aangepaste HTML of JavaScript geschreven — alles is gebaseerd op bestaande NetBox-componenten.
-
----
-
-## 🧭 Navigatiestructuur
-
-Na installatie verschijnen twee menu-items:
-
-* **Firmware**: toont een lijst van alle firmwareversies
-* **Firmware Assignments**: lijst met alle firmwaretoewijzingen
-
-Elk item leidt naar een standaardlijstweergave (list view) en detailpagina (detail view).
+The plugin uses NetBox UI helpers and standard `ViewSet` structures to display all data correctly. No custom HTML or JavaScript has been written — everything is based on existing NetBox components.
 
 ---
 
-## 🔁 Overzicht views
+## 🧭 Navigation structure
 
-| View                         | Type       | Beschrijving                |
+After installation, two menu items appear:
+
+
+* **Firmware**: shows a list of all firmware versions
+* **Firmware Assignments**: list of all firmware assignments
+
+Each item leads to a standard list view and detail page.
+
+---
+
+## 🔁 Overview of views
+
+| View                         | Type       | Description                 |
 | ---------------------------- | ---------- | --------------------------- |
-| `FirmwareListView`           | ListView   | Lijst met filters bovenaan  |
-| `FirmwareView`               | DetailView | Detailpagina met tabellen   |
-| `FirmwareAssignmentListView` | ListView   | Lijst van toewijzingen      |
-| `FirmwareAssignmentView`     | DetailView | Detailpagina per toewijzing |
+| `FirmwareListView`           | ListView   | List with filters at the top|
+| `FirmwareView`               | DetailView | Detail page with tables     |
+| `FirmwareAssignmentListView` | ListView   | List of assignments         |
+| `FirmwareAssignmentView`     | DetailView | Detail page per assignment  |
 
-Deze views gebruiken NetBox’s `GenericUIViewSet` met automatisch gegenereerde tabellen en breadcrumbs.
+These views use NetBox’s `GenericUIViewSet` with automatically generated tables and breadcrumbs.
 
 ---
 
 ## 📂 Templates
 
-De templates worden gegenereerd op basis van de modelstructuur en `NetBoxModelViewSet`. Hierdoor is manuele aanpassing meestal overbodig.
+The templates are generated based on the model structure and `NetBoxModelViewSet`. As a result, manual adjustment is usually unnecessary.
 
-Als je een template wil overschrijven, kan je dat doen via:
+If you want to override a template, you can do so via:
+
 
 ```plaintext
 <plugin_name>/templates/<app_label>/<model>_*.html
 ```
 
-Voorbeeld:
+
+Example:
 
 ```plaintext
 firmware/templates/firmware/firmware_list.html
 ```
 
-Maar in deze plugin is dat **niet** gedaan.
+But in this plugin, this has **not** been done.
 
 ---
 
-## 🧩 Extra functies
+## 🧩 Extra features
 
-De plugin bevat een kleine uitbreiding via `get_extra_actions()`:
 
-* De knop "Assign firmware" op een device detailpagina leidt naar een formulier dat vooraf is ingevuld met dat device.
-* Dit is geïmplementeerd via een aangepaste URL en view die `CreateView` overerft en contextuele initialisatie uitvoert.
+The plugin includes a small extension via `get_extra_actions()`:
 
-Voorbeeld:
+* The "Assign firmware" button on a device detail page leads to a form that is pre-filled with that device.
+* This is implemented via a custom URL and view that inherits from `CreateView` and performs contextual initialization.
+
+Example:
 
 ```python
 class AssignFirmwareToDeviceView(CreateView):
@@ -65,9 +69,9 @@ class AssignFirmwareToDeviceView(CreateView):
 
 ---
 
-## 📚 Bronnen
+## 📚 Sources
 
 * [NetBox plugins: Views](https://docs.netbox.dev/en/stable/plugins/views/)
 * [Django Generic Views](https://docs.djangoproject.com/en/stable/ref/class-based-views/)
 
-⬅️ [Terug naar overzicht](./index.md)
+⬅️ [Back to overview](./index.md)

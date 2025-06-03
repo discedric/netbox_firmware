@@ -1,20 +1,20 @@
-# Forms en Validatie in de NetBox Firmware Plugin
+# Forms and Validation in the NetBox Firmware Plugin
 
-## Waarom forms?
+## Why forms?
 
-Forms worden gebruikt om invoer van gebruikers te valideren en te structureren, bv. bij het toevoegen of aanpassen van firmware of assignments.
+Forms are used to validate and structure user input, for example when adding or editing firmware or assignments.
 
-## Locatie
+## Location
 
-De forms staan in `forms.py`.
+The forms are in `forms.py`.
 
-## Belangrijkste functionaliteiten
+## Main functionalities
 
-- Validatie via `clean()` methodes
-- Dynamische keuzevelden afhankelijk van device_type/module_type
-- Custom widgets voor betere UX
+- Validation via `clean()` methods
+- Dynamic choice fields depending on device_type/module_type
+- Custom widgets for better UX
 
-## Voorbeeld validatie in `FirmwareAssignmentForm`:
+## Example validation in `FirmwareAssignmentForm`:
 
 ```python
 def clean(self):
@@ -22,8 +22,7 @@ def clean(self):
     device = cleaned_data.get("device")
     module = cleaned_data.get("module")
     if device and module:
-        raise ValidationError("Je mag slechts één van device of module invullen.")
+        raise ValidationError("You may only fill in one of device or module.")
     if not device and not module:
-        raise ValidationError("Je moet een device of module invullen.")
+        raise ValidationError("You must fill in either a device or a module.")
     return cleaned_data
-´´´

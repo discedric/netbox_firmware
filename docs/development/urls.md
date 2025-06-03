@@ -1,25 +1,25 @@
-# URL Routing in de NetBox Firmware Plugin
+# URL Routing in the NetBox Firmware Plugin
 
-## Wat is URL routing?
+## What is URL routing?
 
-Routing bepaalt welke URL naar welke view leidt. Dit zorgt dat de juiste pagina’s en API endpoints beschikbaar zijn.
+Routing determines which URL leads to which view. This ensures that the correct pages and API endpoints are available.
 
-## Locatie
+## Location
 
-De URL’s van deze plugin staan in `urls.py`.
+The URLs of this plugin are in `urls.py`.
 
-## Belangrijkste routes
+## Main routes
 
-- `/plugins/firmware/firmwares/` — lijst en detail van firmware
-- `/plugins/firmware/assignments/` — lijst en detail van toewijzingen
+- `/plugins/firmware/firmwares/` — list and detail of firmware
+- `/plugins/firmware/assignments/` — list and detail of assignments
 
-## Hoe werkt het?
+## How does it work?
 
-De plugin gebruikt `get_model_urls()` van NetBox om standaard CRUD-pagina’s te genereren voor de modellen.
+The plugin uses NetBox's `get_model_urls()` to generate standard CRUD pages for the models.
 
-Daarnaast zijn er extra routes voor speciale acties of API calls.
+In addition, there are extra routes for special actions or API calls.
 
-## Voorbeeld uit `urls.py`:
+## Example from `urls.py`:
 
 ```python
 from utilities.urls import get_model_urls
@@ -28,6 +28,6 @@ from . import views
 urlpatterns = [
     path('firmwares/', include(get_model_urls('firmware', 'firmware'))),
     path('assignments/', include(get_model_urls('firmware', 'firmwareassignment'))),
-    # andere routes
+    # other routes
 ]
-´´´
+```

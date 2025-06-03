@@ -1,37 +1,37 @@
-# Structuur van de NetBox Firmware Plugin
+# Structure of the NetBox Firmware Plugin
 
-## Overzicht mappen en bestanden
+## Overview of folders and files
 
-De plugin volgt de standaard NetBox plugin-structuur. Hier een overzicht van de belangrijkste onderdelen:
+The plugin follows the standard NetBox plugin structure. Here is an overview of the most important components:
 
-| Bestand / Map         | Functie                                           |
+| File / Folder        | Function                                         |
 |----------------------|--------------------------------------------------|
-| `models.py`          | Definitie van de data modellen (Firmware, Assignment) |
-| `forms.py`           | Validatie en logica voor formulieren              |
-| `filters.py`         | Filters om lijsten te beperken                     |
-| `views.py`           | Webviews voor CRUD operaties en paginaweergave    |
-| `urls.py`            | URL routing voor pluginpagina’s en API endpoints  |
-| `api/`               | API viewsets en serializers                        |
-| `tables.py`          | Configuratie voor tabellen in de UI                |
-| `signal.py`          | Tussensignalen voor bewerkingen die niet standaar gebeuren                          |
-| `templates/`         | HTML templates, vaak overgenomen van NetBox zelf  |
-| `static/`            | Statische bestanden (css, js) — meestal niet nodig |
-| `migrations/`        | Database migraties                                  |
+| `models`          | Definition of the data models (Firmware, Assignment) |
+| `forms`           | Validation and logic for forms                    |
+| `filters.py`         | Filters to limit lists                            |
+| `views.py`           | Web views for CRUD operations and page display    |
+| `urls.py`            | URL routing for plugin pages and API endpoints    |
+| `api/`               | API viewsets and serializers                     |
+| `tables`          | Configuration for tables in the UI                |
+| `signal.py`          | Intermediate signals for operations that are not standard |
+| `templates/`         | HTML templates, often inherited from NetBox itself|
+| `static/`            | Static files (css, js) — usually not needed       |
+| `migrations/`        | Database migrations                               |
 
-## Hoe werken de onderdelen samen?
+## How do the components work together?
 
-1. **Modellen** definiëren de data en relaties.
-2. **Forms** zorgen voor invoer van data en validatie.
-3. **Views** tonen data in de UI en handelen gebruikersacties af.
-4. **Filters en Tables** geven dynamische lijsten met zoek- en filteropties.
-5. **URLs** koppelen webadressen aan views.
-6. **API** biedt toegang tot data via REST, bruikbaar voor automatisering.
+1. **Models** define the data and relationships.
+2. **Forms** handle data input and validation.
+3. **Views** display data in the UI and handle user actions.
+4. **Filters and Tables** provide dynamic lists with search and filter options.
+5. **URLs** link web addresses to views.
+6. **API** provides access to data via REST, useful for automation.
 
-## Extra aandachtspunten
+## Additional notes
 
-- De plugin maakt veel gebruik van NetBox helpers (`utilities`, `extras`) om consistentie en eenvoud te bewaren.
-- Voor uitbreidingen: houd je aan deze structuur voor compatibiliteit.
-- Voeg bij nieuwe modellen ook altijd migraties toe (`python manage.py makemigrations`).
+- The plugin makes extensive use of NetBox helpers (`utilities`, `extras`) to maintain consistency and simplicity.
+- For extensions: stick to this structure for compatibility.
+- When adding new models, always add migrations as well (`python manage.py makemigrations`).
 
 ---
 

@@ -1,10 +1,10 @@
-# Nuttige bronnen en referenties
+# Useful resources and references
 
-Hier vind je links die je kunnen helpen om deze plugin beter te begrijpen, onderhouden en uit te breiden.
+Here you will find links that can help you better understand, maintain, and extend this plugin.
 
-## Documentatie
+## Documentation
 
-- **NetBox Officiële Documentatie**  
+- **NetBox Official Documentation**  
   https://netbox.dev
 
 - **NetBox Plugin Development**  
@@ -13,7 +13,7 @@ Hier vind je links die je kunnen helpen om deze plugin beter te begrijpen, onder
 - **Django Web Framework**  
   https://docs.djangoproject.com/en/stable/
 
-- **Django REST Framework (API’s)**  
+- **Django REST Framework (APIs)**  
   https://www.django-rest-framework.org/
 
 - **Django Filters**  
@@ -21,10 +21,10 @@ Hier vind je links die je kunnen helpen om deze plugin beter te begrijpen, onder
 
 ## Tools
 
-- **Postman (API testen)**  
+- **Postman (API testing)**  
   https://www.postman.com/
 
-- **HTTPie (commandline HTTP client)**  
+- **HTTPie (command line HTTP client)**  
   https://httpie.io/
 
 - **Visual Studio Code**  
@@ -33,16 +33,16 @@ Hier vind je links die je kunnen helpen om deze plugin beter te begrijpen, onder
 ## GitHub
 
 - Plugin repository: https://github.com/discedric/netbox_firmware  
-- Fork en issue trackers voor bijdrages en bugs
+- Fork and issue trackers for contributions and bugs
 
 ---
 
 ## Community
 
 - NetBox Discuss Forum: https://github.com/netbox-community/netbox/discussions 
-- GitHub Discussions (afhankelijk van repo instellingen)  
-- Stack Overflow (zoek op “netbox” en “django”)
+- GitHub Discussions (depending on repo settings)  
+- Stack Overflow (search for “netbox” and “django”)
 
 ---
 
-🛠️ Bij vragen, bugs of feature requests: open altijd een issue op GitHub om bij te dragen aan verbetering!
+🛠️ For questions, bugs, or feature requests: always open an issue on GitHub to contribute to improvement!

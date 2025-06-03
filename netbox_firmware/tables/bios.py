@@ -3,8 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 from netbox.tables import NetBoxTable, columns
 from ..models import Bios, BiosAssignment
+from netbox_firmware.utils import BiosColumn
 
-from dcim.tables import DeviceTypeTable, ModuleTypeTable, RackTypeTable
+from dcim.tables import DeviceTable, ModuleTable
 from utilities.tables import register_table_column
 
 __all__ = (
@@ -125,3 +126,14 @@ class BiosAssignmentTable(NetBoxTable):
         queryset = queryset.order_by(ordering)
         return queryset, True
 
+# ========================
+# DCIM model table columns
+# ========================
+
+bios_column = BiosColumn(
+    verbose_name=_('BIOS'),
+    orderable=True,
+)
+
+register_table_column(bios_column, 'BiosAssignment', DeviceTable)
+register_table_column(bios_column, 'BiosAssignment', ModuleTable)

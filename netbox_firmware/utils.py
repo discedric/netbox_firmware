@@ -5,10 +5,44 @@ from django.db.models.functions import Coalesce
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_save
 
+from django.urls import reverse
+from django.utils.html import format_html, format_html_join
+from django_tables2 import tables
 from dcim.models import Device, Module, Rack
 from netbox.plugins import get_plugin_config
 from .choices import FirmwareStatusChoices
 
+class FirmwareColumn(tables.Column):
+    def render(self, value, record):
+        # `record` is een Device instance
+        assignments = record.FirmwareAssignment.all()
+        if not assignments:
+            return "-"
+        links = [
+            format_html(
+                '<a href="{}">{}</a>',
+                reverse('plugins:netbox_firmware:firmwareassignment', args=[a.pk]),
+                a.firmware
+            )
+            for a in assignments
+        ]
+        return format_html_join(", ", "{}", ((link,) for link in links))
+
+class BiosColumn(tables.Column):
+    def render(self, value, record):
+        # `record` is een Device instance
+        assignments = record.BiosAssignment.all()
+        if not assignments:
+            return "-"
+        links = [
+            format_html(
+                '<a href="{}">{}</a>',
+                reverse('plugins:netbox_firmware:biosassignment', args=[a.pk]),
+                a.bios
+            )
+            for a in assignments
+        ]
+        return format_html_join(", ", "{}", ((link,) for link in links))
 
 def get_prechange_field(obj, field_name):
     """Get value from obj._prechange_snapshot. If field is a relation,

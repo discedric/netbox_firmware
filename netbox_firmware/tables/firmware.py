@@ -3,8 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 from netbox.tables import NetBoxTable, columns
 from ..models import Firmware, FirmwareAssignment
+from netbox_firmware.utils import FirmwareColumn
 
-from dcim.tables import DeviceTypeTable, ModuleTypeTable, RackTypeTable
+from dcim.tables import DeviceTable, ModuleTable
 from utilities.tables import register_table_column
 
 __all__ = (
@@ -135,3 +136,14 @@ class FirmwareAssignmentTable(NetBoxTable):
         queryset = queryset.order_by(ordering)
         return queryset, True
 
+# ========================
+# DCIM model table columns
+# ========================
+
+firmware_column = FirmwareColumn(
+    verbose_name=_('Firmware'),
+    orderable=True,
+)
+
+register_table_column(firmware_column, 'FirmwareAssignment', DeviceTable)
+register_table_column(firmware_column, 'FirmwareAssignment', ModuleTable)

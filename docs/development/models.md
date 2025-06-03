@@ -1,31 +1,31 @@
-# 📦 Models: Firmware en FirmwareAssignment
+# 📦 Models: Firmware and FirmwareAssignment
 
-Deze plugin bevat twee kernmodellen die de structuur vormen van de data-opslag:
+This plugin contains two core models that form the structure of the data storage:
 
 ---
 
 ## 📄 Firmware
 
-Het `Firmware`-model definieert een unieke firmwareversie die je aan een device of module kan toewijzen.
+The `Firmware` model defines a unique firmware version that you can assign to a device or module.
 
-### 🔑 Belangrijkste velden
+### 🔑 Key fields
 
-| Veld           | Type                   | Uitleg                                          |
+| Field          | Type                   | Explanation                                     |
 | -------------- | ---------------------- | ----------------------------------------------- |
-| `name`         | CharField              | Naam van de firmwareversie                      |
-| `description`  | TextField              | Uitleg over waarvoor de firmware dient          |
-| `manufacturer` | ForeignKey             | De fabrikant van de firmware                    |
-| `device_type`  | ForeignKey (optioneel) | Beperkt de firmware tot een bepaald toesteltype |
-| `module_type`  | ForeignKey (optioneel) | Beperkt de firmware tot een bepaald moduletype  |
-| `file`         | FileField (optioneel)  | Uploadbare bijlage zoals .bin of .pdf           |
-| `status`       | CharField              | Keuze uit bijv. Concept, Actief, Verouderd      |
+| `name`         | CharField              | Name of the firmware version                    |
+| `description`  | TextField              | Description of what the firmware is for         |
+| `manufacturer` | ForeignKey             | The manufacturer of the firmware                |
+| `device_type`  | ForeignKey (optional)  | Restricts the firmware to a specific device type|
+| `module_type`  | ForeignKey (optional)  | Restricts the firmware to a specific module type|
+| `file`         | FileField (optional)   | Uploadable attachment such as .bin or .pdf      |
+| `status`       | CharField              | Choice of e.g. Draft, Active, Deprecated        |
 
-### 🧠 Validatie en filtering
+### 🧠 Validation and filtering
 
-* `device_type` en `module_type` zijn optioneel, maar helpen bij filtering.
-* Firmware verschijnt enkel bij relevante types tijdens een assignment.
+* `device_type` and `module_type` are optional, but help with filtering.
+* Firmware only appears for relevant types during an assignment.
 
-### 📎 Codevoorbeeld
+### 📎 Code example
 
 ```python
 class Firmware(models.Model):
@@ -44,36 +44,36 @@ class Firmware(models.Model):
 
 ## 🔗 FirmwareAssignment
 
-Het `FirmwareAssignment`-model verbindt een `Firmware` aan een `Device` of `Module`.
+The `FirmwareAssignment` model links a `Firmware` to a `Device` or `Module`.
 
-### 🔑 Velden
+### 🔑 Fields
 
-| Veld            | Type                   | Uitleg                                |
+| Field           | Type                   | Explanation                           |
 | --------------- | ---------------------- | ------------------------------------- |
-| `firmware`      | ForeignKey             | Verwijst naar een Firmware            |
-| `device`        | ForeignKey (optioneel) | Waar de firmware is toegepast         |
-| `module`        | ForeignKey (optioneel) | Alternatief voor device               |
-| `patch_date`    | DateField              | Datum waarop de firmware is toegepast |
-| `ticket_number` | CharField              | Interne referentie                    |
-| `comment`       | TextField              | Extra uitleg                          |
+| `firmware`      | ForeignKey             | Refers to a Firmware                  |
+| `device`        | ForeignKey (optional)  | Where the firmware is applied         |
+| `module`        | ForeignKey (optional)  | Alternative for device                |
+| `patch_date`    | DateField              | Date when the firmware was applied    |
+| `ticket_number` | CharField              | Internal reference                    |
+| `comment`       | TextField              | Extra explanation                     |
 
-### ⚖️ Validatie
+### ⚖️ Validation
 
-De `clean()` methode zorgt ervoor dat je niet tegelijk een module én een device kan invullen.
+The `clean()` method ensures that you cannot fill in both a module and a device at the same time.
 
 ```python
 def clean(self):
     if self.device and self.module:
-        raise ValidationError("Je mag slechts één van device/module invullen.")
+        raise ValidationError("You may only fill in one of device/module.")
     if not self.device and not self.module:
-        raise ValidationError("Je moet minstens device of module invullen.")
+        raise ValidationError("You must fill in at least device or module.")
 ```
 
 ---
 
-## 📚 Meer info
+## 📚 More info
 
 * [Django Models](https://docs.djangoproject.com/en/stable/topics/db/models/)
 * [NetBox Plugin Models](https://docs.netbox.dev/en/stable/plugins/models/)
 
-⬅️ [Terug naar overzicht](./index.md)
+⬅️ [Back to overview](./index.md)
