@@ -29,7 +29,7 @@ class BiosForm(NetBoxModelForm):
         queryset=ModuleType.objects.all(),
         required=False,
         selector=True,
-        label='Module Type',
+        label='Supported Module Type',
     )
     comments = CommentField()
     
