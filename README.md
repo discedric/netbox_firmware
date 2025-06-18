@@ -25,6 +25,11 @@ $ source /opt/netbox/venv/bin/activate
 (venv) $ gh repo clone discedric/netbox_firmware
 (venv) $ pip install ./netbox_firmware
 ```
+Je kan deze nu ook installeren via pip
+```bash
+$ source /opt/netbox/venv/bin/activate
+(venv) $ pip install netbox-firmware
+```
 
 ```python
 PLUGINS = [
