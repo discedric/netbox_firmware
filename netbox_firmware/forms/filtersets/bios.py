@@ -8,7 +8,7 @@ from netbox.forms import NetBoxModelFilterSetForm
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES, FilterForm, add_blank_choice
 from utilities.forms.fields import ColorField, DynamicModelMultipleChoiceField, TagFilterField
 from utilities.forms.rendering import FieldSet
-from utilities.forms.widgets import NumberWithOptions
+from utilities.forms.widgets import NumberWithOptions, DatePicker
 from wireless.choices import *
 from netbox_firmware.models import Bios, BiosAssignment
 
@@ -125,6 +125,7 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     )
     patch_date = forms.DateField(
         label=_('Patch Date'),
-        required=False
+        required=False,
+        widget=DatePicker()
     )
     tag = TagFilterField(model)
