@@ -38,7 +38,12 @@
           </tr>
           <tr>
             <th scope="row">File</th>
-            <td>{{ object.file|placeholder }}</td>
+            <td>
+              {% if object.file %}
+                <a href="{{ object.file.url }}" download>{{ object.file.name }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
           </tr>
         </table>
       </div>
