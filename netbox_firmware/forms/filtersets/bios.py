@@ -8,7 +8,7 @@ from netbox.forms import NetBoxModelFilterSetForm
 from utilities.forms import BOOLEAN_WITH_BLANK_CHOICES, FilterForm, add_blank_choice
 from utilities.forms.fields import ColorField, DynamicModelMultipleChoiceField, TagFilterField
 from utilities.forms.rendering import FieldSet
-from utilities.forms.widgets import NumberWithOptions
+from utilities.forms.widgets import NumberWithOptions, DatePicker
 from wireless.choices import *
 from netbox_firmware.models import Bios, BiosAssignment
 
@@ -61,7 +61,7 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('kind','manufacturer_id','device_type_id','device_id','module_type_id','module_id','module_device_id',name=_('Hardware')), 
+        FieldSet('kind','manufacturer_id','device_type_id','device_id','module_type_id','module_id','module_sn','module_device_id',name=_('Hardware')), 
         FieldSet('bios_id',name=_('Bios')),
     )
     
@@ -92,6 +92,10 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
         query_params={
             'module_type__manufacturer_id': '$manufacturer_id'
         },
+    )
+    module_sn = forms.CharField(
+        required=False,
+        label=_('Module Serial Number')
     )
     module_device_id = forms.ModelMultipleChoiceField(
         queryset=Device.objects.filter(modules__isnull=False).distinct(),
@@ -125,6 +129,7 @@ class BiosAssignmentFilterForm(NetBoxModelFilterSetForm):
     )
     patch_date = forms.DateField(
         label=_('Patch Date'),
-        required=False
+        required=False,
+        widget=DatePicker()
     )
     tag = TagFilterField(model)

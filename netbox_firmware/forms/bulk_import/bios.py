@@ -185,35 +185,39 @@ class BiosAssignmentImportForm(NetBoxModelImportForm):
         hardware_kind = self.cleaned_data.get('hardware_kind')
         manufacturer = self.cleaned_data.get('manufacturer')
         model = self.cleaned_data.get('hardware_name')
+
         if not hardware_kind or not manufacturer:
-            # clean on manufacturer or hardware_kind already raises
             return None
-        
+
         try:
             if hardware_kind == 'device':
                 hardware_type = Device.objects.get(
                     device_type__manufacturer=manufacturer, name=model
                 )
-                if BiosAssignment.objects.filter(device__name=model).exists():
+                existing = BiosAssignment.objects.filter(device__name=model).first()
+                if existing and existing.id != self.instance.id:
                     raise ValidationError(f'Device "{model}" already has a BIOS assigned.')
+
             elif hardware_kind == 'module':
                 if model.isdigit():
                     hardware_type = Module.objects.get(
                         module_type__manufacturer=manufacturer, pk=model
                     )
-                    if BiosAssignment.objects.filter(module=model).exists():
-                        raise ValidationError(f'Module "{model}" already has a BIOS assigned.')
+                    existing = BiosAssignment.objects.filter(module__pk=model).first()
                 else:
                     hardware_type = Module.objects.get(
                         module_type__manufacturer=manufacturer, serial=model
                     )
-                    if BiosAssignment.objects.filter(module__serial=model).exists():
-                         raise ValidationError(f'Module "{model}" already has a BIOS assigned.')
-                    
+                    existing = BiosAssignment.objects.filter(module__serial=model).first()
+
+                if existing and existing.id != self.instance.id:
+                    raise ValidationError(f'Module "{model}" already has a BIOS assigned.')
+
         except ObjectDoesNotExist:
             raise forms.ValidationError(
                 f'Hardware type not found: "{hardware_kind}", "{manufacturer}", "{model}"'
             )
+
         setattr(self.instance, f'{hardware_kind}', hardware_type)
         return hardware_type
 
