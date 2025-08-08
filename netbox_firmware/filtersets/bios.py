@@ -42,11 +42,6 @@ class BiosFilterSet(NetBoxModelFilterSet):
         method='filter_by_module',
         label=_('Module'),
     )
-    module_sn = django_filters.CharFilter(
-        field_name='module__serial',
-        lookup_expr='icontains',
-        label=_('Module Serial Number'),
-    )
     device_type = django_filters.ModelMultipleChoiceFilter(
         field_name='device_type__slug',
         queryset=DeviceType.objects.all(),
@@ -155,6 +150,11 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Module.objects.all(),
         label=_('Module (ID)'),
     )
+    module_sn = django_filters.CharFilter(
+        field_name='module__serial',
+        lookup_expr='icontains',
+        label=_('Module Serial Number'),
+    )
     kind = MultiValueCharFilter(
         method='filter_kind',
         label='Type of hardware',
@@ -173,11 +173,6 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Device.objects.all(),
         field_name='module__device_id',
         label=_('Module (device ID)'),
-    )
-    module_sn = django_filters.ModelMultipleChoiceFilter(
-        queryset=Module.objects.all(),
-        field_name='module__serial',
-        label=_('Module (serial)'),
     )
     device_sn = django_filters.ModelMultipleChoiceFilter(
         queryset=Device.objects.all(),
