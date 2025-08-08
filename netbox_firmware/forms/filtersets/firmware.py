@@ -61,7 +61,7 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
     fieldsets = (
         FieldSet('q', 'tag'),
         FieldSet('patch_date',name=_('Patch Date')),
-        FieldSet('kind', 'manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id','module_device_id', name=_('Hardware')), 
+        FieldSet('kind', 'manufacturer_id', 'device_type_id', 'module_type_id', 'device_id', 'module_id', 'module_sn','module_device_id', name=_('Hardware')), 
         FieldSet('firmware_id',name=_('Firmware')),
     )
     
@@ -92,6 +92,10 @@ class FirmwareAssignmentFilterForm(NetBoxModelFilterSetForm):
             'module_type__manufacturer_id': '$manufacturer_id'
         },
         label=_('Module')
+    )
+    module_sn = forms.CharField(
+        required=False,
+        label=_('Module Serial Number')
     )
     module_device_id = forms.ModelMultipleChoiceField(
         queryset=Device.objects.filter(modules__isnull=False).distinct(),

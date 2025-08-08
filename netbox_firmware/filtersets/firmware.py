@@ -169,10 +169,10 @@ class FirmwareAssignmentFilterSet(NetBoxModelFilterSet):
         field_name='module__device_id',
         label=_('Module (device ID)'),
     )
-    module_sn = django_filters.ModelMultipleChoiceFilter(
-        queryset=Module.objects.all(),
+    module_sn = django_filters.CharFilter(
         field_name='module__serial',
-        label=_('Module (serial)'),
+        lookup_expr='icontains',
+        label=_('Module Serial Number'),
     )
     device_sn = django_filters.ModelMultipleChoiceFilter(
         queryset=Device.objects.all(),

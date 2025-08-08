@@ -42,6 +42,11 @@ class BiosFilterSet(NetBoxModelFilterSet):
         method='filter_by_module',
         label=_('Module'),
     )
+    module_sn = django_filters.CharFilter(
+        field_name='module__serial',
+        lookup_expr='icontains',
+        label=_('Module Serial Number'),
+    )
     device_type = django_filters.ModelMultipleChoiceFilter(
         field_name='device_type__slug',
         queryset=DeviceType.objects.all(),
