@@ -54,20 +54,16 @@ class Firmware(NetBoxModel):
     # hardware type fields
     #
 
-    device_type = models.ForeignKey(
+    device_type = models.ManyToManyField(
         to=DeviceType,
-        on_delete=models.PROTECT,
         related_name='firmware',
         blank=True,
-        null=True,
         verbose_name='Device Type',
     )
-    module_type = models.ForeignKey(
+    module_type = models.ManyToManyField(
         to=ModuleType,
-        on_delete=models.PROTECT,
         related_name='firmware',
         blank=True,
-        null=True,
         verbose_name='Module Type',
     )
     
@@ -117,29 +113,28 @@ class Firmware(NetBoxModel):
         self.file.name = _name
 
     class Meta:
-        ordering = ('name','device_type', 'module_type')
-        unique_together = ('name', 'device_type', 'module_type')
+        ordering = ('name',) # -> Fix ordering later
         verbose_name = 'Firmware'
         verbose_name_plural = 'Firmwares'
         constraints = [
             models.UniqueConstraint(
                 Lower('name'),
                 name='%(app_label)s_%(class)s_unique_name',
-                violation_error_message=_("Device name must be unique.")
+                violation_error_message=_("The Firmware 'Name' must be unique.")
             ),
-            models.CheckConstraint(
-                check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
-                name='firmware_device_type_or_module_type_required'
-            )
         ]
 
     def get_manufacturer(self):
-        """ Haalt de manufacturer op afhankelijk van device_type of module_type """
-        if self.device_type:
-            return self.device_type.manufacturer  # Haal de fabrikant via device_type
-        elif self.module_type:
-            return self.module_type.manufacturer  # Haal de fabrikant via module_type
-        print('No manufacturer found')
+        """Return manufacturer(s) based on device_type or module_type"""
+        if self.device_type.exists():
+            # return the manufacturer of the first related device_type
+            return self.device_type.first().manufacturer
+
+        if self.module_type.exists():
+            # return the manufacturer of the first related module_type
+            return self.module_type.first().manufacturer
+
+        print("No manufacturer found")
         return None
 
     def __str__(self):

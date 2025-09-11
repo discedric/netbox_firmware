@@ -1,7 +1,8 @@
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from django import forms
+from django.core.exceptions import ValidationError
 from netbox.forms import NetBoxModelForm
-from utilities.forms.fields import CommentField, DynamicModelChoiceField
+from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField
 from utilities.forms.rendering import FieldSet, TabbedGroups
 from utilities.forms.widgets import DatePicker, ClearableFileInput
 from netbox_firmware.utils import get_tags_and_edit_protected_firmware_fields
@@ -19,13 +20,13 @@ class FirmwareForm(NetBoxModelForm):
         required=False,
     )
     file_name = forms.CharField(required=False, label='File Name')
-    device_type = DynamicModelChoiceField(
+    device_type = DynamicModelMultipleChoiceField(
         queryset=DeviceType.objects.all(),
         required=False,
         selector=True,
         label='Supported Device Type',
     )
-    module_type = DynamicModelChoiceField(
+    module_type = DynamicModelMultipleChoiceField(
         queryset=ModuleType.objects.all(),
         required=False,
         selector=True,
@@ -46,42 +47,30 @@ class FirmwareForm(NetBoxModelForm):
 
     class Meta:
         model = Firmware
-        fields = [
-            'name',
-            'file_name',
-            'file',
-            'description',
-            'device_type',
-            'module_type',
-            'status',
-            'comments',
-        ]
+        fields = '__all__'
         widgets = {
             'file': ClearableFileInput(attrs={
                 'accept': '.bin,.img,.tar,.tar.gz,.zip,.exe'
                 }),
         }
 
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         # Used for picking the default active tab for hardware type selection
         self.no_hardware_type = True
-        if self.instance:
-            if (
-                self.instance.device_type
-                or self.instance.module_type
-            ):
+
+        
+        if self.instance and self.instance.pk:
+            has_device_type = self.instance.device_type.exists()
+            has_module_type = self.instance.device_type.exists()
+
+            if has_device_type or has_module_type:
                 self.no_hardware_type = False
 
     def clean(self):
-        super().clean()
-        device_type = self.cleaned_data.get('device_type')
-        module_type = self.cleaned_data.get('module_type')
-
-        if device_type and module_type:
-            raise forms.ValidationError("You may only select one of 'Device Type' or 'Module Type', not both.")
-        
-        pass
+        return super().clean()
       
 class FirmwareAssignmentForm(NetBoxModelForm):
     # Hardware ------------------------------

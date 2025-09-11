@@ -8,8 +8,8 @@ __all__ = (
 )
 
 class FirmwareSerializer(NetBoxModelSerializer):
-    device_type = DeviceTypeSerializer(nested=True, required=False)
-    module_type = ModuleTypeSerializer(nested=True, required=False)
+    device_type = DeviceTypeSerializer(many=True, nested=True, required=False)
+    module_type = ModuleTypeSerializer(many=True, nested=True, required=False)
     class Meta:
         model = Firmware
         fields = '__all__'

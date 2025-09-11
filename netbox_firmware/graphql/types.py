@@ -23,7 +23,7 @@ from .filters import (
 
 @strawberry_django.type(Firmware, fields='__all__', filters=FirmwareFilter)
 class FirmwareType(NetBoxObjectType):
-    device_type: Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
+    device_type: List[Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")]] | None
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
 
 @strawberry_django.type(FirmwareAssignment, fields='__all__', filters=FirmwareAssignmentFilter)
@@ -34,7 +34,7 @@ class FirmwareAssignmentType(NetBoxObjectType):
 
 @strawberry_django.type(Bios, fields='__all__', filters=BiosFilter)
 class BiosType(NetBoxObjectType):
-    device_type: Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")] | None
+    device_type: List[Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")]] | None
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
 
 @strawberry_django.type(BiosAssignment, fields='__all__', filters=BiosAssignmentFilter)

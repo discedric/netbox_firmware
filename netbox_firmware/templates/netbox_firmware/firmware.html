@@ -44,26 +44,48 @@
         </table>
       </div>
 
-      <div class="card">
-        <h5 class="card-header">Hardware</h5>
-        <table class="table table-hover attr-table">
-          <tr>
-            <th scope="row">Manufacturer</th>
-            <td><a href="{{object.manufacturer.get_absolute_url}}">{{ object.manufacturer|placeholder }}</a></td>
-          </tr>
-          {% if object.kind == 'device' %}
-            <tr>
-              <th scope="row">Device Type</th>
-              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
-            </tr>
-          {% elif object.kind == 'module' %}
-            <tr>
-              <th scope="row">Module Type</th>
-              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
-            </tr>
-          {% endif %}
-        </table>
-      </div>
+    <div class="card">
+      <h5 class="card-header">Hardware</h5>
+      <table class="table table-hover attr-table">
+        <tr>
+          <th scope="row">Manufacturer</th>
+          <td>
+            {% if object.manufacturer %}
+              <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer }}</a>
+            {% else %}
+              &mdash;
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row">Device Types</th>
+          <td>
+            {% if object.device_type.exists %}
+              {% for dt in object.device_type.all %}
+                <a href="{{ dt.get_absolute_url }}">{{ dt }}</a>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              &mdash;
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row">Module Types</th>
+          <td>
+            {% if object.module_type.exists %}
+              {% for mt in object.module_type.all %}
+                <a href="{{ mt.get_absolute_url }}">{{ mt }}</a>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              &mdash;
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+    </div>
+
 
       {% include 'inc/panels/custom_fields.html' %}
       {% plugin_left_page object %}

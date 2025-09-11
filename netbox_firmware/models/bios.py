@@ -124,7 +124,7 @@ class Bios(NetBoxModel):
             models.UniqueConstraint(
                 Lower('name'),
                 name='%(app_label)s_%(class)s_unique_name',
-                violation_error_message=_("Device name must be unique.")
+                violation_error_message=_("The BIOS 'Name' must be unique.")
             ),
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),

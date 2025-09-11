@@ -60,6 +60,7 @@ class FirmwareFilterSet(NetBoxModelFilterSet):
         label=_('Module type (model)'),
     )
     module_type_id = django_filters.ModelMultipleChoiceFilter(
+        field_name='module_type',
         queryset=ModuleType.objects.all(),
         label=_('Module type (ID)'),
     )

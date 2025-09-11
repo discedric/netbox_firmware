@@ -26,11 +26,11 @@ class FirmwareTable(NetBoxTable):
         accessor='manufacturer',  # We gebruiken de method manufacturer
         linkify=True,
     )
-    device_type = tables.Column(
+    device_type = columns.ManyToManyColumn(
         accessor='device_type',
         linkify=True,
         )
-    module_type = tables.Column(
+    module_type = columns.ManyToManyColumn(
         accessor='module_type',
         linkify=True,
         )
