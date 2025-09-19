@@ -11,37 +11,59 @@ from utilities.forms.fields import (
     SlugField,
 )
 
+### Firmware ###
+
+
 class FirmwareImportForm(NetBoxModelImportForm):
-    hardware_kind = CSVTypedChoiceField(
-        label=_('Hardware kind'),
-        choices=HardwareKindChoices,
+    name = forms.CharField(
+        label=_('Name'),
         required=True,
-        help_text=_('Type of hardware')
-    )
-    hardware_type_name = forms.CharField(
-        label=_('Hardware Type name'),
-        required=True,
-        help_text=_('Name of the hardware Type')
+        help_text=_('Name of the firmware')
     )
     manufacturer = CSVModelChoiceField(
         label=_('Manufacturer'),
         queryset=Manufacturer.objects.all(),
         to_field_name='name',
-        help_text=_('Device type manufacturer')
-    )
-    status = CSVChoiceField(
-        label=_('Status'),
-        choices=FirmwareStatusChoices,
-        help_text=_('Operational status')
-    )
-    name = forms.CharField(
-        label=_('Name'),
-        help_text=_('Name of the firmware')
+        required=True,
+        help_text=_('Firmware type manufacturer')
     )
     file_name = forms.CharField(
         label=_('File name'),
         required=False,
         help_text=_('File name of the firmware')
+    )
+    hardware_kind = CSVChoiceField(
+        label=_('Hardware kind'),
+        choices=HardwareKindChoices,
+        required=True,
+        help_text=_('Type of hardware')
+    )
+    hardware_type_name = CSVModelMultipleChoiceField(
+        label=_('Hardware Type name'),
+        queryset=DeviceType.objects.all(),
+        to_field_name='model',
+        required=False,
+        help_text=_('Name of the hardware Type')
+    )
+    device_type = CSVModelMultipleChoiceField(
+        label=_('Device Type name'),
+        queryset=DeviceType.objects.all(),
+        to_field_name='model',
+        required=False,
+        help_text=_('Name of the Device Type')
+    )
+    module_type = CSVModelMultipleChoiceField(
+        label=_('Module Type name'),
+        queryset=ModuleType.objects.all(),
+        to_field_name='model',
+        required=False,
+        help_text=_('Name of the Module Type')
+    )
+    status = CSVChoiceField(
+        label=_('Status'),
+        choices=FirmwareStatusChoices,
+        required=False,
+        help_text=_('Operational status')
     )
     description = forms.CharField(
         label=_('Description'),
@@ -64,7 +86,9 @@ class FirmwareImportForm(NetBoxModelImportForm):
             'comments', 
             'manufacturer', 
             'hardware_kind', 
-            'hardware_type_name', 
+            'hardware_type_name',
+            'device_type',
+            'module_type',
             ]
         
 
@@ -76,33 +100,75 @@ class FirmwareImportForm(NetBoxModelImportForm):
     def _clean_fields(self):
         return super()._clean_fields()
 
-    def _get_validation_exclusions(self):
-        exclude = super()._get_validation_exclusions()
-        exclude.remove('device_type')
-        exclude.remove('module_type')
-        return exclude
+    # def _get_validation_exclusions(self):
+    #     exclude = super()._get_validation_exclusions()
+    #     exclude.remove('device_type')
+    #     exclude.remove('module_type')
+    #     return exclude
 
-    def clean_hardware_type_name(self):
-        hardware_kind = self.cleaned_data.get('hardware_kind')
-        manufacturer = self.cleaned_data.get('manufacturer')
-        model = self.cleaned_data.get('hardware_type_name')
-        if not hardware_kind or not manufacturer:
-            # clean on manufacturer or hardware_kind already raises
-            return None
-        if hardware_kind == 'device':
-            hardware_class = DeviceType
-        elif hardware_kind == 'module':
-            hardware_class = ModuleType
-        try:
-            hardware_type = hardware_class.objects.get(
-                manufacturer=manufacturer, model=model
-            )
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(
-                f'Hardware type not found: "{hardware_kind}", "{manufacturer}", "{model}"'
-            )
-        setattr(self.instance, f'{hardware_kind}_type', hardware_type)
-        return hardware_type
+    # def clean_hardware_type_name(self):
+    #     hardware_kind = self.cleaned_data.get('hardware_kind')
+    #     manufacturer = self.cleaned_data.get('manufacturer')
+    #     models = self.cleaned_data.get('hardware_type_name')  # list of names from CSV
+
+    #     if not hardware_kind or not manufacturer:
+    #         return None
+
+    #     if hardware_kind == 'device':
+    #         hardware_class = DeviceType
+    #         field_name = 'device_type'
+    #     elif hardware_kind == 'module':
+    #         hardware_class = ModuleType
+    #         field_name = 'module_type'
+    #     else:
+    #         raise forms.ValidationError(f'Unknown hardware kind: {hardware_kind}')
+
+    #     hardware_types = []
+    #     for model_name in models:
+    #         try:
+    #             obj = hardware_class.objects.get(
+    #                 manufacturer=manufacturer,
+    #                 model=model_name
+    #             )
+    #             hardware_types.append(obj)
+    #         except hardware_class.DoesNotExist:
+    #             raise forms.ValidationError(
+    #                 f'Hardware type not found: kind={hardware_kind}, '
+    #                 f'manufacturer={manufacturer}, model="{model_name}"'
+    #             )
+
+    #     # assign to the ManyToMany field (must save instance first in bulk import flow)
+    #     self.instance.save()
+    #     getattr(self.instance, field_name).set(hardware_types)
+
+    #     return hardware_types
+
+
+     ##########
+
+
+
+    # def clean_hardware_type_name(self):
+    #     hardware_kind = self.cleaned_data.get('hardware_kind')
+    #     manufacturer = self.cleaned_data.get('manufacturer')
+    #     model = self.cleaned_data.get('hardware_type_name')
+    #     if not hardware_kind or not manufacturer:
+    #         # clean on manufacturer or hardware_kind already raises
+    #         return None
+    #     if hardware_kind == 'device':
+    #         hardware_class = DeviceType
+    #     elif hardware_kind == 'module':
+    #         hardware_class = ModuleType
+    #     try:
+    #         hardware_type = hardware_class.objects.get(
+    #             manufacturer=manufacturer, model=model
+    #         )
+    #     except ObjectDoesNotExist:
+    #         raise forms.ValidationError(
+    #             f'Hardware type not found: "{hardware_kind}", "{manufacturer}", "{model}"'
+    #         )
+    #     setattr(self.instance, f'{hardware_kind}_type', hardware_type)
+    #     return hardware_type
 
     def _get_clean_value(self, field_name):
         try:
@@ -110,6 +176,10 @@ class FirmwareImportForm(NetBoxModelImportForm):
         except forms.ValidationError as e:
             self.add_error(field_name, e)
             raise
+
+
+### FirmwareAssignment ###
+
 
 class FirmwareAssignmentImportForm(NetBoxModelImportForm):
     firmware = CSVModelChoiceField(

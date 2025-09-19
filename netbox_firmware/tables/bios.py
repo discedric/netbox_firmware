@@ -130,6 +130,8 @@ class BiosAssignmentTable(NetBoxTable):
 # DCIM model table columns
 # ========================
 
+
+### Add BIOS column to Device and Module tables.
 bios_column = BiosColumn(
     verbose_name=_('BIOS'),
     orderable=True,

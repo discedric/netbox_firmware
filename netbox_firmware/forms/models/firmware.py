@@ -16,18 +16,31 @@ __all__ = (
 
 class FirmwareForm(NetBoxModelForm):
     name = forms.CharField()
+    manufacturer = DynamicModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=True,
+        label="Manufacturer",
+        selector=True,
+        quick_add=True
+    )
     description = forms.CharField(
         required=False,
     )
     file_name = forms.CharField(required=False, label='File Name')
     device_type = DynamicModelMultipleChoiceField(
         queryset=DeviceType.objects.all(),
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
         required=False,
         selector=True,
         label='Supported Device Type',
     )
     module_type = DynamicModelMultipleChoiceField(
         queryset=ModuleType.objects.all(),
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
         required=False,
         selector=True,
         label='Supported Module Type',
@@ -35,7 +48,7 @@ class FirmwareForm(NetBoxModelForm):
     comments = CommentField()
     
     fieldsets=(
-        FieldSet('name', 'file_name', 'file', 'status', 'description',name='General'),
+        FieldSet('name', 'manufacturer', 'file_name', 'file', 'status', 'description',name='General'),
         FieldSet(
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
@@ -55,19 +68,25 @@ class FirmwareForm(NetBoxModelForm):
         }
 
 
+    ### This checks what type is assigned to the firmware and will filter the template to show only one the type used.
+    ### IT will also grey out the Manufacturer field once a Device Type or Module Type is assigned.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Used for picking the default active tab for hardware type selection
+        # Default: assume no hardware type selected
         self.no_hardware_type = True
 
-        
         if self.instance and self.instance.pk:
             has_device_type = self.instance.device_type.exists()
-            has_module_type = self.instance.device_type.exists()
+            has_module_type = self.instance.module_type.exists()
 
             if has_device_type or has_module_type:
+                # Used for template logic (which tab to show)
                 self.no_hardware_type = False
+
+                # Disable manufacturer field once firmware is linked
+                self.fields['manufacturer'].disabled = True
+
 
     def clean(self):
         return super().clean()

@@ -87,6 +87,7 @@ class Bios(NetBoxModel):
     def get_kind_display(self):
         return dict(HardwareKindChoices)[self.kind]
     
+    ### Needed to show File Path in the Firmware Table
     @property
     def filename(self):
         return self.file.name if self.file else None

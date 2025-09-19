@@ -23,6 +23,7 @@ from .filters import (
 
 @strawberry_django.type(Firmware, fields='__all__', filters=FirmwareFilter)
 class FirmwareType(NetBoxObjectType):
+    manufacturer: Annotated["ManufacturerType", strawberry.lazy('dcim.graphql.types')]
     device_type: List[Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")]] | None
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
 

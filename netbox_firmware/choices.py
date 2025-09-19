@@ -52,6 +52,11 @@ class BiosStatusChoices(ChoiceSet):
         
     ]
 
+#
+# General
+#
+
+
 class HardwareKindChoices(ChoiceSet):
     DEVICE = 'device'
     MODULE = 'module'

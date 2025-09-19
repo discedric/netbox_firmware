@@ -8,14 +8,27 @@ from ..choices import HardwareKindChoices, FirmwareStatusChoices
 from netbox.models import NetBoxModel, ChangeLoggedModel, NestedGroupModel
 from dcim.models import Manufacturer, DeviceType, ModuleType, Device, Module
 
+
+### ------------------------------------------------------- ###
+### Firmware Model
+### ------------------------------------------------------- ###
+
+
 class Firmware(NetBoxModel):
     #
-    # fields that identify firmware
+    ### Fields that identify firmware ###
     #
     name = models.CharField(
         help_text='Name of the firmware',
         max_length=255,
         verbose_name='Name',
+    )
+    manufacturer = models.ForeignKey(
+        help_text='Name of the manufacturer',
+        to= 'dcim.Manufacturer',
+        on_delete=models.PROTECT,
+        related_name="Firmware",
+        default=7,  # Set to the desired Manufacturer's ID / 7 = Migration manufacturer for firwares that don't have a manufacturer yet.
     )
     file_name = models.CharField(
         help_text='File name of the firmware',
@@ -51,7 +64,7 @@ class Firmware(NetBoxModel):
     )
     
     #
-    # hardware type fields
+    ### Hardware Type fields ###
     #
 
     device_type = models.ManyToManyField(
@@ -68,52 +81,12 @@ class Firmware(NetBoxModel):
     )
     
     clone_fields = [
-        'name','description', 'file_name', 'status', 'device_type',
-        'comments', 'module_type'
+        'name', 'manufacturer', 'description', 'status', 'device_type', 'module_type'
     ]
 
-    @property
-    def kind(self):
-        if self.device_type_id:
-            return HardwareKindChoices.DEVICE
-        elif self.module_type_id:
-            return HardwareKindChoices.MODULE
-        else:
-            return None
-        
-    def get_kind_display(self):
-        return dict(HardwareKindChoices)[self.kind]
-    
-    @property
-    def filename(self):
-        return self.file.name if self.file else None
-
-    @property
-    def hardware_type(self):
-        return self.device_type or self.module_type or None
-    
-    @property
-    def manufacturer(self):
-        return self.get_manufacturer()
-    
-    def clean(self):
-        return super().clean()
-
-    def get_absolute_url(self):
-        return reverse('plugins:netbox_firmware:firmware', args=[self.pk])
-    
-    @classmethod
-    def get_fields(cls):
-        return {field.name: field for field in cls._meta.get_fields()}
-    
-    def delete(self,*args, **kwargs):
-        _name = self.file.name
-        super().delete(*args, **kwargs)
-        self.file.delete(save=False)
-        self.file.name = _name
 
     class Meta:
-        ordering = ('name',) # -> Fix ordering later
+        ordering = ('name',)
         verbose_name = 'Firmware'
         verbose_name_plural = 'Firmwares'
         constraints = [
@@ -124,21 +97,91 @@ class Firmware(NetBoxModel):
             ),
         ]
 
-    def get_manufacturer(self):
-        """Return manufacturer(s) based on device_type or module_type"""
+    ### Get all fields of the model ?
+    @classmethod
+    def get_fields(cls):
+        return {field.name: field for field in cls._meta.get_fields()}
+
+    #
+    ### Properties ###
+    #
+
+    ### This property is needed to check if the firmware is for Devices or Modules and also to filter the template and show only the assigned Device Types / Hide Module Types.
+    ### We need to use .exists() because it's a ManyToMany field.
+    @property
+    def kind(self):
         if self.device_type.exists():
-            # return the manufacturer of the first related device_type
-            return self.device_type.first().manufacturer
-
-        if self.module_type.exists():
-            # return the manufacturer of the first related module_type
-            return self.module_type.first().manufacturer
-
-        print("No manufacturer found")
+            return HardwareKindChoices.DEVICE
+        elif self.module_type.exists():
+            return HardwareKindChoices.MODULE
         return None
 
+    ### Needed to show File Path in the Firmware Table
+    @property
+    def file_path(self):
+        return self.file.name if self.file else None
+
+    @property
+    def hardware_type(self):
+        return self.device_type or self.module_type or None
+
+    ### This property is needed to filter the template and show only the assigned Device Types / Hide Module Types
+    @property
+    def has_device_type(self):
+        return self.device_type.exists()
+
+    ### This property is needed to filter the template and show only the assigned Module Types / Hide Device Types
+    @property
+    def has_module_type(self):
+        return self.module_type.exists()
+
+
+    #
+    ### Main definitions ###
+    #
+
+    ### This is needed for bulk import/export and other places where the kind of hardware is needed.    
+    def get_kind_display(self):
+        return dict(HardwareKindChoices)[self.kind]
+
+    ### This will disable changing the Manufacturer once a Device Type or Module Type is assigned
+    def clean(self):
+        if self.pk:
+            old = Firmware.objects.get(pk=self.pk)
+
+            # Check if manufacturer changed
+            if old.manufacturer != self.manufacturer:
+                # Only lock if already linked to device_type(s) or module_type(s)
+                if self.device_type.exists() or self.module_type.exists():
+                    raise ValidationError({
+                        "manufacturer": (
+                            "The manufacturer cannot be changed because this firmware "
+                            "is already linked to one or more device types or module types."
+                        )
+                    })
+
+        return super().clean()
+
+    ### This will return the URL to the firmware detail view.
+    def get_absolute_url(self):
+        return reverse('plugins:netbox_firmware:firmware', args=[self.pk])
+    
+    ### This will delete the file from the storage when the Firmware object is deleted.
+    def delete(self,*args, **kwargs):
+        _name = self.file.name
+        super().delete(*args, **kwargs)
+        self.file.delete(save=False)
+        self.file.name = _name
+
+    ### This is how the firmware will be displayed in the lists using his name.
     def __str__(self):
         return f'{self.name}'
+
+
+
+### ------------------------------------------------------ ###
+### Firmware Assignment Model
+### ------------------------------------------------------ ###
 
 
 class FirmwareAssignment(NetBoxModel):
@@ -188,6 +231,10 @@ class FirmwareAssignment(NetBoxModel):
             models.UniqueConstraint(fields=['module'], name='unique_firmware_per_module'),
         ]
 
+    #
+    ### Properties ###
+    #
+
     @property
     def kind(self):
         if self.device_id:
@@ -197,9 +244,6 @@ class FirmwareAssignment(NetBoxModel):
         else:
             return None
         
-    def get_kind_display(self):
-        return dict(HardwareKindChoices)[self.kind]
-
     @property
     def hardware(self):
         return self.device or self.module or None
@@ -236,12 +280,20 @@ class FirmwareAssignment(NetBoxModel):
     def manufacturer(self):
         return self.get_manufacturer()
 
+    #
+    ### Main definitions ###
+    #
+
+    def get_kind_display(self):
+        return dict(HardwareKindChoices)[self.kind]
+
+    ### Needed to get the manufacturer depending on device_type or module_type
     def get_manufacturer(self):
-        """ Haalt de manufacturer op afhankelijk van device_type of module_type """
+        """ Get manufacturer depending on device_type or module_type """
         if self.device:
-            return self.device.device_type.manufacturer  # Haal de fabrikant via device_type
+            return self.device.device_type.manufacturer
         elif self.module:
-            return self.module.module_type.manufacturer  # Haal de fabrikant via module_type
+            return self.module.module_type.manufacturer
         print('No manufacturer found')
         return None
 

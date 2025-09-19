@@ -24,14 +24,28 @@
             <th scope="row">Name</th>
             <td>{{ object.name|placeholder }}</td>
           </tr>
+
+          <tr>
+            <th scope="row">Manufacturer</th>
+            <td>
+            {% if object.manufacturer %}
+              <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer }}</a>
+            {% else %}
+              &mdash;
+            {% endif %}
+            </td>
+          </tr>
+
           <tr>
             <th scope="row">Status</th>
             <td>{% badge object.get_status_display bg_color=object.get_status_color %}</td>
           </tr>
+
           <tr>
             <th scope="row">File name</th>
             <td>{{ object.file_name|placeholder }}</td>
           </tr>
+
           <tr>
             <th scope="row">File</th>
             <td>
@@ -47,44 +61,35 @@
     <div class="card">
       <h5 class="card-header">Hardware</h5>
       <table class="table table-hover attr-table">
-        <tr>
-          <th scope="row">Manufacturer</th>
-          <td>
-            {% if object.manufacturer %}
-              <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer }}</a>
-            {% else %}
-              &mdash;
-            {% endif %}
-          </td>
-        </tr>
 
-        <tr>
-          <th scope="row">Device Types</th>
-          <td>
-            {% if object.device_type.exists %}
+        {% if object.has_device_type %}
+          <tr>
+            <th scope="row">Device Types</th>
+            <td>
               {% for dt in object.device_type.all %}
                 <a href="{{ dt.get_absolute_url }}">{{ dt }}</a>{% if not forloop.last %}, {% endif %}
               {% endfor %}
-            {% else %}
-              &mdash;
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <th scope="row">Module Types</th>
-          <td>
-            {% if object.module_type.exists %}
+            </td>
+          </tr>
+        {% elif object.has_module_type %}
+          <tr>
+            <th scope="row">Module Types</th>
+            <td>
               {% for mt in object.module_type.all %}
                 <a href="{{ mt.get_absolute_url }}">{{ mt }}</a>{% if not forloop.last %}, {% endif %}
               {% endfor %}
-            {% else %}
-              &mdash;
-            {% endif %}
-          </td>
-        </tr>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <th scope="row">Hardware</th>
+            <td>&mdash;</td>
+          </tr>
+        {% endif %}
+
       </table>
     </div>
+
 
 
       {% include 'inc/panels/custom_fields.html' %}

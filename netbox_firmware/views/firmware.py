@@ -74,8 +74,24 @@ class FirmwareBulkEditView(generic.BulkEditView):
     form = forms.FirmwareBulkEditForm
     default_return_url = 'plugins:netbox_firmware:firmware_list'
     
+    def post_save_operations(self, form, obj):
+        super().post_save_operations(form, obj)
+
+        # Add/remove Linked Device Types
+        if form.cleaned_data.get('add_device_type', None):
+            obj.device_type.add(*form.cleaned_data['add_device_type'])
+        if form.cleaned_data.get('remove_device_type', None):
+            obj.device_type.remove(*form.cleaned_data['remove_device_type'])
+
+        # Add/remove Linked Module Types
+        if form.cleaned_data.get('add_module_type', None):
+            obj.module_type.add(*form.cleaned_data['add_module_type'])
+        if form.cleaned_data.get('remove_module_type', None):
+            obj.module_type.remove(*form.cleaned_data['remove_module_type'])
+
     def post (self, request, **kwargs):
         return super().post(request, **kwargs)
+
 
 @register_model_view(models.Firmware, 'bulk_delete', detail=False)
 class FirmwareBulkDeleteView(generic.BulkDeleteView):
