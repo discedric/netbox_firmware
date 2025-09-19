@@ -1,0 +1,36 @@
+{% load helpers %}
+{# renders panel for module type with all compatible Firmwares #}
+
+<div class="card">
+  <h5 class="card-header d-flex justify-content-between align-items-center">
+    <span>Compatible Firmwares</span>
+    <a href="{% url 'plugins:netbox_firmware:firmware_list' %}?module_type_id={{ object.pk }}" 
+       class="btn btn-sm btn-primary">
+      View All info
+    </a>
+  </h5>
+  <div class="card-body table-responsive">
+    {% if firmwares %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fw in firmwares %}
+        <tr>
+          <td><a href="{{ fw.get_absolute_url }}">{{ fw.name }}</a></td>
+          <td>{{ fw.description }}</td>
+          <td>{{ fw.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p class="text-muted mb-0">No firmware available for this module type.</p>
+    {% endif %}
+  </div>
+</div>

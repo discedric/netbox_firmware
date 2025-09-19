@@ -1,7 +1,8 @@
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from django import forms
+from django.core.exceptions import ValidationError
 from netbox.forms import NetBoxModelForm
-from utilities.forms.fields import CommentField, DynamicModelChoiceField
+from utilities.forms.fields import CommentField, DynamicModelChoiceField, DynamicModelMultipleChoiceField
 from utilities.forms.rendering import FieldSet, TabbedGroups
 from utilities.forms.widgets import DatePicker, ClearableFileInput
 from netbox_firmware.utils import get_tags_and_edit_protected_firmware_fields
@@ -15,18 +16,31 @@ __all__ = (
 
 class FirmwareForm(NetBoxModelForm):
     name = forms.CharField()
+    manufacturer = DynamicModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=True,
+        label="Manufacturer",
+        selector=True,
+        quick_add=True
+    )
     description = forms.CharField(
         required=False,
     )
     file_name = forms.CharField(required=False, label='File Name')
-    device_type = DynamicModelChoiceField(
+    device_type = DynamicModelMultipleChoiceField(
         queryset=DeviceType.objects.all(),
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
         required=False,
         selector=True,
         label='Supported Device Type',
     )
-    module_type = DynamicModelChoiceField(
+    module_type = DynamicModelMultipleChoiceField(
         queryset=ModuleType.objects.all(),
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
         required=False,
         selector=True,
         label='Supported Module Type',
@@ -34,7 +48,7 @@ class FirmwareForm(NetBoxModelForm):
     comments = CommentField()
     
     fieldsets=(
-        FieldSet('name', 'file_name', 'file', 'status', 'description',name='General'),
+        FieldSet('name', 'manufacturer', 'file_name', 'file', 'status', 'description',name='General'),
         FieldSet(
             TabbedGroups(
                 FieldSet('device_type',name='Device Type'),
@@ -46,42 +60,36 @@ class FirmwareForm(NetBoxModelForm):
 
     class Meta:
         model = Firmware
-        fields = [
-            'name',
-            'file_name',
-            'file',
-            'description',
-            'device_type',
-            'module_type',
-            'status',
-            'comments',
-        ]
+        fields = '__all__'
         widgets = {
             'file': ClearableFileInput(attrs={
                 'accept': '.bin,.img,.tar,.tar.gz,.zip,.exe'
                 }),
         }
 
+
+    ### This checks what type is assigned to the firmware and will filter the template to show only one the type used.
+    ### IT will also grey out the Manufacturer field once a Device Type or Module Type is assigned.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Used for picking the default active tab for hardware type selection
+
+        # Default: assume no hardware type selected
         self.no_hardware_type = True
-        if self.instance:
-            if (
-                self.instance.device_type
-                or self.instance.module_type
-            ):
+
+        if self.instance and self.instance.pk:
+            has_device_type = self.instance.device_type.exists()
+            has_module_type = self.instance.module_type.exists()
+
+            if has_device_type or has_module_type:
+                # Used for template logic (which tab to show)
                 self.no_hardware_type = False
 
-    def clean(self):
-        super().clean()
-        device_type = self.cleaned_data.get('device_type')
-        module_type = self.cleaned_data.get('module_type')
+                # Disable manufacturer field once firmware is linked
+                self.fields['manufacturer'].disabled = True
 
-        if device_type and module_type:
-            raise forms.ValidationError("You may only select one of 'Device Type' or 'Module Type', not both.")
-        
-        pass
+
+    def clean(self):
+        return super().clean()
       
 class FirmwareAssignmentForm(NetBoxModelForm):
     # Hardware ------------------------------

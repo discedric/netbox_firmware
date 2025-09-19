@@ -87,6 +87,7 @@ class Bios(NetBoxModel):
     def get_kind_display(self):
         return dict(HardwareKindChoices)[self.kind]
     
+    ### Needed to show File Path in the Firmware Table
     @property
     def filename(self):
         return self.file.name if self.file else None
@@ -124,7 +125,7 @@ class Bios(NetBoxModel):
             models.UniqueConstraint(
                 Lower('name'),
                 name='%(app_label)s_%(class)s_unique_name',
-                violation_error_message=_("Device name must be unique.")
+                violation_error_message=_("The BIOS 'Name' must be unique.")
             ),
             models.CheckConstraint(
                 check=models.Q(device_type__isnull=False) | models.Q(module_type__isnull=False),
