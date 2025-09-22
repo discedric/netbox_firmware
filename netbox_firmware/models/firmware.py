@@ -28,7 +28,6 @@ class Firmware(NetBoxModel):
         to= 'dcim.Manufacturer',
         on_delete=models.PROTECT,
         related_name="Firmware",
-        default=7,  # Set to the desired Manufacturer's ID / 7 = Migration manufacturer for firwares that don't have a manufacturer yet.
     )
     file_name = models.CharField(
         help_text='File name of the firmware',
