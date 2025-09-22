@@ -17,6 +17,7 @@
           <th>Name</th>
           <th>Description</th>
           <th>Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,11 @@
           <td><a href="{{ fw.get_absolute_url }}">{{ fw.name }}</a></td>
           <td>{{ fw.description }}</td>
           <td>{{ fw.status }}</td>
+          <td class="text-end">
+            <a href="{% url 'plugins:netbox_firmware:firmware_edit' fw.pk %}" class="btn btn-sm btn-warning" title="Edit">
+              <i class="mdi mdi-pencil" aria-hidden="true"></i>
+            </a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>

@@ -6,11 +6,13 @@
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block breadcrumbs %}
-{% if object.kind != None %}
   {{ block.super }}
-  <li class="breadcrumb-item">
-    <a href="{% url 'plugins:netbox_firmware:firmware_list' %}?{{ object.kind }}_type_id={{ object.hardware_type.pk }}&manufacturer_id={{object.hardware_type.manufacturer.id}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a>
-  </li>
+  {% if object.manufacturer %}
+    <li class="breadcrumb-item">
+      <a href="{% url 'plugins:netbox_firmware:firmware_list' %}?manufacturer_id={{ object.manufacturer.id }}">
+        {{ object.manufacturer }}
+      </a>
+    </li>
   {% endif %}
 {% endblock %}
 

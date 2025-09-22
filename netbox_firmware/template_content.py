@@ -1,4 +1,5 @@
 from django.template import Template
+from django.db.models import Count, F
 from netbox.plugins import PluginTemplateExtension
 
 from .models import Firmware, FirmwareAssignment, Bios, BiosAssignment
@@ -6,7 +7,7 @@ from .utils import query_located
 
 ### Firmware ###
 
-### This will show all related Firmware for the manufacturer in the manufacturer view.
+### This will show all related Firmware for the manufacturer in the manufacturer view, grouped by Devices and Modules.
 class FirmwareCountsManufacturer(PluginTemplateExtension):
     models = ['dcim.manufacturer']
     def right_page(self):
@@ -39,17 +40,41 @@ class FirmwareCountsManufacturer(PluginTemplateExtension):
 
     
 
-### This shows how many devices or modules that have this Firmware assigned in the Firmware view.
+### This shows how many devices or modules that have this Firmware assigned in the Firmware view, grouped by Device Type and Module Type.
 class FirmwareAssignmentsList(PluginTemplateExtension):
     models = ['netbox_firmware.firmware']
-    kind = 'firmware'
-  
+
     def right_page(self):
-        object = self.context.get('object')
-        assignments = FirmwareAssignment.objects.filter(**{f'{self.kind}':object.id})
+        obj = self.context.get('object')
+
+        # Devices
+        qs_devices = (
+            FirmwareAssignment.objects
+            .filter(firmware=obj, device__isnull=False)
+            .select_related('device__device_type')
+        )
+        device_type_counts = (
+            qs_devices.values('device__device_type__id', 'device__device_type__model')
+                .annotate(count=Count('id'))
+                .order_by('device__device_type__model')
+        )
+
+        # Modules
+        qs_modules = (
+            FirmwareAssignment.objects
+            .filter(firmware=obj, module__isnull=False)
+            .select_related('module__module_type')
+        )
+        module_type_counts = (
+            qs_modules.values('module__module_type__id', 'module__module_type__model')
+                .annotate(count=Count('id'))
+                .order_by('module__module_type__model')
+        )
+
         context = {
-          #'assignments': assignments.order_by('-id')[:5], # Uncomment if you want a limited number of assignments visible in the model view
-          'count': assignments.count()
+            'count': qs_devices.count() + qs_modules.count(),
+            'device_type_counts': device_type_counts,
+            'module_type_counts': module_type_counts,
         }
         return self.render('netbox_firmware/inc/firmware_assignment_list.html', extra_context=context)
 
