@@ -35,6 +35,7 @@ class FirmwareAssignmentType(NetBoxObjectType):
 
 @strawberry_django.type(Bios, fields='__all__', filters=BiosFilter)
 class BiosType(NetBoxObjectType):
+    manufacturer: Annotated["ManufacturerType", strawberry.lazy('dcim.graphql.types')]
     device_type: List[Annotated["DeviceTypeType", strawberry.lazy("dcim.graphql.types")]] | None
     module_type: List[Annotated["ModuleTypeType", strawberry.lazy('dcim.graphql.types')]] | None
 

@@ -17,14 +17,20 @@
           <th>Name</th>
           <th>Description</th>
           <th>Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        {% for b in bios %}
+        {% for bios in bios %}
         <tr>
-          <td><a href="{{ b.get_absolute_url }}">{{ b.name }}</a></td>
-          <td>{{ b.description }}</td>
-          <td>{{ b.status }}</td>
+          <td><a href="{{ bios.get_absolute_url }}">{{ bios.name }}</a></td>
+          <td>{{ bios.description }}</td>
+          <td>{{ bios.status }}</td>
+          <td class="text-end">
+            <a href="{% url 'plugins:netbox_firmware:bios_edit' bios.pk %}" class="btn btn-sm btn-warning" title="Edit">
+              <i class="mdi mdi-pencil" aria-hidden="true"></i>
+            </a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>

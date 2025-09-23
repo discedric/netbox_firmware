@@ -32,7 +32,6 @@ class FirmwareFilterForm(NetBoxModelFilterSetForm):
         required=False,
         query_params={
             'manufacturer_id': '$manufacturer_id',
-            'kind': '$kind'
         },
         label=_('Device Type')
     )

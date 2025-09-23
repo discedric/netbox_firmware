@@ -28,11 +28,11 @@ class FirmwareTable(NetBoxTable):
         linkify=True,
     )
     device_type = columns.TemplateColumn(
-        template_code=FIRMWARE_DEVICE_TYPES,
+        template_code=SHOW_LINKED_DEVICE_TYPES,
         linkify=True,
         )
     module_type = columns.TemplateColumn(
-        template_code=FIRMWARE_MODULE_TYPES,
+        template_code=SHOW_LINKED_MODULE_TYPES,
         linkify=True,
         )
     instance_count = columns.LinkedCountColumn(

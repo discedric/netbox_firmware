@@ -18,7 +18,7 @@
 ### This Template code is needed to show all the firmware compatible devicetypes and moduletypes + make them likefied.
 
 
-FIRMWARE_DEVICE_TYPES = """
+SHOW_LINKED_DEVICE_TYPES = """
 {% load i18n %}
 {% for devicetype in value.all %}
   <a href="{{ devicetype.get_absolute_url }}">{{ devicetype }}</a><br />
@@ -26,7 +26,7 @@ FIRMWARE_DEVICE_TYPES = """
 """
 
 
-FIRMWARE_MODULE_TYPES = """
+SHOW_LINKED_MODULE_TYPES = """
 {% load i18n %}
 {% for moduletype in value.all %}
   <a href="{{ moduletype.get_absolute_url }}">{{ moduletype }}</a><br />

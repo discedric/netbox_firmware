@@ -1,13 +1,16 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.forms import NetBoxModelBulkEditForm
 from utilities.forms.fields import (
     CommentField,
     DynamicModelChoiceField,
+    DynamicModelMultipleChoiceField,
 )
 from utilities.forms.widgets import DatePicker
 from utilities.forms.rendering import FieldSet, TabbedGroups
+from utilities.forms import add_blank_choice
 
 from netbox_firmware.choices import BiosStatusChoices
 from netbox_firmware.models import (
@@ -18,7 +21,7 @@ from netbox_firmware.models import (
 class BiosBulkEditForm(NetBoxModelBulkEditForm):
     name = forms.CharField(required=False, label='Name')
     status = forms.ChoiceField(
-        choices=BiosStatusChoices,
+        choices=add_blank_choice(BiosStatusChoices),
         required=False,
         label='Status',
     )
@@ -32,7 +35,7 @@ class BiosBulkEditForm(NetBoxModelBulkEditForm):
         selector=True,
         label='Manufacturer'
     )
-    device_type = DynamicModelChoiceField(
+    device_type = DynamicModelMultipleChoiceField(
         queryset=DeviceType.objects.all(),
         required=False,
         selector=True,
@@ -41,27 +44,67 @@ class BiosBulkEditForm(NetBoxModelBulkEditForm):
             'manufacturer_id': '$manufacturer',
         },
     )
-    module_type = DynamicModelChoiceField(
-        queryset=ModuleType.objects.all(),
+    add_device_type = DynamicModelMultipleChoiceField(
+        label=_('Add Device Type'),
+        queryset=DeviceType.objects.all(),
         required=False,
-        selector=True,
-        label='Module Type',
         query_params={
             'manufacturer_id': '$manufacturer',
         },
     )
+    remove_device_type = DynamicModelMultipleChoiceField(
+        label=_('Remove Device Type'),
+        queryset=DeviceType.objects.all(),
+        required=False,
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        }
+    )
+    module_type = DynamicModelMultipleChoiceField(
+        queryset=ModuleType.objects.all(),
+        required=False,
+        selector=True,
+        label='Supported Module Type',
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
+    )
+    add_module_type = DynamicModelMultipleChoiceField(
+        label=_('Add Module Type'),
+        queryset=ModuleType.objects.all(),
+        required=False,
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        },
+    )
+    remove_module_type = DynamicModelMultipleChoiceField(
+        label=_('Remove Module Type'),
+        queryset=ModuleType.objects.all(),
+        required=False,
+        query_params={
+            'manufacturer_id': '$manufacturer',
+        }
+    )
     comments = CommentField()
     
+
+
     model = Bios
     fieldsets=(
-        FieldSet('name', 'file_name', 'status', 'description',name='General'),
+        FieldSet('name', 'manufacturer', 'file_name', 'status', 'description',name='General'),
         FieldSet(
-            'manufacturer',
             TabbedGroups(
-                FieldSet('device_type',name='Device Type'),
-                FieldSet('module_type',name='Module Type'),
+                FieldSet('device_type', name=_('Fixed Assignment')),
+                FieldSet('add_device_type', 'remove_device_type', name=_('Add/Remove')),
             ),
-            name='Hardware'
+            name='Device Type'
+        ),
+        FieldSet(
+            TabbedGroups(
+                FieldSet('module_type', name=_('Fixed Assignment')),
+                FieldSet('add_module_type', 'remove_module_type', name=_('Add/Remove')),
+            ),
+            name='Module Type'
         ),
     )
     nullable_fields = ['device_type', 'module_type']

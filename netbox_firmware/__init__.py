@@ -8,8 +8,8 @@ class NetboxFirmwareConfig(PluginConfig):
     verbose_name = 'Netbox Firmware'
     version = __version__
     description = 'Firmware management in NetBox'
-    author = 'Cedric Vaneessen'
-    author_email = 'cedric.vaneessen@zabun.be'
+    author = 'Bart Van der Biest'
+    author_email = 'bart@zimmo.be'
     base_url = 'firmware'
     min_version = '4.3.0'
     default_settings = {

@@ -15,6 +15,7 @@ class FirmwareCountsManufacturer(PluginTemplateExtension):
         user = self.context['request'].user
         count_device = Firmware.objects.restrict(user, 'view').filter(device_type__manufacturer=object).distinct().count()
         count_module = Firmware.objects.restrict(user, 'view').filter(module_type__manufacturer=object).distinct().count()
+        count_firmware = Firmware.objects.restrict(user, 'view').filter(manufacturer=object).distinct().count()
         context = {
             'firmware_stats': [
                 {
@@ -32,7 +33,7 @@ class FirmwareCountsManufacturer(PluginTemplateExtension):
                 {
                     'label': 'Total',
                     'filter_field': 'manufacturer_id',
-                    'count': count_device + count_module,
+                    'count': count_firmware,
                 },
             ],
         }
@@ -130,14 +131,15 @@ class FirmwareListModuleType(PluginTemplateExtension):
 ### BIOS ###
 
 
-### This will show all related BIOS for the manufacturer in the manufacturer view.
+### This will show all related BIOS for the manufacturer in the manufacturer view, grouped by Devices and Modules.
 class BiosCountsManufacturer(PluginTemplateExtension):
     models = ['dcim.manufacturer']
     def right_page(self):
         object = self.context.get('object')
         user = self.context['request'].user
-        count_device = Bios.objects.restrict(user, 'view').filter(device_type__manufacturer=object).count()
-        count_module = Bios.objects.restrict(user, 'view').filter(module_type__manufacturer=object).count()
+        count_device = Bios.objects.restrict(user, 'view').filter(device_type__manufacturer=object).distinct().count()
+        count_module = Bios.objects.restrict(user, 'view').filter(module_type__manufacturer=object).distinct().count()
+        count_bios = Bios.objects.restrict(user, 'view').filter(manufacturer=object).distinct().count()
         context = {
             'bios_stats': [
                 {
@@ -155,7 +157,7 @@ class BiosCountsManufacturer(PluginTemplateExtension):
                 {
                     'label': 'Total',
                     'filter_field': 'manufacturer_id',
-                    'count': count_device + count_module,
+                    'count': count_bios,
                 },
             ],
         }
@@ -163,17 +165,41 @@ class BiosCountsManufacturer(PluginTemplateExtension):
 
 
 
-### This shows how many devices or modules that have this BIOS assigned in the BIOS view.
+### This shows how many devices or modules that have this BIOS assigned in the BIOS view, grouped by Device Type and Module Type.
 class BiosAssignmentsList(PluginTemplateExtension):
     models = ['netbox_firmware.bios']
-    kind = 'bios'
-  
+
     def right_page(self):
-        object = self.context.get('object')
-        assignments = BiosAssignment.objects.filter(**{f'{self.kind}':object.id})
+        obj = self.context.get('object')
+
+        # Devices
+        qs_devices = (
+            BiosAssignment.objects
+            .filter(bios=obj, device__isnull=False)
+            .select_related('device__device_type')
+        )
+        device_type_counts = (
+            qs_devices.values('device__device_type__id', 'device__device_type__model')
+                .annotate(count=Count('id'))
+                .order_by('device__device_type__model')
+        )
+
+        # Modules
+        qs_modules = (
+            BiosAssignment.objects
+            .filter(bios=obj, module__isnull=False)
+            .select_related('module__module_type')
+        )
+        module_type_counts = (
+            qs_modules.values('module__module_type__id', 'module__module_type__model')
+                .annotate(count=Count('id'))
+                .order_by('module__module_type__model')
+        )
+
         context = {
-          #'assignments': assignments.order_by('-id')[:5], # Uncomment if you want a limited number of assignments visible in the model view
-          'count': assignments.count()
+            'count': qs_devices.count() + qs_modules.count(),
+            'device_type_counts': device_type_counts,
+            'module_type_counts': module_type_counts,
         }
         return self.render('netbox_firmware/inc/bios_assignment_list.html', extra_context=context)
 
@@ -212,7 +238,7 @@ class BiosListDeviceType(PluginTemplateExtension):
 
 
 
-### This will show all compatible firmwares for the module type in the module type view.
+### This will show all compatible BIOS for the module type in the module type view.
 class BiosListModuleType(PluginTemplateExtension):
     models = ['dcim.moduletype']
 

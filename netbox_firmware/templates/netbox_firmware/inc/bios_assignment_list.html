@@ -6,60 +6,63 @@
     Assignments
     {% if perms.netbox_firmware.change_bios %}
     <div class="card-actions">
-      <a href="{% url 'plugins:netbox_firmware:biosassignment_add' %}?bios={{object.id}}" class="btn btn-sm btn-ghost-primary">
-        <i class="mdi mdi-vector-link" aria-hidden="true"></i> Add Assignment
+      <a href="{% url 'plugins:netbox_firmware:biosassignment_add' %}?bios={{object.id}}" class="btn btn-primary">
+        Add Assignment
       </a>
     </div>
-  {% endif %}
-  </h5>
-  <!--check if firmware item is filled and then show name version and status that is given-->
-  
-  <div class="card-body">
-    <a href="{% url 'plugins:netbox_firmware:biosassignment_list' %}?bios_id={{ object.pk }}" class="list-group-item list-group-item-action d-flex justify-content-between">
-      {{ 'Assignments'|bettertitle }}
-      {% if count %}
-        <span class="badge text-bg-primary rounded-pill">{{ count }}</span>
-      {% else %}
-        <span class="badge text-bg-light rounded-pill">&mdash;</span>
-      {% endif %}
-    </a>
-    {% if assignments %}
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Description</th>
-          <th>Patch date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for assignment in assignments %}
-          <tr>
-            <td><a href="{% url 'plugins:netbox_firmware:biosassignment' assignment.id %}">{{ assignment }}</a></td>
-            <td>{{ assignment.bios.status }}</td>
-            <td>{{ assignment.description }}</td>
-            <td>{{ assignment.patch_date }}</td>
-            <td class="bulk-action-buttons">
-              <!-- Edit button -->
-              {% if perms.netbox_firmware.change_bios %}
-              <a href="{% url 'plugins:netbox_firmware:biosassignment_edit' assignment.id %}" class="btn btn-sm btn-ghost-secondary">
-                <i class="mdi mdi-pencil" aria-hidden="true"></i> Edit
-              </a>
-              {% endif %}
-              
-              <!-- Delete button -->
-              {% if perms.netbox_firmware.delete_bios %}
-              <a href="{% url 'plugins:netbox_firmware:biosassignment_delete' assignment.id %}" class="btn btn-sm btn-ghost-danger" onclick="return confirm('Are you sure you want to delete this assignment?');">
-                <i class="mdi mdi-delete" aria-hidden="true"></i> Delete
-              </a>
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
     {% endif %}
+  </h5>
+
+  <div class="card-body">
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span>Total assignments</span>
+      <a href="{% url 'plugins:netbox_firmware:biosassignment_list' %}?bios_id={{ object.pk }}">
+        {% if count %}
+          <span class="badge text-bg-primary rounded-pill">{{ count }}</span>
+        {% else %}
+          <span class="badge text-bg-light rounded-pill">&mdash;</span>
+        {% endif %}
+      </a>
+    </div>
+
+    {# Device types with clickable counts (only if there are any) #}
+    {% if device_type_counts %}
+    <div class="mt-3">
+      <h6 style="font-size: 1.03rem; font-weight: 500; margin-bottom: 0;">Device types</h6>
+      <hr style="margin-top: 4px; margin-bottom: 12px;">
+      <ul class="list-unstyled mb-0">
+        {% for row in device_type_counts %}
+          <li class="d-flex justify-content-between align-items-center mb-2">
+            <span>{{ row.device__device_type__model }}</span>
+            <a href="{% url 'plugins:netbox_firmware:biosassignment_list' %}?bios_id={{ object.pk }}&device_type_id={{ row.device__device_type__id }}">
+              <span class="badge text-bg-primary rounded-pill">{{ row.count }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# Module types with clickable counts (only if there are any) #}
+    {% if module_type_counts %}
+    <div class="mt-4">
+      <h6 style="font-size: 1.03rem; font-weight: 500; margin-bottom: 0;">Module types</h6>
+      <hr style="margin-top: 4px; margin-bottom: 12px;">
+      <ul class="list-unstyled mb-0">
+        {% for row in module_type_counts %}
+          <li class="d-flex justify-content-between align-items-center mb-2">
+            <span>{{ row.module__module_type__model }}</span>
+            <a href="{% url 'plugins:netbox_firmware:biosassignment_list' %}?bios_id={{ object.pk }}&module_type_id={{ row.module__module_type__id }}">
+              <span class="badge text-bg-primary rounded-pill">{{ row.count }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <hr>
+
   </div>
 </div>
