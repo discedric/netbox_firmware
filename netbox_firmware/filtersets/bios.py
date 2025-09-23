@@ -143,6 +143,26 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Bios.objects.all(),
         label=_('Bios (ID)'),
     )
+    kind = MultiValueCharFilter(
+        method='filter_kind',
+        label='Type of hardware',
+    )
+    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=Manufacturer.objects.all(),
+        label=_('Manufacturer (ID)'),
+        method='filter_by_manufacturer',  # Custom filter method
+    )
+    device_type = django_filters.ModelMultipleChoiceFilter(
+        queryset=DeviceType.objects.all(),
+        field_name='device__device_type__model',
+        to_field_name='model',
+        label=_('Device type (model)'),
+    )
+    device_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=DeviceType.objects.all(),
+        field_name='device__device_type',
+        label=_('Device type (ID)'),
+    )
     device = django_filters.ModelMultipleChoiceFilter(
         queryset=Device.objects.all(),
         field_name='device__name',
@@ -153,6 +173,22 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         queryset=Device.objects.all(),
         label=_('Device (ID)'),
     )
+    device_sn = django_filters.ModelMultipleChoiceFilter(
+        queryset=Device.objects.all(),
+        field_name='device__serial',
+        label=_('Device Serial Number'),
+    )
+    module_type = django_filters.ModelMultipleChoiceFilter(
+        queryset=ModuleType.objects.all(),
+        field_name='module__module_type__model',
+        to_field_name='model',
+        label=_('Module type (model)'),
+    )
+    module_type_id = django_filters.ModelMultipleChoiceFilter(
+        queryset=ModuleType.objects.all(),
+        field_name='module__module_type',
+        label=_('Module type (ID)'),
+    )
     module_id = django_filters.ModelMultipleChoiceFilter(
         queryset=Module.objects.all(),
         label=_('Module (ID)'),
@@ -161,15 +197,6 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         field_name='module__serial',
         lookup_expr='icontains',
         label=_('Module Serial Number'),
-    )
-    kind = MultiValueCharFilter(
-        method='filter_kind',
-        label='Type of hardware',
-    )
-    manufacturer_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=Manufacturer.objects.all(),
-        label=_('Manufacturer (ID)'),
-        method='filter_by_manufacturer',  # Custom filter method
     )
     module_device = django_filters.ModelMultipleChoiceFilter(
         queryset=Module.objects.all(),
@@ -181,28 +208,10 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         field_name='module__device_id',
         label=_('Module (device ID)'),
     )
-    device_sn = django_filters.ModelMultipleChoiceFilter(
-        queryset=Device.objects.all(),
-        field_name='device__serial',
-        label=_('Device (serial)'),
-    )
-    device_type = django_filters.ModelMultipleChoiceFilter(
-        queryset=DeviceType.objects.all(),
-        field_name='device__device_type__slug',
-        to_field_name='slug',
-        label=_('Device type (slug)'),
-    )
-    device_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=DeviceType.objects.all(),
-        field_name='device__device_type',
-        label=_('Device type (ID)'),
-    )
-    module_type_id = django_filters.ModelMultipleChoiceFilter(
-        queryset=ModuleType.objects.all(),
-        field_name='module__module_type',
-        label=_('Module type (ID)'),
-    )
-    
+
+
+
+    ## In the class Meta you can only add field names that are actual fields of the model.
     class Meta:
         model = BiosAssignment
         fields = {
@@ -210,6 +219,7 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
             'bios', 'device', 'module',
         }
     
+    ### Criteria for the Quick search box.
     def search(self, queryset, name, value):
         if not value.strip():
             return queryset
@@ -218,12 +228,13 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
             Q(ticket_number__icontains=value) |
             Q(comment__icontains=value) |
             Q(bios__name__icontains=value) |
-            Q(device__device_type__slug__icontains=value) |
+            Q(device__device_type__model__icontains=value) |
             Q(module__module_type__model__icontains=value) |
             Q(device__name__icontains=value) |
             Q(device__serial__icontains=value) |
             Q(module__serial__icontains=value) |
-            Q(manufacturer__slug__icontains=value)
+            Q(device__device_type__manufacturer__name__icontains=value) |
+            Q(module__module_type__manufacturer__name__icontains=value) 
         ).distinct()
 
     def filter_kind(self, queryset, name, value):
@@ -240,6 +251,7 @@ class BiosAssignmentFilterSet(NetBoxModelFilterSet):
         else:
             return queryset
     
+    ### Custom filter to filter by manufacturer, checking both device and module manufacturer
     def filter_by_manufacturer(self, queryset, name, value):
         if value:
             return queryset.filter(
