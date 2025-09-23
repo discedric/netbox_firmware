@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netbox_firmware"
-version = "4.2.0"
+version = "4.2.1"
 authors = [
   { name="Cedric Vaneessen", email="cedric.vaneessen@zabun.be" },
 ]
