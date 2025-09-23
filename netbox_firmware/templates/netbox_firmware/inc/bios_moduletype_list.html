@@ -1,5 +1,5 @@
 {% load helpers %}
-{# renders panel for module type with all compatible BIOS #}
+{# renders panel for module type with all compatible BIOSes #}
 
 <div class="card">
   <h5 class="card-header d-flex justify-content-between align-items-center">
@@ -17,20 +17,26 @@
           <th>Name</th>
           <th>Description</th>
           <th>Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        {% for b in bios %}
+        {% for bios in bios %}
         <tr>
-          <td><a href="{{ b.get_absolute_url }}">{{ b.name }}</a></td>
-          <td>{{ b.description }}</td>
-          <td>{{ b.status }}</td>
+          <td><a href="{{ bios.get_absolute_url }}">{{ bios.name }}</a></td>
+          <td>{{ bios.description }}</td>
+          <td>{{ bios.status }}</td>
+          <td class="text-end">
+            <a href="{% url 'plugins:netbox_firmware:bios_edit' bios.pk %}" class="btn btn-sm btn-warning" title="Edit">
+              <i class="mdi mdi-pencil" aria-hidden="true"></i>
+            </a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
     {% else %}
-      <p class="text-muted mb-0">No BIOS available for this type.</p>
+      <p class="text-muted mb-0">No BIOS available for this module type.</p>
     {% endif %}
   </div>
 </div>

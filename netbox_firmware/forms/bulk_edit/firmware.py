@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-
 from dcim.models import DeviceType, Manufacturer, ModuleType, Device, Module
 from netbox.forms import NetBoxModelBulkEditForm
 from utilities.forms.fields import (
@@ -86,9 +85,10 @@ class FirmwareBulkEditForm(NetBoxModelBulkEditForm):
             'manufacturer_id': '$manufacturer',
         }
     )
-
     comments = CommentField()
     
+
+
     model = Firmware
     fieldsets=(
         FieldSet('name', 'manufacturer', 'file_name', 'status', 'description',name='General'),

@@ -36,7 +36,7 @@ class BiosIndex(SearchIndex):
         ('comments', 5000),
     )
     display_attrs = (
-        'device_type', 'file_name', 'status'
+        'status', 'manufacturer'
     )
 
 @register_search

@@ -8,6 +8,8 @@ from netbox_firmware.utils import BiosColumn
 from dcim.tables import DeviceTable, ModuleTable
 from utilities.tables import register_table_column
 
+from .template_code import *
+
 __all__ = (
     'BiosTable',
     'BiosAssignmentTable',
@@ -23,15 +25,14 @@ class BiosTable(NetBoxTable):
     status = tables.Column()
     manufacturer = tables.Column(
         verbose_name=_('Manufacturer'),
-        accessor='get_manufacturer',  # We gebruiken de method get_manufacturer
         linkify=True,
     )
-    device_type = tables.Column(
-        accessor='device_type',
+    device_type = columns.TemplateColumn(
+        template_code=SHOW_LINKED_DEVICE_TYPES,
         linkify=True,
         )
-    module_type = tables.Column(
-        accessor='module_type',
+    module_type = columns.TemplateColumn(
+        template_code=SHOW_LINKED_MODULE_TYPES,
         linkify=True,
         )
     instance_count = columns.LinkedCountColumn(
@@ -39,29 +40,31 @@ class BiosTable(NetBoxTable):
         url_params={'bios_id': 'pk'},
         verbose_name=_('Instances')
     )
-    filename = tables.Column(
-        accessor='filename',
+    file_path = tables.Column(
+        accessor='file_path',
         verbose_name=_('File path'),
         orderable=False
     )
 
     class Meta(NetBoxTable.Meta):
         model = Bios
-        fields = ('name', 'description', 'file_name', 'comments', 'status', 
+        fields = ('name', 'file_name', 'comments', 'status', 
+                  'manufacturer', 
                   'module_type', 'device_type'
                   )
+        #░ Default columns moeten nog gedefinieerd worden in de Meta class
 
-    def order_manufacturer(self, queryset, is_descending):
-        if is_descending:
-            ordering_device = '-device_type__manufacturer'
-            ordering_module = '-module_type__manufacturer'
-        else:
-            ordering_device = 'device_type__manufacturer'
-            ordering_module = 'module_type__manufacturer'
+    # def order_manufacturer(self, queryset, is_descending):
+    #     if is_descending:
+    #         ordering_device = '-device_type__manufacturer'
+    #         ordering_module = '-module_type__manufacturer'
+    #     else:
+    #         ordering_device = 'device_type__manufacturer'
+    #         ordering_module = 'module_type__manufacturer'
     
-        # Voeg de twee velden toe aan de query voor een gecombineerde sortering
-        queryset = queryset.order_by(ordering_device, ordering_module)
-        return queryset, True
+    #     # Voeg de twee velden toe aan de query voor een gecombineerde sortering
+    #     queryset = queryset.order_by(ordering_device, ordering_module)
+    #     return queryset, True
 
 class BiosAssignmentTable(NetBoxTable):
     description = tables.Column()

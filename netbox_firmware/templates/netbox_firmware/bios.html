@@ -6,36 +6,48 @@
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block breadcrumbs %}
-{% if object.kind != None %}
   {{ block.super }}
-  <li class="breadcrumb-item">
-    <a href="{% url 'plugins:netbox_firmware:bios_list' %}?{{ object.kind }}_type_id={{ object.hardware_type.pk }}&manufacturer={{object.hardware_type.manufacturer.id}}">{{ object.hardware_type.manufacturer }} {{ object.hardware_type }}</a>
-  </li>
-{% endif %}
+  {% if object.manufacturer %}
+    <li class="breadcrumb-item">
+      <a href="{% url 'plugins:netbox_firmware:bios_list' %}?manufacturer_id={{ object.manufacturer.id }}">
+        {{ object.manufacturer }}
+      </a>
+    </li>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
   <div class="row mb-3">
     <div class="col col-md-6">
       <div class="card">
-        <h5 class="card-header">Bios</h5>
+        <h5 class="card-header">BIOS</h5>
         <table class="table table-hover attr-table">
           <tr>
             <th scope="row">Name</th>
             <td>{{ object.name|placeholder }}</td>
           </tr>
+
+          <tr>
+            <th scope="row">Manufacturer</th>
+            <td>
+            {% if object.manufacturer %}
+              <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer }}</a>
+            {% else %}
+              &mdash;
+            {% endif %}
+            </td>
+          </tr>
+
           <tr>
             <th scope="row">Status</th>
             <td>{% badge object.get_status_display bg_color=object.get_status_color %}</td>
           </tr>
-          <tr>
-            <th scope="row">Description</th>
-            <td>{{ object.description|placeholder }}</td>
-          </tr>
+
           <tr>
             <th scope="row">File name</th>
             <td>{{ object.file_name|placeholder }}</td>
           </tr>
+
           <tr>
             <th scope="row">File</th>
             <td>
@@ -44,6 +56,7 @@
               {% else %}
                 &mdash;
               {% endif %}
+            </td>
           </tr>
         </table>
       </div>
@@ -51,21 +64,32 @@
       <div class="card">
         <h5 class="card-header">Hardware</h5>
         <table class="table table-hover attr-table">
-          <tr>
-            <th scope="row">Manufacturer</th>
-            <td><a href="{{object.manufacturer.get_absolute_url}}">{{ object.manufacturer|placeholder }}</a></td>
-          </tr>
-          {% if object.kind == 'device' %}
+
+          {% if object.has_device_type %}
             <tr>
-              <th scope="row">Device Type</th>
-              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
+              <th scope="row">Device Types</th>
+              <td>
+                {% for dt in object.device_type.all %}
+                  <a href="{{ dt.get_absolute_url }}">{{ dt }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </td>
             </tr>
-          {% elif object.kind == 'module' %}
+          {% elif object.has_module_type %}
             <tr>
-              <th scope="row">Module Type</th>
-              <td><a href="{{ object.hardware_type.get_absolute_url }}">{{ object.hardware_type }}</a></td>
+              <th scope="row">Module Types</th>
+              <td>
+                {% for mt in object.module_type.all %}
+                  <a href="{{ mt.get_absolute_url }}">{{ mt }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <th scope="row">Hardware</th>
+              <td>&mdash;</td>
             </tr>
           {% endif %}
+
         </table>
       </div>
 
