@@ -28,7 +28,7 @@ class Bios(NetBoxModel):
         to= 'dcim.Manufacturer',
         on_delete=models.PROTECT,
         related_name="bios",
-        default=22,  # Default to 'Migration' Manufacturer (ID 22)
+        # default=22,  # Uncomment and set to a valid Manufacturer ID for existing records without a manufacturer.
     )
     file_name = models.CharField(
         help_text='File name of the bios',
